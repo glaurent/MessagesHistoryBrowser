@@ -1,0 +1,566 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		AF6F10E91BB81D5900A93152 /* SQLite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AF6F10E81BB81D5900A93152 /* SQLite.framework */; };
+		AF6F10EA1BB81D5900A93152 /* SQLite.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = AF6F10E81BB81D5900A93152 /* SQLite.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		AFD974971BB816B5004CF8D7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFD974961BB816B5004CF8D7 /* AppDelegate.swift */; };
+		AFD974991BB816B5004CF8D7 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFD974981BB816B5004CF8D7 /* ViewController.swift */; };
+		AFD9749C1BB816B5004CF8D7 /* MessagesHistoryBrowser.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = AFD9749A1BB816B5004CF8D7 /* MessagesHistoryBrowser.xcdatamodeld */; };
+		AFD9749E1BB816B5004CF8D7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AFD9749D1BB816B5004CF8D7 /* Assets.xcassets */; };
+		AFD974A11BB816B6004CF8D7 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AFD9749F1BB816B6004CF8D7 /* Main.storyboard */; };
+		AFD974AC1BB816B6004CF8D7 /* MessagesHistoryBrowserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFD974AB1BB816B6004CF8D7 /* MessagesHistoryBrowserTests.swift */; };
+		AFD974B71BB816B6004CF8D7 /* MessagesHistoryBrowserUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFD974B61BB816B6004CF8D7 /* MessagesHistoryBrowserUITests.swift */; };
+		AFD974CA1BB81885004CF8D7 /* Chat.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFD974C81BB81885004CF8D7 /* Chat.swift */; settings = {ASSET_TAGS = (); }; };
+		AFD974CB1BB81885004CF8D7 /* ContactsMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFD974C91BB81885004CF8D7 /* ContactsMap.swift */; settings = {ASSET_TAGS = (); }; };
+		AFD974CD1BB81ACB004CF8D7 /* ChatListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFD974CC1BB81ACB004CF8D7 /* ChatListViewController.swift */; settings = {ASSET_TAGS = (); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		AFD974A81BB816B6004CF8D7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AFD9748B1BB816B5004CF8D7 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = AFD974921BB816B5004CF8D7;
+			remoteInfo = MessagesHistoryBrowser;
+		};
+		AFD974B31BB816B6004CF8D7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AFD9748B1BB816B5004CF8D7 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = AFD974921BB816B5004CF8D7;
+			remoteInfo = MessagesHistoryBrowser;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		AF6F10EB1BB81D5A00A93152 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				AF6F10EA1BB81D5900A93152 /* SQLite.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		AF6F10E81BB81D5900A93152 /* SQLite.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SQLite.framework; path = Carthage/Build/Mac/SQLite.framework; sourceTree = "<group>"; };
+		AFD974931BB816B5004CF8D7 /* MessagesHistoryBrowser.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MessagesHistoryBrowser.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		AFD974961BB816B5004CF8D7 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		AFD974981BB816B5004CF8D7 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		AFD9749B1BB816B5004CF8D7 /* MessagesHistoryBrowser.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = MessagesHistoryBrowser.xcdatamodel; sourceTree = "<group>"; };
+		AFD9749D1BB816B5004CF8D7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		AFD974A01BB816B6004CF8D7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		AFD974A21BB816B6004CF8D7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		AFD974A71BB816B6004CF8D7 /* MessagesHistoryBrowserTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MessagesHistoryBrowserTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		AFD974AB1BB816B6004CF8D7 /* MessagesHistoryBrowserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesHistoryBrowserTests.swift; sourceTree = "<group>"; };
+		AFD974AD1BB816B6004CF8D7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		AFD974B21BB816B6004CF8D7 /* MessagesHistoryBrowserUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MessagesHistoryBrowserUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		AFD974B61BB816B6004CF8D7 /* MessagesHistoryBrowserUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesHistoryBrowserUITests.swift; sourceTree = "<group>"; };
+		AFD974B81BB816B6004CF8D7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		AFD974C81BB81885004CF8D7 /* Chat.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Chat.swift; sourceTree = "<group>"; };
+		AFD974C91BB81885004CF8D7 /* ContactsMap.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactsMap.swift; sourceTree = "<group>"; };
+		AFD974CC1BB81ACB004CF8D7 /* ChatListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatListViewController.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		AFD974901BB816B5004CF8D7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AF6F10E91BB81D5900A93152 /* SQLite.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AFD974A41BB816B6004CF8D7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AFD974AF1BB816B6004CF8D7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		AF6F10EC1BB8222500A93152 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				AF6F10E81BB81D5900A93152 /* SQLite.framework */,
+			);
+			name = Frameworks;
+			path = ..;
+			sourceTree = "<group>";
+		};
+		AFD9748A1BB816B5004CF8D7 = {
+			isa = PBXGroup;
+			children = (
+				AFD974951BB816B5004CF8D7 /* MessagesHistoryBrowser */,
+				AFD974AA1BB816B6004CF8D7 /* MessagesHistoryBrowserTests */,
+				AFD974B51BB816B6004CF8D7 /* MessagesHistoryBrowserUITests */,
+				AFD974941BB816B5004CF8D7 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		AFD974941BB816B5004CF8D7 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				AFD974931BB816B5004CF8D7 /* MessagesHistoryBrowser.app */,
+				AFD974A71BB816B6004CF8D7 /* MessagesHistoryBrowserTests.xctest */,
+				AFD974B21BB816B6004CF8D7 /* MessagesHistoryBrowserUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		AFD974951BB816B5004CF8D7 /* MessagesHistoryBrowser */ = {
+			isa = PBXGroup;
+			children = (
+				AFD974CC1BB81ACB004CF8D7 /* ChatListViewController.swift */,
+				AFD974C81BB81885004CF8D7 /* Chat.swift */,
+				AFD974C91BB81885004CF8D7 /* ContactsMap.swift */,
+				AFD974961BB816B5004CF8D7 /* AppDelegate.swift */,
+				AFD974981BB816B5004CF8D7 /* ViewController.swift */,
+				AFD9749D1BB816B5004CF8D7 /* Assets.xcassets */,
+				AFD9749F1BB816B6004CF8D7 /* Main.storyboard */,
+				AFD974A21BB816B6004CF8D7 /* Info.plist */,
+				AFD9749A1BB816B5004CF8D7 /* MessagesHistoryBrowser.xcdatamodeld */,
+				AF6F10EC1BB8222500A93152 /* Frameworks */,
+			);
+			path = MessagesHistoryBrowser;
+			sourceTree = "<group>";
+		};
+		AFD974AA1BB816B6004CF8D7 /* MessagesHistoryBrowserTests */ = {
+			isa = PBXGroup;
+			children = (
+				AFD974AB1BB816B6004CF8D7 /* MessagesHistoryBrowserTests.swift */,
+				AFD974AD1BB816B6004CF8D7 /* Info.plist */,
+			);
+			path = MessagesHistoryBrowserTests;
+			sourceTree = "<group>";
+		};
+		AFD974B51BB816B6004CF8D7 /* MessagesHistoryBrowserUITests */ = {
+			isa = PBXGroup;
+			children = (
+				AFD974B61BB816B6004CF8D7 /* MessagesHistoryBrowserUITests.swift */,
+				AFD974B81BB816B6004CF8D7 /* Info.plist */,
+			);
+			path = MessagesHistoryBrowserUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		AFD974921BB816B5004CF8D7 /* MessagesHistoryBrowser */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AFD974BB1BB816B6004CF8D7 /* Build configuration list for PBXNativeTarget "MessagesHistoryBrowser" */;
+			buildPhases = (
+				AFD9748F1BB816B5004CF8D7 /* Sources */,
+				AFD974901BB816B5004CF8D7 /* Frameworks */,
+				AFD974911BB816B5004CF8D7 /* Resources */,
+				AF6F10EB1BB81D5A00A93152 /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MessagesHistoryBrowser;
+			productName = MessagesHistoryBrowser;
+			productReference = AFD974931BB816B5004CF8D7 /* MessagesHistoryBrowser.app */;
+			productType = "com.apple.product-type.application";
+		};
+		AFD974A61BB816B6004CF8D7 /* MessagesHistoryBrowserTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AFD974BE1BB816B6004CF8D7 /* Build configuration list for PBXNativeTarget "MessagesHistoryBrowserTests" */;
+			buildPhases = (
+				AFD974A31BB816B6004CF8D7 /* Sources */,
+				AFD974A41BB816B6004CF8D7 /* Frameworks */,
+				AFD974A51BB816B6004CF8D7 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				AFD974A91BB816B6004CF8D7 /* PBXTargetDependency */,
+			);
+			name = MessagesHistoryBrowserTests;
+			productName = MessagesHistoryBrowserTests;
+			productReference = AFD974A71BB816B6004CF8D7 /* MessagesHistoryBrowserTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		AFD974B11BB816B6004CF8D7 /* MessagesHistoryBrowserUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AFD974C11BB816B6004CF8D7 /* Build configuration list for PBXNativeTarget "MessagesHistoryBrowserUITests" */;
+			buildPhases = (
+				AFD974AE1BB816B6004CF8D7 /* Sources */,
+				AFD974AF1BB816B6004CF8D7 /* Frameworks */,
+				AFD974B01BB816B6004CF8D7 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				AFD974B41BB816B6004CF8D7 /* PBXTargetDependency */,
+			);
+			name = MessagesHistoryBrowserUITests;
+			productName = MessagesHistoryBrowserUITests;
+			productReference = AFD974B21BB816B6004CF8D7 /* MessagesHistoryBrowserUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		AFD9748B1BB816B5004CF8D7 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0700;
+				ORGANIZATIONNAME = "Guillaume Laurent";
+				TargetAttributes = {
+					AFD974921BB816B5004CF8D7 = {
+						CreatedOnToolsVersion = 7.0;
+					};
+					AFD974A61BB816B6004CF8D7 = {
+						CreatedOnToolsVersion = 7.0;
+						TestTargetID = AFD974921BB816B5004CF8D7;
+					};
+					AFD974B11BB816B6004CF8D7 = {
+						CreatedOnToolsVersion = 7.0;
+						TestTargetID = AFD974921BB816B5004CF8D7;
+					};
+				};
+			};
+			buildConfigurationList = AFD9748E1BB816B5004CF8D7 /* Build configuration list for PBXProject "MessagesHistoryBrowser" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = AFD9748A1BB816B5004CF8D7;
+			productRefGroup = AFD974941BB816B5004CF8D7 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				AFD974921BB816B5004CF8D7 /* MessagesHistoryBrowser */,
+				AFD974A61BB816B6004CF8D7 /* MessagesHistoryBrowserTests */,
+				AFD974B11BB816B6004CF8D7 /* MessagesHistoryBrowserUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		AFD974911BB816B5004CF8D7 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AFD9749E1BB816B5004CF8D7 /* Assets.xcassets in Resources */,
+				AFD974A11BB816B6004CF8D7 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AFD974A51BB816B6004CF8D7 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AFD974B01BB816B6004CF8D7 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		AFD9748F1BB816B5004CF8D7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AFD974CD1BB81ACB004CF8D7 /* ChatListViewController.swift in Sources */,
+				AFD9749C1BB816B5004CF8D7 /* MessagesHistoryBrowser.xcdatamodeld in Sources */,
+				AFD974CB1BB81885004CF8D7 /* ContactsMap.swift in Sources */,
+				AFD974CA1BB81885004CF8D7 /* Chat.swift in Sources */,
+				AFD974991BB816B5004CF8D7 /* ViewController.swift in Sources */,
+				AFD974971BB816B5004CF8D7 /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AFD974A31BB816B6004CF8D7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AFD974AC1BB816B6004CF8D7 /* MessagesHistoryBrowserTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AFD974AE1BB816B6004CF8D7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AFD974B71BB816B6004CF8D7 /* MessagesHistoryBrowserUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		AFD974A91BB816B6004CF8D7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = AFD974921BB816B5004CF8D7 /* MessagesHistoryBrowser */;
+			targetProxy = AFD974A81BB816B6004CF8D7 /* PBXContainerItemProxy */;
+		};
+		AFD974B41BB816B6004CF8D7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = AFD974921BB816B5004CF8D7 /* MessagesHistoryBrowser */;
+			targetProxy = AFD974B31BB816B6004CF8D7 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		AFD9749F1BB816B6004CF8D7 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				AFD974A01BB816B6004CF8D7 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		AFD974B91BB816B6004CF8D7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		AFD974BA1BB816B6004CF8D7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		AFD974BC1BB816B6004CF8D7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/Mac",
+				);
+				INFOPLIST_FILE = MessagesHistoryBrowser/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.telegraph-road.MessagesHistoryBrowser";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		AFD974BD1BB816B6004CF8D7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/Mac",
+				);
+				INFOPLIST_FILE = MessagesHistoryBrowser/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.telegraph-road.MessagesHistoryBrowser";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		AFD974BF1BB816B6004CF8D7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = MessagesHistoryBrowserTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.telegraph-road.MessagesHistoryBrowserTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MessagesHistoryBrowser.app/Contents/MacOS/MessagesHistoryBrowser";
+			};
+			name = Debug;
+		};
+		AFD974C01BB816B6004CF8D7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = MessagesHistoryBrowserTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.telegraph-road.MessagesHistoryBrowserTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MessagesHistoryBrowser.app/Contents/MacOS/MessagesHistoryBrowser";
+			};
+			name = Release;
+		};
+		AFD974C21BB816B6004CF8D7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = MessagesHistoryBrowserUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.telegraph-road.MessagesHistoryBrowserUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_TARGET_NAME = MessagesHistoryBrowser;
+				USES_XCTRUNNER = YES;
+			};
+			name = Debug;
+		};
+		AFD974C31BB816B6004CF8D7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = MessagesHistoryBrowserUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.telegraph-road.MessagesHistoryBrowserUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_TARGET_NAME = MessagesHistoryBrowser;
+				USES_XCTRUNNER = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		AFD9748E1BB816B5004CF8D7 /* Build configuration list for PBXProject "MessagesHistoryBrowser" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AFD974B91BB816B6004CF8D7 /* Debug */,
+				AFD974BA1BB816B6004CF8D7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AFD974BB1BB816B6004CF8D7 /* Build configuration list for PBXNativeTarget "MessagesHistoryBrowser" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AFD974BC1BB816B6004CF8D7 /* Debug */,
+				AFD974BD1BB816B6004CF8D7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AFD974BE1BB816B6004CF8D7 /* Build configuration list for PBXNativeTarget "MessagesHistoryBrowserTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AFD974BF1BB816B6004CF8D7 /* Debug */,
+				AFD974C01BB816B6004CF8D7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AFD974C11BB816B6004CF8D7 /* Build configuration list for PBXNativeTarget "MessagesHistoryBrowserUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AFD974C21BB816B6004CF8D7 /* Debug */,
+				AFD974C31BB816B6004CF8D7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		AFD9749A1BB816B5004CF8D7 /* MessagesHistoryBrowser.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				AFD9749B1BB816B5004CF8D7 /* MessagesHistoryBrowser.xcdatamodel */,
+			);
+			currentVersion = AFD9749B1BB816B5004CF8D7 /* MessagesHistoryBrowser.xcdatamodel */;
+			path = MessagesHistoryBrowser.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
+	};
+	rootObject = AFD9748B1BB816B5004CF8D7 /* Project object */;
+}
