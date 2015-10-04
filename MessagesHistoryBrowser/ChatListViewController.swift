@@ -15,6 +15,8 @@ class ChatListViewController: NSViewController, NSOutlineViewDataSource, NSOutli
 
     var chatsDatabase:ChatsDatabase!
 
+    var messagesListViewController:MessagesListViewController?
+
     override func viewDidLoad()
     {
         super.viewDidLoad()
@@ -24,6 +26,11 @@ class ChatListViewController: NSViewController, NSOutlineViewDataSource, NSOutli
 
         outlineView.reloadData()
 
+        if let parentSplitViewController = parentViewController as? NSSplitViewController {
+            let secondSplitViewItem = parentSplitViewController.splitViewItems[1]
+
+            messagesListViewController = secondSplitViewItem.viewController as? MessagesListViewController
+        }
     }
 
 
@@ -118,7 +125,8 @@ class ChatListViewController: NSViewController, NSOutlineViewDataSource, NSOutli
     }
 
     // MARK: NSOutlineViewDelegate
-    func outlineView(outlineView: NSOutlineView, viewForTableColumn: NSTableColumn?, item: AnyObject) -> NSView? {
+    func outlineView(outlineView: NSOutlineView, viewForTableColumn: NSTableColumn?, item: AnyObject) -> NSView?
+    {
 
         let view = outlineView.makeViewWithIdentifier("Chats", owner: self) as! NSTableCellView
         if let textField = view.textField {
@@ -129,6 +137,57 @@ class ChatListViewController: NSViewController, NSOutlineViewDataSource, NSOutli
             }
         }
         return view
+    }
+
+    func outlineViewSelectionDidChange(notification: NSNotification)
+    {
+        let selectedRowIndexes = outlineView.selectedRowIndexes
+
+        let chatIDs = chatIDsForSelectedRows(selectedRowIndexes)
+
+        var messages = [String:[ChatMessage]]()
+
+        for chatID in chatIDs {
+            let messagesForChatID = chatsDatabase.messagesForChatID(chatID)
+            messages[chatID.guid] = messagesForChatID
+        }
+
+        var allMessages = ""
+
+        for (chatGUID, messagesForChatGUID) in messages {
+
+            allMessages = allMessages + "\n\t\(chatGUID)\n"
+
+            for message in messagesForChatGUID {
+                allMessages = allMessages + "\(message.date) : \(message.message)"
+            }
+        }
+
+        messagesListViewController?.messagesTextView.string = allMessages
+    }
+
+
+    func chatIDsForSelectedRows(selectedRowIndexes : NSIndexSet) -> [Chat]
+    {
+        var chatIDs = [Chat]()
+
+        selectedRowIndexes.enumerateIndexesUsingBlock { (index:Int, stop:UnsafeMutablePointer<ObjCBool>) -> Void in
+            let cellValue = self.outlineView.itemAtRow(index)
+
+            NSLog("cellValue at index \(index) : \(cellValue)")
+            if cellValue is Chat {
+                chatIDs.append(cellValue as! Chat)
+            } else if cellValue is String {
+                let nbChildren = self.outlineView(self.outlineView, numberOfChildrenOfItem:cellValue)
+                for childIndex in 0..<nbChildren {
+                    if let chat = self.outlineView(self.outlineView, child:childIndex, ofItem:cellValue) as? Chat {
+                        chatIDs.append(chat)
+                    }
+                }
+            }
+        }
+
+        return chatIDs
     }
 
 }

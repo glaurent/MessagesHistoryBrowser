@@ -102,5 +102,12 @@ class ChatsDatabase: NSObject {
         return identifier
     }
 
+    func messagesForChatID(chatID:Chat) -> [ChatMessage]
+    {
+
+        let aChatMessage = ChatMessage(message:"foobar", date:NSDate())
+        
+        return [aChatMessage]
+    }
 
 }

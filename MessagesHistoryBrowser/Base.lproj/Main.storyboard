@@ -794,26 +794,59 @@
             </objects>
             <point key="canvasLocation" x="1314" y="431"/>
         </scene>
-        <!--View Controller-->
+        <!--Messages List View Controller-->
         <scene sceneID="ELx-7x-MUW">
             <objects>
-                <viewController id="t7h-ac-Zfd" sceneMemberID="viewController">
+                <viewController id="t7h-ac-Zfd" customClass="MessagesListViewController" customModule="MessagesHistoryBrowser" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="72L-q4-1af">
                         <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
-                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="tiO-6m-Tmj">
-                                <rect key="frame" x="115" y="111" width="253" height="88"/>
+                            <scrollView horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lTo-HJ-H2q">
+                                <rect key="frame" x="20" y="20" width="410" height="260"/>
+                                <clipView key="contentView" id="Ku1-yh-KWT">
+                                    <rect key="frame" x="1" y="1" width="408" height="258"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <subviews>
+                                        <textView editable="NO" importsGraphics="NO" findStyle="panel" continuousSpellChecking="YES" allowsUndo="YES" verticallyResizable="YES" allowsNonContiguousLayout="YES" quoteSubstitution="YES" dashSubstitution="YES" smartInsertDelete="YES" id="cOK-Z4-ECw">
+                                            <rect key="frame" x="0.0" y="0.0" width="408" height="258"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                            <animations/>
+                                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            <size key="minSize" width="408" height="258"/>
+                                            <size key="maxSize" width="463" height="10000000"/>
+                                            <color key="insertionPointColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                            <size key="minSize" width="408" height="258"/>
+                                            <size key="maxSize" width="463" height="10000000"/>
+                                        </textView>
+                                    </subviews>
+                                    <animations/>
+                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </clipView>
                                 <animations/>
-                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Hello World" id="Zv0-yw-qyg">
-                                    <font key="font" metaFont="system"/>
-                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                </textFieldCell>
-                            </textField>
+                                <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="YES" id="qxC-be-hWL">
+                                    <rect key="frame" x="-100" y="-100" width="87" height="18"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <animations/>
+                                </scroller>
+                                <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="Icy-xM-cH8">
+                                    <rect key="frame" x="393" y="1" width="16" height="258"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <animations/>
+                                </scroller>
+                            </scrollView>
                         </subviews>
+                        <constraints>
+                            <constraint firstItem="lTo-HJ-H2q" firstAttribute="leading" secondItem="72L-q4-1af" secondAttribute="leading" constant="20" id="5oy-6f-7hc"/>
+                            <constraint firstAttribute="bottom" secondItem="lTo-HJ-H2q" secondAttribute="bottom" constant="20" id="X7t-fH-1WB"/>
+                            <constraint firstAttribute="trailing" secondItem="lTo-HJ-H2q" secondAttribute="trailing" constant="20" id="dhw-6Z-vIK"/>
+                            <constraint firstItem="lTo-HJ-H2q" firstAttribute="top" secondItem="72L-q4-1af" secondAttribute="top" constant="20" id="zS8-bV-O4M"/>
+                        </constraints>
                         <animations/>
                     </view>
+                    <connections>
+                        <outlet property="messagesTextView" destination="cOK-Z4-ECw" id="c74-78-7dU"/>
+                    </connections>
                 </viewController>
                 <customObject id="eHB-bN-DY8" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
