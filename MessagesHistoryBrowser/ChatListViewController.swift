@@ -8,101 +8,24 @@
 
 import Cocoa
 import AddressBook
-import SQLite
 
 class ChatListViewController: NSViewController, NSOutlineViewDataSource, NSOutlineViewDelegate {
 
     @IBOutlet weak var outlineView: NSOutlineView!
 
-
-    var contactsPhoneNumber:ContactsMap! // want delayed init
-
-    var allChats = [Chat]()
-
-    var chatsDictionnary = [String : [Chat]]()
-
-    var chatsSortedKeys = [String]()
+    var chatsDatabase:ChatsDatabase!
 
     override func viewDidLoad()
     {
         super.viewDidLoad()
         // Do view setup here.
 
-        do {
+        chatsDatabase = ChatsDatabase.sharedInstance
 
-
-            contactsPhoneNumber = ContactsMap.sharedInstance
-
-            let db = try Connection("/Users/glaurent/tmp/chat.db", readonly:true)
-
-            let chats = Table("chat")
-
-            let chatRowIDColumn = Expression<Int>("ROWID")
-            let chatGUIDColumn = Expression<String>("guid")
-            let serviceNameColumn = Expression<String>("service_name")
-            let chatIdentifierColumn = Expression<String>("chat_identifier")
-
-            // Iterate over all chats
-            //
-            for chatData in db.prepare(chats.select(chatRowIDColumn, chatGUIDColumn, serviceNameColumn, chatIdentifierColumn)) {
-
-                let guid = chatData[chatGUIDColumn]
-                let rowID = chatData[chatRowIDColumn]
-                let identifier = chatData[chatIdentifierColumn]
-                let serviceName = chatData[serviceNameColumn]
-
-                let chatContactName = contactNameForIdentifier(identifier, service:serviceName)
-
-                let chat = Chat(withContact:chatContactName, withGUID: guid, andRowID: rowID)
-
-                NSLog("chat : %@ \tcontact : %@\trowId: %d", chat.guid, chatContactName, chat.rowID)
-
-                allChats.append(chat)
-
-                if chatsDictionnary[chat.contact] != nil {
-                    chatsDictionnary[chat.contact]!.append(chat)
-                } else {
-                    chatsDictionnary[chat.contact] = [chat]
-                }
-
-                
-            }
-
-            chatsSortedKeys = chatsDictionnary.keys.sort()
-
-            outlineView.reloadData()
-
-        } catch {
-            NSLog("%@ error", __FUNCTION__)
-        }
+        outlineView.reloadData()
 
     }
 
-    func contactNameForIdentifier(identifier:String, service serviceName:String) -> String
-    {
-
-        if serviceName == "AIM" || serviceName == "Jabber" {
-
-            if let chatContactName = contactsPhoneNumber.nameForInstantMessageAddress(identifier) {
-                return chatContactName
-            }
-
-        } else if serviceName == "iMessage" {
-
-            // check if identifier contains a '@'
-            if identifier.characters.contains("@") {
-                if let chatContactName = contactsPhoneNumber.nameForEmailAddress(identifier) {
-                    return chatContactName
-                }
-            } else if let chatContactName = contactsPhoneNumber.nameForPhoneNumber(identifier) {
-                return chatContactName
-            } else {
-                return identifier
-            }
-        }
-
-        return identifier
-    }
 
 // MARK: NSOutlineViewDataSource
     func outlineView(outlineView: NSOutlineView, child index: Int, ofItem item: AnyObject?) -> AnyObject
@@ -110,13 +33,13 @@ class ChatListViewController: NSViewController, NSOutlineViewDataSource, NSOutli
         print("child index \(index) of item \(item)")
 
         if item == nil {
-            let res = chatsSortedKeys[index]
+            let res = chatsDatabase.chatsSortedKeys[index]
             print("res : \(res)")
-            return NSString(string: res)
+            return NSString(string: res) // REALLY have to return an NSString here, or we get memory corruptions. NSOutlineView doesn't like Swift Strings.
         }
 
         if let contactName = item as? String {
-            if let chatsForContactName = chatsDictionnary[contactName] {
+            if let chatsForContactName = chatsDatabase.chatsDictionnary[contactName] {
                 let chat = chatsForContactName[index]
                 print("return chat \(chat.guid)")
                 return chat
@@ -168,7 +91,7 @@ class ChatListViewController: NSViewController, NSOutlineViewDataSource, NSOutli
         print("item \(item) isExpandable")
 
         if let contactName = item as? String {
-            if let chatsForContactName = chatsDictionnary[contactName] {
+            if let chatsForContactName = chatsDatabase.chatsDictionnary[contactName] {
                 return chatsForContactName.count > 0 // should be always true in this case anyway
             } else {
                 return false
@@ -184,10 +107,10 @@ class ChatListViewController: NSViewController, NSOutlineViewDataSource, NSOutli
 
         if item == nil {
 //            return 5
-            return chatsDictionnary.keys.count
+            return chatsDatabase.chatsDictionnary.keys.count
         }
 
-        if let contactName = item as? String, chatsForContactName = chatsDictionnary[contactName] {
+        if let contactName = item as? String, chatsForContactName = chatsDatabase.chatsDictionnary[contactName] {
             return chatsForContactName.count
         }
 

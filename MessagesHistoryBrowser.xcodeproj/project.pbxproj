@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AF2B2DEF1BC18BE1000B8293 /* ChatsDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF2B2DEE1BC18BE1000B8293 /* ChatsDatabase.swift */; settings = {ASSET_TAGS = (); }; };
 		AF6F10E91BB81D5900A93152 /* SQLite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AF6F10E81BB81D5900A93152 /* SQLite.framework */; };
 		AF6F10EA1BB81D5900A93152 /* SQLite.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = AF6F10E81BB81D5900A93152 /* SQLite.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		AFD974971BB816B5004CF8D7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFD974961BB816B5004CF8D7 /* AppDelegate.swift */; };
@@ -53,6 +54,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		AF2B2DEE1BC18BE1000B8293 /* ChatsDatabase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatsDatabase.swift; sourceTree = "<group>"; };
 		AF6F10E81BB81D5900A93152 /* SQLite.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SQLite.framework; path = Carthage/Build/Mac/SQLite.framework; sourceTree = "<group>"; };
 		AFD974931BB816B5004CF8D7 /* MessagesHistoryBrowser.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MessagesHistoryBrowser.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AFD974961BB816B5004CF8D7 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -133,6 +135,7 @@
 				AFD974CC1BB81ACB004CF8D7 /* ChatListViewController.swift */,
 				AFD974C81BB81885004CF8D7 /* Chat.swift */,
 				AFD974C91BB81885004CF8D7 /* ContactsMap.swift */,
+				AF2B2DEE1BC18BE1000B8293 /* ChatsDatabase.swift */,
 				AFD974961BB816B5004CF8D7 /* AppDelegate.swift */,
 				AFD974981BB816B5004CF8D7 /* ViewController.swift */,
 				AFD9749D1BB816B5004CF8D7 /* Assets.xcassets */,
@@ -294,6 +297,7 @@
 			files = (
 				AFD974CD1BB81ACB004CF8D7 /* ChatListViewController.swift in Sources */,
 				AFD9749C1BB816B5004CF8D7 /* MessagesHistoryBrowser.xcdatamodeld in Sources */,
+				AF2B2DEF1BC18BE1000B8293 /* ChatsDatabase.swift in Sources */,
 				AFD974CB1BB81885004CF8D7 /* ContactsMap.swift in Sources */,
 				AFD974CA1BB81885004CF8D7 /* Chat.swift in Sources */,
 				AFD974991BB816B5004CF8D7 /* ViewController.swift in Sources */,
