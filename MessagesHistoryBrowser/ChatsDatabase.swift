@@ -24,15 +24,19 @@ class ChatsDatabase: NSObject {
 
     var chatsSortedKeys = [String]()
 
+    var db:Connection!
+
     override init() {
 
-        super.init()
 
         do {
             contactsPhoneNumber = ContactsMap.sharedInstance
 
-            let db = try Connection(chatsDBPath, readonly:true)
+            db = try Connection(chatsDBPath, readonly:true)
 
+            super.init()
+
+            //
             let chats = Table("chat")
 
             let chatRowIDColumn = Expression<Int>("ROWID")
@@ -69,6 +73,7 @@ class ChatsDatabase: NSObject {
             chatsSortedKeys = chatsDictionnary.keys.sort()
             
         } catch {
+            super.init()
             NSLog("%@ error", __FUNCTION__)
         }
 
@@ -104,10 +109,46 @@ class ChatsDatabase: NSObject {
 
     func messagesForChatID(chatID:Chat) -> [ChatMessage]
     {
+        var res:[ChatMessage] = []
 
-        let aChatMessage = ChatMessage(message:"foobar", date:NSDate())
-        
-        return [aChatMessage]
+        let messagesTable  = Table("message")
+        let isFromMeColumn = Expression<Bool>("is_from_me")
+        let textColumn     = Expression<String>("text")
+
+        let chatHandleJoinTable = Table("chat_handle_join")
+        let handleIdColumn      = Expression<Int>("handle_id")
+        let chatIdColumn        = Expression<Int>("chat_id")
+
+        let chatTable   = Table("chat")
+        let rowIDColumn = Expression<Int>("ROWID")
+        let guidColumn  = Expression<String>("guid")
+
+        let chatIDQuery = db.prepare(chatTable.select(rowIDColumn).filter(guidColumn == chatID.guid))
+        var allRowIDs = [Int]()
+        for row in chatIDQuery {
+            allRowIDs.append(row.get(rowIDColumn))
+        }
+
+
+        let handleIDQuery = db.prepare(chatHandleJoinTable.select(handleIdColumn).filter(allRowIDs.contains(chatIdColumn)))
+        var allHandleIDs = [Int]()
+        for row in handleIDQuery {
+            allHandleIDs.append(row.get(handleIdColumn))
+        }
+
+        let query = db.prepare(messagesTable.select(isFromMeColumn, textColumn).filter(allHandleIDs.contains(handleIdColumn)))
+
+        for messageData in query {
+            let messageContent = messageData[textColumn]
+            NSLog("message : \(messageContent)")
+            res.append(ChatMessage(message:messageContent, date:NSDate()))
+        }
+
+        return res
+
+//        let aChatMessage = ChatMessage(message:"foobar", date:NSDate())
+//        
+//        return [aChatMessage]
     }
 
 }
