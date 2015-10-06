@@ -90,7 +90,7 @@ class ChatsDatabase: NSObject {
                 return chatContactName
             }
 
-        } else if serviceName == "iMessage" {
+        } else if serviceName == "iMessage" || serviceName == "SMS" {
 
             // check if identifier contains a '@'
             if identifier.characters.contains("@") {
@@ -113,7 +113,7 @@ class ChatsDatabase: NSObject {
 
         let messagesTable  = Table("message")
         let isFromMeColumn = Expression<Bool>("is_from_me")
-        let textColumn     = Expression<String>("text")
+        let textColumn     = Expression<String?>("text")
         let dateColumn     = Expression<Int>("date")
 
         let chatHandleJoinTable = Table("chat_handle_join")
@@ -140,7 +140,7 @@ class ChatsDatabase: NSObject {
         let query = db.prepare(messagesTable.select(isFromMeColumn, textColumn, dateColumn).filter(allHandleIDs.contains(handleIdColumn)))
 
         for messageData in query {
-            let messageContent = messageData[textColumn]
+            let messageContent = messageData[textColumn] ?? ""
             let dateInt = messageData[dateColumn]
             let dateTimeInterval = NSTimeInterval(dateInt)
             let messageDate = NSDate(timeIntervalSinceReferenceDate: dateTimeInterval)
