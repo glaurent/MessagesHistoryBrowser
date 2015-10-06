@@ -31,7 +31,7 @@ class ContactsMap {
                 for index in 0..<phoneNumbers.count() {
                     let phoneNb = phoneNumbers.valueAtIndex(index) as! String
                     let canonPhoneNb = canonicalizePhoneNumber(phoneNb)
-                    NSLog("phoneNb : %@", canonPhoneNb)
+                    NSLog("\(__FUNCTION__) phoneNb : %@", canonPhoneNb)
                     phoneNumbersMap[canonPhoneNb] = person
                 }
             }

@@ -37,18 +37,18 @@ class ChatListViewController: NSViewController, NSOutlineViewDataSource, NSOutli
 // MARK: NSOutlineViewDataSource
     func outlineView(outlineView: NSOutlineView, child index: Int, ofItem item: AnyObject?) -> AnyObject
     {
-        print("child index \(index) of item \(item)")
+//        print("child index \(index) of item \(item)")
 
         if item == nil {
             let res = chatsDatabase.chatsSortedKeys[index]
-            print("res : \(res)")
+//            print("res : \(res)")
             return NSString(string: res) // REALLY have to return an NSString here, or we get memory corruptions. NSOutlineView doesn't like Swift Strings.
         }
 
         if let contactName = item as? String {
             if let chatsForContactName = chatsDatabase.chatsDictionnary[contactName] {
                 let chat = chatsForContactName[index]
-                print("return chat \(chat.guid)")
+//                print("return chat \(chat.guid)")
                 return chat
             }
         }
@@ -95,7 +95,7 @@ class ChatListViewController: NSViewController, NSOutlineViewDataSource, NSOutli
 
     func outlineView(outlineView: NSOutlineView, isItemExpandable item: AnyObject) -> Bool
     {
-        print("item \(item) isExpandable")
+//        print("item \(item) isExpandable")
 
         if let contactName = item as? String {
             if let chatsForContactName = chatsDatabase.chatsDictionnary[contactName] {
@@ -110,7 +110,7 @@ class ChatListViewController: NSViewController, NSOutlineViewDataSource, NSOutli
 
     func outlineView(outlineView: NSOutlineView, numberOfChildrenOfItem item: AnyObject?) -> Int
     {
-        print("number of children of item \(item)")
+//        print("number of children of item \(item)")
 
         if item == nil {
 //            return 5
@@ -174,7 +174,7 @@ class ChatListViewController: NSViewController, NSOutlineViewDataSource, NSOutli
         selectedRowIndexes.enumerateIndexesUsingBlock { (index:Int, stop:UnsafeMutablePointer<ObjCBool>) -> Void in
             let cellValue = self.outlineView.itemAtRow(index)
 
-            NSLog("cellValue at index \(index) : \(cellValue)")
+//            NSLog("cellValue at index \(index) : \(cellValue)")
             if cellValue is Chat {
                 chatIDs.append(cellValue as! Chat)
             } else if cellValue is String {
