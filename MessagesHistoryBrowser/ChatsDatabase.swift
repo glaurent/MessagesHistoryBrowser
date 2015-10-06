@@ -114,6 +114,7 @@ class ChatsDatabase: NSObject {
         let messagesTable  = Table("message")
         let isFromMeColumn = Expression<Bool>("is_from_me")
         let textColumn     = Expression<String>("text")
+        let dateColumn     = Expression<Int>("date")
 
         let chatHandleJoinTable = Table("chat_handle_join")
         let handleIdColumn      = Expression<Int>("handle_id")
@@ -136,12 +137,15 @@ class ChatsDatabase: NSObject {
             allHandleIDs.append(row.get(handleIdColumn))
         }
 
-        let query = db.prepare(messagesTable.select(isFromMeColumn, textColumn).filter(allHandleIDs.contains(handleIdColumn)))
+        let query = db.prepare(messagesTable.select(isFromMeColumn, textColumn, dateColumn).filter(allHandleIDs.contains(handleIdColumn)))
 
         for messageData in query {
             let messageContent = messageData[textColumn]
-            NSLog("message : \(messageContent)")
-            res.append(ChatMessage(message:messageContent, date:NSDate()))
+            let dateInt = messageData[dateColumn]
+            let dateTimeInterval = NSTimeInterval(dateInt)
+            let messageDate = NSDate(timeIntervalSinceReferenceDate: dateTimeInterval)
+//            NSLog("message : \(messageContent)")
+            res.append(ChatMessage(message:messageContent, date:messageDate))
         }
 
         return res
