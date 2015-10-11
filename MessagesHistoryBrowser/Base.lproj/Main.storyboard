@@ -808,6 +808,38 @@
                                     <customView fixedFrame="YES" id="AGN-U8-8aO" userLabel="Attachments">
                                         <rect key="frame" x="0.0" y="0.0" width="450" height="142"/>
                                         <autoresizingMask key="autoresizingMask"/>
+                                        <subviews>
+                                            <scrollView fixedFrame="YES" autohidesScrollers="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zoY-MA-Jro">
+                                                <rect key="frame" x="0.0" y="0.0" width="450" height="142"/>
+                                                <clipView key="contentView" ambiguous="YES" id="Hl6-Yh-RpC">
+                                                    <rect key="frame" x="1" y="1" width="448" height="140"/>
+                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                    <subviews>
+                                                        <collectionView ambiguous="YES" id="Tmj-AG-K2d">
+                                                            <rect key="frame" x="0.0" y="0.0" width="448" height="140"/>
+                                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                            <animations/>
+                                                            <color key="primaryBackgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                            <connections>
+                                                                <segue destination="714-KU-Zfy" kind="relationship" relationship="Prototype" id="Rus-dV-lcj"/>
+                                                            </connections>
+                                                        </collectionView>
+                                                    </subviews>
+                                                    <animations/>
+                                                </clipView>
+                                                <animations/>
+                                                <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="w56-Rq-Bv4">
+                                                    <rect key="frame" x="1" y="144" width="233" height="15"/>
+                                                    <autoresizingMask key="autoresizingMask"/>
+                                                    <animations/>
+                                                </scroller>
+                                                <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="bAE-nO-uFN">
+                                                    <rect key="frame" x="234" y="1" width="15" height="143"/>
+                                                    <autoresizingMask key="autoresizingMask"/>
+                                                    <animations/>
+                                                </scroller>
+                                            </scrollView>
+                                        </subviews>
                                         <animations/>
                                     </customView>
                                     <customView id="Je3-9X-yMH" userLabel="Messages">
@@ -873,12 +905,40 @@
                         <animations/>
                     </view>
                     <connections>
+                        <outlet property="attachmentsCollectionView" destination="Tmj-AG-K2d" id="LTc-qB-mSw"/>
                         <outlet property="messagesTextView" destination="cOK-Z4-ECw" id="c74-78-7dU"/>
                     </connections>
                 </viewController>
                 <customObject id="eHB-bN-DY8" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1314" y="1054"/>
+        </scene>
+        <!--Collection View Item-->
+        <scene sceneID="BzL-uV-UTA">
+            <objects>
+                <collectionViewItem id="714-KU-Zfy" sceneMemberID="viewController">
+                    <view key="view" id="iag-XW-99W">
+                        <rect key="frame" x="0.0" y="0.0" width="100" height="100"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="3m2-nm-YRl">
+                                <rect key="frame" x="0.0" y="0.0" width="100" height="100"/>
+                                <animations/>
+                                <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" id="S0E-Gg-srb"/>
+                            </imageView>
+                        </subviews>
+                        <constraints>
+                            <constraint firstItem="3m2-nm-YRl" firstAttribute="top" secondItem="iag-XW-99W" secondAttribute="top" id="HHh-Dr-X1M"/>
+                            <constraint firstAttribute="trailing" secondItem="3m2-nm-YRl" secondAttribute="trailing" id="QCL-9M-hZz"/>
+                            <constraint firstItem="3m2-nm-YRl" firstAttribute="leading" secondItem="iag-XW-99W" secondAttribute="leading" id="d0a-uB-HkO"/>
+                            <constraint firstAttribute="bottom" secondItem="3m2-nm-YRl" secondAttribute="bottom" id="xSf-iF-PuZ"/>
+                        </constraints>
+                        <animations/>
+                    </view>
+                </collectionViewItem>
+                <customObject id="kmW-rb-90e" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1314" y="1434"/>
         </scene>
     </scenes>
 </document>

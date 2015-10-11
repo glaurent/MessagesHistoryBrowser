@@ -10,8 +10,11 @@ import Cocoa
 
 class MessagesListViewController: NSViewController {
 
-    @IBOutlet var messagesTextView: NSTextView!
+    @IBOutlet weak var messagesTextView: NSTextView!
     
+    @IBOutlet weak var attachmentsCollectionView: NSCollectionView!
+
+
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do view setup here.
