@@ -43,11 +43,11 @@ class ChatListViewController: NSViewController, NSOutlineViewDataSource, NSOutli
 // MARK: NSOutlineViewDataSource
     func outlineView(outlineView: NSOutlineView, child index: Int, ofItem item: AnyObject?) -> AnyObject
     {
-        print("child index \(index) of item \(item)")
+//        print("child index \(index) of item \(item)")
 
         if item == nil {
             let contact = allContacts[index]
-            print("contact : \(contact.name)")
+//            print("contact : \(contact.name)")
 //            print("res : \(res)")
 //            return NSString(string: res.name) // REALLY have to return an NSString here, or we get memory corruptions. NSOutlineView doesn't like Swift Strings.
             return contact
@@ -150,10 +150,21 @@ class ChatListViewController: NSViewController, NSOutlineViewDataSource, NSOutli
         let chatIDs = chatIDsForSelectedRows(selectedRowIndexes)
 
         var messages = [String:[ChatMessage]]()
+        var attachments = [String:[ChatAttachment]]()
 
         for chatID in chatIDs {
-            let messagesForChatID = chatsDatabase.messagesForChatID(chatID)
-            messages[chatID.guid] = messagesForChatID
+            let (messagesForChat, attachmentsForChat) = chatsDatabase.messagesForChat(chatID)
+            messages[chatID.guid] = messagesForChat
+            attachments[chatID.guid] = attachmentsForChat
+        }
+
+        var allAttachmentsFileNames = ""
+        for (chatGUID, attachmentsForChatGUID) in attachments {
+            allAttachmentsFileNames = allAttachmentsFileNames + "\n\t\(chatGUID)\n"
+            for attachment in attachmentsForChatGUID {
+                let attachmentFileName = attachment.fileName ?? "<no filename>"
+                allAttachmentsFileNames = allAttachmentsFileNames + "\(attachment.date) : \(attachmentFileName)\n"
+            }
         }
 
         var allMessages = ""
@@ -168,7 +179,7 @@ class ChatListViewController: NSViewController, NSOutlineViewDataSource, NSOutli
             }
         }
 
-        messagesListViewController?.messagesTextView.string = allMessages
+        messagesListViewController?.messagesTextView.string = allAttachmentsFileNames + "\n\n" + allMessages
     }
 
 

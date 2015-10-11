@@ -8,12 +8,12 @@
     <entity name="Chat" representedClassName=".Chat" syncable="YES">
         <attribute name="guid" attributeType="String" syncable="YES"/>
         <attribute name="rowID" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
-        <relationship name="attachments" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="Attachment" inverseName="chat" inverseEntity="Attachment" syncable="YES"/>
+        <relationship name="attachments" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Attachment" inverseName="chat" inverseEntity="Attachment" syncable="YES"/>
         <relationship name="contact" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Contact" inverseName="chats" inverseEntity="Contact" syncable="YES"/>
         <relationship name="messages" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Message" inverseName="chat" inverseEntity="Message" syncable="YES"/>
     </entity>
     <entity name="Contact" representedClassName=".ChatContact" syncable="YES">
-        <attribute name="name" attributeType="String" defaultValueString="unknown contact" syncable="YES"/>
+        <attribute name="name" attributeType="String" defaultValueString="unknown contact" indexed="YES" syncable="YES"/>
         <relationship name="chats" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="Chat" inverseName="contact" inverseEntity="Chat" syncable="YES"/>
     </entity>
     <entity name="Message" representedClassName=".ChatMessage" syncable="YES">

@@ -128,7 +128,24 @@ class ChatsDatabase: NSObject {
         return ChatContact.contactIn(moc, named: contactName)
     }
 
-    func messagesForChatID(chatID:Chat) -> [ChatMessage]
+    func messagesForChat(chat:Chat) -> ([ChatMessage], [ChatAttachment])
+    {
+        if chat.messages.count == 0 {
+            collectMessagesForChat(chat)
+        }
+
+        let allMessages = chat.messages.allObjects as! [ChatMessage]
+
+        let allMessagesSorted = allMessages.sort { $0.date.compare($1.date) == .OrderedAscending }
+
+        let allAttachments = chat.attachments.allObjects as! [ChatAttachment]
+        let allAttachmentsSorted = allAttachments.sort { $0.date.compare($1.date) == .OrderedAscending }
+
+        return (allMessagesSorted, allAttachmentsSorted)
+    
+    }
+
+    func collectMessagesForChat(chat:Chat) -> [ChatMessage]
     {
         var res:[ChatMessage] = []
 
@@ -145,17 +162,17 @@ class ChatsDatabase: NSObject {
         let rowIDColumn = Expression<Int>("ROWID")
         let guidColumn  = Expression<String>("guid")
 
-        let chatIDQuery = db.prepare(chatTable.select(rowIDColumn).filter(guidColumn == chatID.guid))
+        let chatIDQuery = db.prepare(chatTable.select(rowIDColumn).filter(guidColumn == chat.guid))
         var allRowIDs = [Int]()
         for row in chatIDQuery {
-            allRowIDs.append(row.get(rowIDColumn))
+            allRowIDs.append(row[rowIDColumn])
         }
 
 
         let handleIDQuery = db.prepare(chatHandleJoinTable.select(handleIdColumn).filter(allRowIDs.contains(chatIdColumn)))
         var allHandleIDs = [Int]()
         for row in handleIDQuery {
-            allHandleIDs.append(row.get(handleIdColumn))
+            allHandleIDs.append(row[handleIdColumn])
         }
 
         let query = db.prepare(messagesTable.select(isFromMeColumn, textColumn, dateColumn).filter(allHandleIDs.contains(handleIdColumn)))
@@ -166,7 +183,45 @@ class ChatsDatabase: NSObject {
             let dateTimeInterval = NSTimeInterval(dateInt)
             let messageDate = NSDate(timeIntervalSinceReferenceDate: dateTimeInterval)
 //            NSLog("message : \(messageContent)")
-            res.append(ChatMessage(managedObjectContext: moc, withMessage: messageContent, withDate: messageDate, inChat: chatID))
+            res.append(ChatMessage(managedObjectContext: moc, withMessage: messageContent, withDate: messageDate, inChat: chat))
+        }
+
+
+        // attachments
+        //
+        let attachments = Table("attachment")
+        let filenameColumn = Expression<String>("filename")
+        let attachmentIdColumn = Expression<Int>("attachment_id")
+        let cacheHasAttachmentColumn = Expression<Bool>("cache_has_attachments")
+
+        let messagesWithAttachmentsROWIDsQuery = db.prepare(messagesTable.select(rowIDColumn, cacheHasAttachmentColumn, handleIdColumn).filter(allHandleIDs.contains(handleIdColumn) && cacheHasAttachmentColumn == true))
+
+        var messagesWithAttachmentsROWIDs = [Int]()
+        for row in messagesWithAttachmentsROWIDsQuery {
+            messagesWithAttachmentsROWIDs.append(row[rowIDColumn])
+        }
+
+        let messageAttachmentJoinTable = Table("message_attachment_join")
+        let messageIDColumn = Expression<Int>("message_id")
+        let attachmentIDsQuery = db.prepare(messageAttachmentJoinTable.select(messageIDColumn, attachmentIdColumn).filter(messagesWithAttachmentsROWIDs.contains(messageIDColumn)))
+
+        var allAttachmentIDs = [Int]()
+        for row in attachmentIDsQuery {
+            allAttachmentIDs.append(row[attachmentIdColumn])
+        }
+
+
+        let attachmentDateColumn = Expression<Int>("created_date")
+
+        let attachmentDataQuery = db.prepare(attachments.select(rowIDColumn, filenameColumn, attachmentDateColumn).filter(allAttachmentIDs.contains(rowIDColumn)))
+
+        for attachmentData in attachmentDataQuery {
+            let attachmentFileName = attachmentData[filenameColumn]
+            let attachmentDateInt = attachmentData[attachmentDateColumn]
+            let attachmentTimeInterval = NSTimeInterval(attachmentDateInt)
+            let attachmentDate = NSDate(timeIntervalSinceReferenceDate: attachmentTimeInterval)
+
+            let _ = ChatAttachment(managedObjectContext: moc, withFileName: attachmentFileName, withDate: attachmentDate, inChat:chat)
         }
 
         return res

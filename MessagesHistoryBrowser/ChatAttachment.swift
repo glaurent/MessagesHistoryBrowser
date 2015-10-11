@@ -17,13 +17,14 @@ class ChatAttachment: NSManagedObject {
 
     @NSManaged var chat:Chat
 
-    convenience init(managedObjectContext:NSManagedObjectContext, withFileName aFileName:String, withDate aDate:NSDate) {
+    convenience init(managedObjectContext:NSManagedObjectContext, withFileName aFileName:String, withDate aDate:NSDate, inChat aChat:Chat) {
 
-        let entityDescription = NSEntityDescription.entityForName("fileName", inManagedObjectContext: managedObjectContext)
+        let entityDescription = NSEntityDescription.entityForName("Attachment", inManagedObjectContext: managedObjectContext)
         self.init(entity: entityDescription!, insertIntoManagedObjectContext: managedObjectContext)
 
         fileName = aFileName
         date = aDate
+        chat = aChat
     }
     
 }
