@@ -163,7 +163,7 @@ class ChatListViewController: NSViewController, NSOutlineViewDataSource, NSOutli
             allMessages = allMessages + "\n\t\(chatGUID)\n"
 
             for message in messagesForChatGUID {
-                let messageContent = message.content ?? "<no message"
+                let messageContent = message.content ?? "<no message>"
                 allMessages = allMessages + "\(message.date) : \(messageContent)\n"
             }
         }
