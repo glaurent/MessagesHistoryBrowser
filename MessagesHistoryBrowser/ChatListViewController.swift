@@ -149,8 +149,12 @@ class ChatListViewController: NSViewController, NSOutlineViewDataSource, NSOutli
 
         let chatIDs = chatIDsForSelectedRows(selectedRowIndexes)
 
+        // messages and attachments indexed by chat GUIDs
         var messages = [String:[ChatMessage]]()
         var attachments = [String:[ChatAttachment]]()
+
+        // all attachments for all selected chats
+        var allAttachmentsToDisplay = [ChatAttachment]()
 
         for chatID in chatIDs {
             let (messagesForChat, attachmentsForChat) = chatsDatabase.messagesForChat(chatID)
@@ -164,6 +168,7 @@ class ChatListViewController: NSViewController, NSOutlineViewDataSource, NSOutli
             for attachment in attachmentsForChatGUID {
                 let attachmentFileName = attachment.fileName ?? "<no filename>"
                 allAttachmentsFileNames = allAttachmentsFileNames + "\(attachment.date) : \(attachmentFileName)\n"
+                allAttachmentsToDisplay.append(attachment)
             }
         }
 
@@ -179,6 +184,8 @@ class ChatListViewController: NSViewController, NSOutlineViewDataSource, NSOutli
             }
         }
 
+        messagesListViewController?.attachmentsToDisplay = allAttachmentsToDisplay
+        messagesListViewController?.attachmentsCollectionView.reloadData()
         messagesListViewController?.messagesTextView.string = allAttachmentsFileNames + "\n\n" + allMessages
     }
 

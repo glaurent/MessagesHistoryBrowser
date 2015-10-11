@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="8191" systemVersion="15A284" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+    <dependencies>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="8191"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner">
+            <connections>
+                <outlet property="imageView" destination="XcN-bU-r8j" id="03h-bc-LXM"/>
+                <outlet property="textField" destination="3WF-Ya-hgv" id="HPd-q2-e8n"/>
+                <outlet property="view" destination="Hz6-mo-xeY" id="0bl-1N-x8E"/>
+            </connections>
+        </customObject>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
+        <customView id="Hz6-mo-xeY">
+            <rect key="frame" x="0.0" y="0.0" width="100" height="100"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+            <subviews>
+                <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="XcN-bU-r8j">
+                    <rect key="frame" x="0.0" y="25" width="100" height="75"/>
+                    <animations/>
+                    <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" id="aZR-Nq-btv"/>
+                </imageView>
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3WF-Ya-hgv">
+                    <rect key="frame" x="-2" y="0.0" width="104" height="17"/>
+                    <animations/>
+                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Label" id="gtx-jV-utH">
+                        <font key="font" metaFont="system"/>
+                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                </textField>
+            </subviews>
+            <animations/>
+        </customView>
+        <collectionViewItem id="WNr-Ag-1bL" customClass="AttachmentsCollectionViewItem" customModule="MessagesHistoryBrowser" customModuleProvider="target">
+            <connections>
+                <outlet property="imageView" destination="XcN-bU-r8j" id="aEj-Cw-GBI"/>
+                <outlet property="textField" destination="3WF-Ya-hgv" id="SMg-HC-xWI"/>
+                <outlet property="view" destination="Hz6-mo-xeY" id="iYn-Ok-9E5"/>
+            </connections>
+        </collectionViewItem>
+    </objects>
+</document>
