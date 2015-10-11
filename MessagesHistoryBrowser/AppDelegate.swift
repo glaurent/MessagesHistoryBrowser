@@ -162,5 +162,21 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         return .TerminateNow
     }
 
+
+    func clearAllCoreData() {
+
+        let allContacts = ChatContact.allContactsInContext(managedObjectContext)
+
+        for contact in allContacts {
+            managedObjectContext.deleteObject(contact)
+        }
+
+        do {
+            try managedObjectContext.save()
+        } catch {
+
+        }
+    }
+
 }
 

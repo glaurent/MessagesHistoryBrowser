@@ -7,10 +7,24 @@
 //
 
 import Cocoa
+import CoreData
 
-struct ChatMessage {
+class ChatMessage : NSManagedObject {
 
-    var message:String
-    var date:NSDate
-    
+    @NSManaged var content:String?
+
+    @NSManaged var date:NSDate
+
+    @NSManaged var chat:Chat
+
+    convenience init(managedObjectContext:NSManagedObjectContext, withMessage aMessage:String, withDate aDate:NSDate, inChat aChat:Chat) {
+
+        let entityDescription = NSEntityDescription.entityForName("Message", inManagedObjectContext: managedObjectContext)
+        self.init(entity: entityDescription!, insertIntoManagedObjectContext: managedObjectContext)
+
+        content = aMessage
+        date = aDate
+        chat = aChat
+    }
+
 }

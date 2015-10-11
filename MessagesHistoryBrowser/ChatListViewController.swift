@@ -17,6 +17,10 @@ class ChatListViewController: NSViewController, NSOutlineViewDataSource, NSOutli
 
     var messagesListViewController:MessagesListViewController?
 
+    var allContacts:[ChatContact]!
+
+    lazy var moc = (NSApp.delegate as! AppDelegate).managedObjectContext
+
     override func viewDidLoad()
     {
         super.viewDidLoad()
@@ -31,26 +35,29 @@ class ChatListViewController: NSViewController, NSOutlineViewDataSource, NSOutli
 
             messagesListViewController = secondSplitViewItem.viewController as? MessagesListViewController
         }
+
+        allContacts = ChatContact.allContactsInContext(moc) 
     }
 
 
 // MARK: NSOutlineViewDataSource
     func outlineView(outlineView: NSOutlineView, child index: Int, ofItem item: AnyObject?) -> AnyObject
     {
-//        print("child index \(index) of item \(item)")
+        print("child index \(index) of item \(item)")
 
         if item == nil {
-            let res = chatsDatabase.chatsSortedKeys[index]
+            let contact = allContacts[index]
+            print("contact : \(contact.name)")
 //            print("res : \(res)")
-            return NSString(string: res) // REALLY have to return an NSString here, or we get memory corruptions. NSOutlineView doesn't like Swift Strings.
+//            return NSString(string: res.name) // REALLY have to return an NSString here, or we get memory corruptions. NSOutlineView doesn't like Swift Strings.
+            return contact
         }
 
-        if let contactName = item as? String {
-            if let chatsForContactName = chatsDatabase.chatsDictionnary[contactName] {
-                let chat = chatsForContactName[index]
+        if let contact = item as? ChatContact {
+            let chatsForContactName = contact.chats
+            let chat = chatsForContactName.array[index]
 //                print("return chat \(chat.guid)")
-                return chat
-            }
+            return chat
         }
 
         if item is Chat {
@@ -97,12 +104,9 @@ class ChatListViewController: NSViewController, NSOutlineViewDataSource, NSOutli
     {
 //        print("item \(item) isExpandable")
 
-        if let contactName = item as? String {
-            if let chatsForContactName = chatsDatabase.chatsDictionnary[contactName] {
-                return chatsForContactName.count > 0 // should be always true in this case anyway
-            } else {
-                return false
-            }
+        if let contactName = item as? ChatContact {
+            let chatsForContactName = contactName.chats
+            return chatsForContactName.count > 0 // should be always true in this case anyway
         }
 
         return false
@@ -114,11 +118,11 @@ class ChatListViewController: NSViewController, NSOutlineViewDataSource, NSOutli
 
         if item == nil {
 //            return 5
-            return chatsDatabase.chatsDictionnary.keys.count
+            return ChatContact.allContactsInContext(moc).count
         }
 
-        if let contactName = item as? String, chatsForContactName = chatsDatabase.chatsDictionnary[contactName] {
-            return chatsForContactName.count
+        if let contact = item as? ChatContact {
+            return contact.chats.count
         }
 
         return 1
@@ -130,8 +134,8 @@ class ChatListViewController: NSViewController, NSOutlineViewDataSource, NSOutli
 
         let view = outlineView.makeViewWithIdentifier("Chats", owner: self) as! NSTableCellView
         if let textField = view.textField {
-            if let itemString = item as? String {
-                textField.stringValue = itemString
+            if let itemContact = item as? ChatContact {
+                textField.stringValue = itemContact.name
             } else if let itemChat = item as? Chat {
                 textField.stringValue = "chat GUID : \(itemChat.guid)"
             }
@@ -159,7 +163,8 @@ class ChatListViewController: NSViewController, NSOutlineViewDataSource, NSOutli
             allMessages = allMessages + "\n\t\(chatGUID)\n"
 
             for message in messagesForChatGUID {
-                allMessages = allMessages + "\(message.date) : \(message.message)\n"
+                let messageContent = message.content ?? "<no message"
+                allMessages = allMessages + "\(message.date) : \(messageContent)\n"
             }
         }
 
@@ -177,7 +182,7 @@ class ChatListViewController: NSViewController, NSOutlineViewDataSource, NSOutli
 //            NSLog("cellValue at index \(index) : \(cellValue)")
             if cellValue is Chat {
                 chatIDs.append(cellValue as! Chat)
-            } else if cellValue is String {
+            } else if cellValue is ChatContact {
                 let nbChildren = self.outlineView(self.outlineView, numberOfChildrenOfItem:cellValue)
                 for childIndex in 0..<nbChildren {
                     if let chat = self.outlineView(self.outlineView, child:childIndex, ofItem:cellValue) as? Chat {

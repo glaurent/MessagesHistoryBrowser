@@ -18,18 +18,26 @@ class ChatsDatabase: NSObject {
 
     var contactsPhoneNumber:ContactsMap! // want delayed init
 
-    var allChats = [Chat]()
-
-    var chatsDictionnary = [String : [Chat]]()
+    var allChats:[Chat] {
+        get {
+            return Chat.allChatsInContext(moc)
+        }
+    }
 
     var chatsSortedKeys = [String]()
 
     var db:Connection!
 
+    lazy var moc = (NSApp.delegate as! AppDelegate).managedObjectContext
+
     override init() {
 
-
         do {
+
+            let appDelegate = NSApp.delegate as! AppDelegate
+
+            appDelegate.clearAllCoreData()
+
             contactsPhoneNumber = ContactsMap.sharedInstance
 
             db = try Connection(chatsDBPath, readonly:true)
@@ -53,41 +61,52 @@ class ChatsDatabase: NSObject {
                 let identifier = chatData[chatIdentifierColumn]
                 let serviceName = chatData[serviceNameColumn]
 
-                let chatContactName = contactNameForIdentifier(identifier, service:serviceName)
+                let chatContact = contactForIdentifier(identifier, service:serviceName)
 
-                let chat = Chat(withContact:chatContactName, withGUID: guid, andRowID: rowID)
+                let _ = Chat(managedObjectContext:moc, withContact:chatContact, withGUID: guid, andRowID: rowID)
 
-                NSLog("chat : %@ \tcontact : %@\trowId: %d", chat.guid, chatContactName, chat.rowID)
+                NSLog("chat : %@ \tcontact : %@\trowId: %d", guid, chatContact, rowID)
 
-                allChats.append(chat)
-
-                if chatsDictionnary[chat.contact] != nil {
-                    chatsDictionnary[chat.contact]!.append(chat)
-                } else {
-                    chatsDictionnary[chat.contact] = [chat]
-                }
-                
-                
             }
-            
-            chatsSortedKeys = chatsDictionnary.keys.sort()
-            
+
+            do { try moc.save() } catch {}
+
         } catch {
             super.init()
             NSLog("%@ error", __FUNCTION__)
         }
 
+        let allContacts = ChatContact.allContactsInContext(moc)
+
+
+//        var allContactNames = [String]()
+
+//        for c in allContacts {
+//            if let contact = c as? ChatContact {
+//                allContactNames.append(contact.name)
+//            } else {
+//                NSLog("something weird going on")
+//            }
+//        }
+
+        let allContactNames = allContacts.map { (contact) -> String in
+//            NSLog("contact name : \(contact.name)")
+            return contact.name
+        }
+
+        chatsSortedKeys = allContactNames.sort()
     }
 
 
 
-    func contactNameForIdentifier(identifier:String, service serviceName:String) -> String
+    func contactForIdentifier(identifier:String, service serviceName:String) -> ChatContact
     {
+        var contactName = ""
 
         if serviceName == "AIM" || serviceName == "Jabber" {
 
             if let chatContactName = contactsPhoneNumber.nameForInstantMessageAddress(identifier) {
-                return chatContactName
+                contactName = chatContactName
             }
 
         } else if serviceName == "iMessage" || serviceName == "SMS" {
@@ -95,16 +114,18 @@ class ChatsDatabase: NSObject {
             // check if identifier contains a '@'
             if identifier.characters.contains("@") {
                 if let chatContactName = contactsPhoneNumber.nameForEmailAddress(identifier) {
-                    return chatContactName
+                    contactName = chatContactName
                 }
             } else if let chatContactName = contactsPhoneNumber.nameForPhoneNumber(identifier) {
-                return chatContactName
+                contactName = chatContactName
             } else {
-                return identifier
+                contactName = identifier
             }
+        } else {
+            contactName = identifier
         }
         
-        return identifier
+        return ChatContact.contactIn(moc, named: contactName)
     }
 
     func messagesForChatID(chatID:Chat) -> [ChatMessage]
@@ -145,14 +166,10 @@ class ChatsDatabase: NSObject {
             let dateTimeInterval = NSTimeInterval(dateInt)
             let messageDate = NSDate(timeIntervalSinceReferenceDate: dateTimeInterval)
 //            NSLog("message : \(messageContent)")
-            res.append(ChatMessage(message:messageContent, date:messageDate))
+            res.append(ChatMessage(managedObjectContext: moc, withMessage: messageContent, withDate: messageDate, inChat: chatID))
         }
 
         return res
-
-//        let aChatMessage = ChatMessage(message:"foobar", date:NSDate())
-//        
-//        return [aChatMessage]
     }
 
 }
