@@ -24,8 +24,6 @@ class ChatsDatabase: NSObject {
         }
     }
 
-    var chatsSortedKeys = [String]()
-
     var db:Connection!
 
     lazy var moc = (NSApp.delegate as! AppDelegate).managedObjectContext
@@ -65,7 +63,7 @@ class ChatsDatabase: NSObject {
 
                 let _ = Chat(managedObjectContext:moc, withContact:chatContact, withGUID: guid, andRowID: rowID)
 
-                NSLog("chat : %@ \tcontact : %@\trowId: %d", guid, chatContact, rowID)
+                NSLog("chat : %@ \tcontact : %@\trowId: %d", guid, chatContact.name, rowID)
 
             }
 
@@ -76,37 +74,23 @@ class ChatsDatabase: NSObject {
             NSLog("%@ error", __FUNCTION__)
         }
 
-        let allContacts = ChatContact.allContactsInContext(moc)
-
-
-//        var allContactNames = [String]()
-
-//        for c in allContacts {
-//            if let contact = c as? ChatContact {
-//                allContactNames.append(contact.name)
-//            } else {
-//                NSLog("something weird going on")
-//            }
-//        }
-
-        let allContactNames = allContacts.map { (contact) -> String in
-//            NSLog("contact name : \(contact.name)")
-            return contact.name
-        }
-
-        chatsSortedKeys = allContactNames.sort()
     }
 
 
 
     func contactForIdentifier(identifier:String, service serviceName:String) -> ChatContact
     {
-        var contactName = ""
+        var contactName = identifier
+        var contactIsKnown = false
 
         if serviceName == "AIM" || serviceName == "Jabber" {
 
             if let chatContactName = contactsPhoneNumber.nameForInstantMessageAddress(identifier) {
                 contactName = chatContactName
+                contactIsKnown = true
+            } else {
+                contactIsKnown = false
+                NSLog("\(__FUNCTION__) : no contact name found for identifier \(identifier)")
             }
 
         } else if serviceName == "iMessage" || serviceName == "SMS" {
@@ -115,17 +99,23 @@ class ChatsDatabase: NSObject {
             if identifier.characters.contains("@") {
                 if let chatContactName = contactsPhoneNumber.nameForEmailAddress(identifier) {
                     contactName = chatContactName
+                    contactIsKnown = true
                 }
             } else if let chatContactName = contactsPhoneNumber.nameForPhoneNumber(identifier) {
                 contactName = chatContactName
+                contactIsKnown = true
             } else {
                 contactName = identifier
+                contactIsKnown = false
             }
         } else {
             contactName = identifier
+            contactIsKnown = false
         }
-        
-        return ChatContact.contactIn(moc, named: contactName)
+
+        let contact = ChatContact.contactIn(moc, named: contactName)
+        contact.known = contactIsKnown
+        return contact
     }
 
     func messagesForChat(chat:Chat) -> ([ChatMessage], [ChatAttachment])

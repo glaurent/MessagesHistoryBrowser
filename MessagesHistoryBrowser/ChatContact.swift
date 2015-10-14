@@ -11,6 +11,7 @@ import Cocoa
 class ChatContact: NSManagedObject {
 
     @NSManaged var name:String
+    @NSManaged var known:Bool
 
     @NSManaged var chats:NSOrderedSet
 
@@ -31,11 +32,41 @@ class ChatContact: NSManagedObject {
     }
 
 
-    class func allContactsInContext(managedObjectContext:NSManagedObjectContext) -> [ChatContact] {
+//    class func allContactsInContext(managedObjectContext:NSManagedObjectContext) -> [ChatContact] {
+//
+//        var allContacts = [ChatContact]()
+//
+//        do {
+//            let results = try managedObjectContext.executeFetchRequest(fetchRequest)
+//            allContacts = results as! [ChatContact]
+//        } catch let error as NSError {
+//            print("\(__FUNCTION__) : Could not fetch \(error), \(error.userInfo)")
+//        }
+//
+//        return allContacts
+//    }
+
+    class func allKnownContactsInContext(managedObjectContext:NSManagedObjectContext) -> [ChatContact] {
+
+        return allContactsInContext(managedObjectContext, withPredicate: NSPredicate(format: "known == YES"))
+    }
+
+    class func allUnknownContactsInContext(managedObjectContext:NSManagedObjectContext) -> [ChatContact] {
+
+        return allContactsInContext(managedObjectContext, withPredicate: NSPredicate(format: "known == NO"))
+    }
+
+    class func allContactsInContext(managedObjectContext:NSManagedObjectContext, withPredicate predicate:NSPredicate? = nil) -> [ChatContact] {
 
         var allContacts = [ChatContact]()
 
         do {
+            if let predicate = predicate {
+                fetchRequest.predicate = predicate
+            } else {
+                fetchRequest.predicate = nil
+            }
+
             let results = try managedObjectContext.executeFetchRequest(fetchRequest)
             allContacts = results as! [ChatContact]
         } catch let error as NSError {
@@ -44,6 +75,7 @@ class ChatContact: NSManagedObject {
 
         return allContacts
     }
+
 
     class func contactIn(managedObjectContext:NSManagedObjectContext, named name:String) -> ChatContact {
         let contactNamedFetchRequest = NSFetchRequest(entityName: "Contact")

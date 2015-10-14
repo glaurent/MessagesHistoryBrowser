@@ -13,6 +13,7 @@
         <relationship name="messages" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Message" inverseName="chat" inverseEntity="Message" syncable="YES"/>
     </entity>
     <entity name="Contact" representedClassName=".ChatContact" syncable="YES">
+        <attribute name="known" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="name" attributeType="String" defaultValueString="unknown contact" indexed="YES" syncable="YES"/>
         <relationship name="chats" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="Chat" inverseName="contact" inverseEntity="Chat" syncable="YES"/>
     </entity>
@@ -22,9 +23,9 @@
         <relationship name="chat" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Chat" inverseName="messages" inverseEntity="Chat" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Chat" positionX="-63" positionY="-18" width="128" height="120"/>
-        <element name="Message" positionX="-54" positionY="18" width="128" height="90"/>
         <element name="Attachment" positionX="-36" positionY="36" width="128" height="90"/>
-        <element name="Contact" positionX="-27" positionY="63" width="128" height="75"/>
+        <element name="Chat" positionX="-63" positionY="-18" width="128" height="120"/>
+        <element name="Contact" positionX="-27" positionY="63" width="128" height="90"/>
+        <element name="Message" positionX="-54" positionY="18" width="128" height="90"/>
     </elements>
 </model>

@@ -17,7 +17,8 @@ class ChatListViewController: NSViewController, NSOutlineViewDataSource, NSOutli
 
     var messagesListViewController:MessagesListViewController?
 
-    var allContacts:[ChatContact]!
+    var allKnownContacts:[ChatContact]!
+    var allUnknownContacts:[ChatContact]!
 
     lazy var moc = (NSApp.delegate as! AppDelegate).managedObjectContext
 
@@ -36,7 +37,8 @@ class ChatListViewController: NSViewController, NSOutlineViewDataSource, NSOutli
             messagesListViewController = secondSplitViewItem.viewController as? MessagesListViewController
         }
 
-        allContacts = ChatContact.allContactsInContext(moc) 
+        allKnownContacts = ChatContact.allKnownContactsInContext(moc)
+        allUnknownContacts = ChatContact.allUnknownContactsInContext(moc)
     }
 
 
@@ -46,11 +48,30 @@ class ChatListViewController: NSViewController, NSOutlineViewDataSource, NSOutli
 //        print("child index \(index) of item \(item)")
 
         if item == nil {
-            let contact = allContacts[index]
+            switch index {
+            case 0:
+                return NSString(string:"known")
+
+            case 1:
+                return NSString(string:"unknown")
+
+            default:
+                NSLog("\(__FUNCTION__) : unknown index \(index)")
+                return NSString(string:"ERROR INDEX \(index)")
+            }
+        }
+
+        if let knownOrUnknown = item as? String {
+
+            if knownOrUnknown == "known" {
+                let contact = allKnownContacts[index]
 //            print("contact : \(contact.name)")
 //            print("res : \(res)")
 //            return NSString(string: res.name) // REALLY have to return an NSString here, or we get memory corruptions. NSOutlineView doesn't like Swift Strings.
-            return contact
+                return contact
+            } else {
+                return allUnknownContacts[index]
+            }
         }
 
         if let contact = item as? ChatContact {
@@ -104,6 +125,10 @@ class ChatListViewController: NSViewController, NSOutlineViewDataSource, NSOutli
     {
 //        print("item \(item) isExpandable")
 
+        if let _ = item as? String { // "known" / "unknown" top categories
+            return true
+        }
+
         if let contactName = item as? ChatContact {
             let chatsForContactName = contactName.chats
             return chatsForContactName.count > 0 // should be always true in this case anyway
@@ -117,8 +142,15 @@ class ChatListViewController: NSViewController, NSOutlineViewDataSource, NSOutli
 //        print("number of children of item \(item)")
 
         if item == nil {
-//            return 5
-            return ChatContact.allContactsInContext(moc).count
+            return 2 // "known" or "unknown"
+        }
+
+        if let knownOrUnknown = item as? String {
+            if knownOrUnknown == "known" {
+                return allKnownContacts.count
+            } else {
+                return allUnknownContacts.count
+            }
         }
 
         if let contact = item as? ChatContact {
@@ -134,7 +166,9 @@ class ChatListViewController: NSViewController, NSOutlineViewDataSource, NSOutli
 
         let view = outlineView.makeViewWithIdentifier("Chats", owner: self) as! NSTableCellView
         if let textField = view.textField {
-            if let itemContact = item as? ChatContact {
+            if let itemString = item as? String {
+                textField.stringValue = itemString
+            } else if let itemContact = item as? ChatContact {
                 textField.stringValue = itemContact.name
             } else if let itemChat = item as? Chat {
                 textField.stringValue = "chat GUID : \(itemChat.guid)"
