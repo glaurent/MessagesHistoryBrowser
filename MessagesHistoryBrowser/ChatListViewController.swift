@@ -12,6 +12,7 @@ import AddressBook
 class ChatListViewController: NSViewController, NSOutlineViewDataSource, NSOutlineViewDelegate {
 
     @IBOutlet weak var outlineView: NSOutlineView!
+    @IBOutlet weak var searchField: NSSearchField!
 
     var chatsDatabase:ChatsDatabase!
 
@@ -247,4 +248,19 @@ class ChatListViewController: NSViewController, NSOutlineViewDataSource, NSOutli
         return chatIDs
     }
 
+    @IBAction func search(sender: NSSearchField) {
+
+        NSLog("search for '\(sender.stringValue)'")
+
+        let matchingMessages = ChatsDatabase.sharedInstance.searchChatsForString(sender.stringValue)
+
+        var allMatchingMessages = ""
+
+        for message in matchingMessages {
+            let chatMessage = message.chat
+            allMatchingMessages = allMatchingMessages + "\(chatMessage.guid) : " + (message.content ?? "") + "\n"
+        }
+
+        messagesListViewController?.messagesTextView.string = allMatchingMessages
+    }
 }

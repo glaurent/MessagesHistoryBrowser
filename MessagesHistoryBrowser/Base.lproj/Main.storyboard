@@ -697,13 +697,13 @@
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <scrollView autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SIe-7G-mOj">
-                                <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
+                                <rect key="frame" x="0.0" y="0.0" width="450" height="280"/>
                                 <clipView key="contentView" id="5UP-Rb-svn">
-                                    <rect key="frame" x="1" y="0.0" width="448" height="299"/>
+                                    <rect key="frame" x="1" y="0.0" width="448" height="279"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <outlineView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" headerView="3aX-Ac-jqc" viewBased="YES" indentationPerLevel="16" autoresizesOutlineColumn="YES" outlineTableColumn="nj9-qk-QXq" id="kQB-4V-BsW">
-                                            <rect key="frame" x="0.0" y="0.0" width="448" height="276"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="448" height="256"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <animations/>
                                             <size key="intercellSpacing" width="3" height="2"/>
@@ -777,17 +777,33 @@
                                     <animations/>
                                 </tableHeaderView>
                             </scrollView>
+                            <searchField wantsLayer="YES" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="jJb-m6-5rx">
+                                <rect key="frame" x="0.0" y="278" width="450" height="22"/>
+                                <animations/>
+                                <searchFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" borderStyle="bezel" usesSingleLineMode="YES" bezelStyle="round" id="aaJ-KT-rlv">
+                                    <font key="font" metaFont="system"/>
+                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                </searchFieldCell>
+                                <connections>
+                                    <action selector="search:" target="xCf-SV-vLb" id="Rxp-OZ-Uho"/>
+                                </connections>
+                            </searchField>
                         </subviews>
                         <constraints>
                             <constraint firstAttribute="trailing" secondItem="SIe-7G-mOj" secondAttribute="trailing" id="2yc-wj-Kyh"/>
-                            <constraint firstItem="SIe-7G-mOj" firstAttribute="top" secondItem="L4Y-7o-HeO" secondAttribute="top" id="Enp-bu-s7K"/>
+                            <constraint firstItem="jJb-m6-5rx" firstAttribute="top" secondItem="L4Y-7o-HeO" secondAttribute="top" id="ARb-z1-e1f"/>
+                            <constraint firstItem="jJb-m6-5rx" firstAttribute="leading" secondItem="L4Y-7o-HeO" secondAttribute="leading" id="Uur-CC-Oqz"/>
+                            <constraint firstItem="SIe-7G-mOj" firstAttribute="top" secondItem="jJb-m6-5rx" secondAttribute="bottom" constant="-2" id="VXI-QC-n37"/>
                             <constraint firstItem="SIe-7G-mOj" firstAttribute="leading" secondItem="L4Y-7o-HeO" secondAttribute="leading" id="agN-oN-uWa"/>
                             <constraint firstAttribute="bottom" secondItem="SIe-7G-mOj" secondAttribute="bottom" id="oj5-Wj-ysM"/>
+                            <constraint firstAttribute="trailing" secondItem="jJb-m6-5rx" secondAttribute="trailing" id="uNM-9H-u6T"/>
                         </constraints>
                         <animations/>
                     </view>
                     <connections>
                         <outlet property="outlineView" destination="kQB-4V-BsW" id="CDv-qD-CHL"/>
+                        <outlet property="searchField" destination="jJb-m6-5rx" id="xad-Eb-Bgc"/>
                     </connections>
                 </viewController>
                 <customObject id="Ncb-TZ-hjk" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>

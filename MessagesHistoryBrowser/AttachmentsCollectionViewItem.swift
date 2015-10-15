@@ -13,7 +13,6 @@ class AttachmentsCollectionViewItem: NSCollectionViewItem {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do view setup here.
-        NSLog(__FUNCTION__)
     }
     
 }

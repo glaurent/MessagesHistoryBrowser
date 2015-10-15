@@ -38,8 +38,7 @@ class Chat : NSManagedObject {
         var allChats = [Chat]()
 
         do {
-            let results =
-            try managedObjectContext.executeFetchRequest(fetchRequest)
+            let results = try managedObjectContext.executeFetchRequest(fetchRequest)
             allChats = results as! [Chat]
         } catch let error as NSError {
             print("\(__FUNCTION__) : Could not fetch \(error), \(error.userInfo)")

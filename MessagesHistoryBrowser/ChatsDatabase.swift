@@ -217,4 +217,38 @@ class ChatsDatabase: NSObject {
         return res
     }
 
+    func collectAllChats()
+    {
+        for contact in ChatContact.allContactsInContext(moc) {
+            for obj in contact.chats {
+                let chat = obj as! Chat
+                messagesForChat(chat)
+            }
+        }
+    }
+
+    func searchChatsForString(string:String, afterDate:NSDate? = nil, beforeDate:NSDate? = nil) -> [ChatMessage]
+    {
+        var result = [ChatMessage]()
+
+        let fetchRequest = NSFetchRequest(entityName: ChatMessage.EntityName)
+        let argArray:[AnyObject] = [ChatMessage.Attributes.content.rawValue, string]
+
+
+        let stringSearchPredicate = NSPredicate(format: "%K CONTAINS %@", argumentArray:argArray)
+
+//        if let afterDate = afterDate {
+//
+//        }
+        fetchRequest.predicate = stringSearchPredicate
+        do {
+            let matchingMessages = try moc.executeFetchRequest(fetchRequest)
+            result = matchingMessages as! [ChatMessage]
+        } catch let error as NSError {
+            print("\(__FUNCTION__) : Could not fetch \(error), \(error.userInfo)")
+        }
+
+        return result
+    }
+
 }
