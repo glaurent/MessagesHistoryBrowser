@@ -32,9 +32,9 @@ class ChatsDatabase: NSObject {
 
         do {
 
-            let appDelegate = NSApp.delegate as! AppDelegate
-
-            appDelegate.clearAllCoreData()
+//            let appDelegate = NSApp.delegate as! AppDelegate
+//
+//            appDelegate.clearAllCoreData()
 
             contactsPhoneNumber = ContactsMap.sharedInstance
 
@@ -42,32 +42,9 @@ class ChatsDatabase: NSObject {
 
             super.init()
 
-            //
-            let chats = Table("chat")
-
-            let chatRowIDColumn = Expression<Int>("ROWID")
-            let chatGUIDColumn = Expression<String>("guid")
-            let serviceNameColumn = Expression<String>("service_name")
-            let chatIdentifierColumn = Expression<String>("chat_identifier")
-
-            // Iterate over all chats
-            //
-            for chatData in db.prepare(chats.select(chatRowIDColumn, chatGUIDColumn, serviceNameColumn, chatIdentifierColumn)) {
-
-                let guid = chatData[chatGUIDColumn]
-                let rowID = chatData[chatRowIDColumn]
-                let identifier = chatData[chatIdentifierColumn]
-                let serviceName = chatData[serviceNameColumn]
-
-                let chatContact = contactForIdentifier(identifier, service:serviceName)
-
-                let _ = Chat(managedObjectContext:moc, withContact:chatContact, withGUID: guid, andRowID: rowID)
-
-                NSLog("chat : %@ \tcontact : %@\trowId: %d", guid, chatContact.name, rowID)
-
+            if Chat.allChatsInContext(moc).count == 0 {
+                importAllChatsFromDB()
             }
-
-            do { try moc.save() } catch {}
 
         } catch {
             super.init()
@@ -76,6 +53,35 @@ class ChatsDatabase: NSObject {
 
     }
 
+    func importAllChatsFromDB()
+    {
+        let chats = Table("chat")
+        
+        let chatRowIDColumn = Expression<Int>("ROWID")
+        let chatGUIDColumn = Expression<String>("guid")
+        let serviceNameColumn = Expression<String>("service_name")
+        let chatIdentifierColumn = Expression<String>("chat_identifier")
+        
+        // Iterate over all chats
+        //
+        for chatData in db.prepare(chats.select(chatRowIDColumn, chatGUIDColumn, serviceNameColumn, chatIdentifierColumn)) {
+            
+            let guid = chatData[chatGUIDColumn]
+            let rowID = chatData[chatRowIDColumn]
+            let identifier = chatData[chatIdentifierColumn]
+            let serviceName = chatData[serviceNameColumn]
+            
+            let chatContact = contactForIdentifier(identifier, service:serviceName)
+            
+            let _ = Chat(managedObjectContext:moc, withContact:chatContact, withGUID: guid, andRowID: rowID)
+            
+            NSLog("chat : %@ \tcontact : %@\trowId: %d", guid, chatContact.name, rowID)
+            
+        }
+        
+        do { try moc.save() } catch {}
+
+    }
 
 
     func contactForIdentifier(identifier:String, service serviceName:String) -> ChatContact
@@ -217,7 +223,7 @@ class ChatsDatabase: NSObject {
         return res
     }
 
-    func collectAllChats()
+    func collectAllMessagesFromAllChats()
     {
         for contact in ChatContact.allContactsInContext(moc) {
             for obj in contact.chats {

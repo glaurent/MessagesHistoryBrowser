@@ -263,4 +263,17 @@ class ChatListViewController: NSViewController, NSOutlineViewDataSource, NSOutli
 
         messagesListViewController?.messagesTextView.string = allMatchingMessages
     }
+    
+    
+    @IBAction func refreshChatHistory(sender: AnyObject) {
+        
+        let appDelegate = NSApp.delegate as! AppDelegate
+        
+        appDelegate.clearAllCoreData()
+        
+        ChatsDatabase.sharedInstance.importAllChatsFromDB()
+//        ChatsDatabase.sharedInstance.collectAllMessagesFromAllChats()
+
+        outlineView.reloadData()
+    }
 }

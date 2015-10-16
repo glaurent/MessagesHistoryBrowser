@@ -25,12 +25,13 @@ class ChatContact: NSManagedObject {
         self.init(entity: entityDescription!, insertIntoManagedObjectContext: managedObjectContext)
 
         name = aName
+    }
 
+    class func setupFetchRequest() {
         if (ChatContact.fetchRequest.sortDescriptors == nil) {
             ChatContact.fetchRequest.sortDescriptors = [ChatContact.sortDescriptor]
         }
     }
-
 
 //    class func allContactsInContext(managedObjectContext:NSManagedObjectContext) -> [ChatContact] {
 //
@@ -57,6 +58,8 @@ class ChatContact: NSManagedObject {
     }
 
     class func allContactsInContext(managedObjectContext:NSManagedObjectContext, withPredicate predicate:NSPredicate? = nil) -> [ChatContact] {
+
+        ChatContact.setupFetchRequest()
 
         var allContacts = [ChatContact]()
 

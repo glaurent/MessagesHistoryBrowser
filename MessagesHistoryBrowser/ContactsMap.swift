@@ -31,11 +31,13 @@ class ContactsMap {
                 for index in 0..<phoneNumbers.count() {
                     let phoneNb = phoneNumbers.valueAtIndex(index) as! String
                     let canonPhoneNb = canonicalizePhoneNumber(phoneNb)
-                    NSLog("\(__FUNCTION__) phoneNb : %@", canonPhoneNb)
+//                    NSLog("\(__FUNCTION__) phoneNb : %@", canonPhoneNb)
                     phoneNumbersMap[canonPhoneNb] = person
                 }
             }
         }
+        
+        NSLog("\(__FUNCTION__) imported %d contacts from address book", allContacts.count)
     }
 
     func canonicalizePhoneNumber(rawPhoneNumber:String) -> String {
