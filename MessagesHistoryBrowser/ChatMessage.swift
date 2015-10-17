@@ -17,11 +17,12 @@ class ChatMessage : NSManagedObject {
         case content = "content"
         case date = "date"
         case chat = "chat"
+        case isFromMe = "isFromMe"
     }
 
     @NSManaged var content:String?
-
     @NSManaged var date:NSDate
+    @NSManaged var isFromMe:Bool
 
     @NSManaged var chat:Chat
 

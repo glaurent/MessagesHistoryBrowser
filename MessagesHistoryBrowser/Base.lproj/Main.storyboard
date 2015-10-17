@@ -64,8 +64,7 @@
                                                 <action selector="newDocument:" target="Ady-hI-5gd" id="4Si-XN-c54"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Refresh Chat History" id="h5R-5O-XsL">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                        <menuItem title="Refresh Chat History" keyEquivalent="r" id="h5R-5O-XsL">
                                             <connections>
                                                 <action selector="refreshChatHistory:" target="Ady-hI-5gd" id="d1k-W9-cmP"/>
                                             </connections>

@@ -30,6 +30,9 @@ class ChatListViewController: NSViewController, NSOutlineViewDataSource, NSOutli
 
         chatsDatabase = ChatsDatabase.sharedInstance
 
+        allKnownContacts = ChatContact.allKnownContactsInContext(moc)
+        allUnknownContacts = ChatContact.allUnknownContactsInContext(moc)
+
         outlineView.reloadData()
 
         if let parentSplitViewController = parentViewController as? NSSplitViewController {
@@ -38,8 +41,6 @@ class ChatListViewController: NSViewController, NSOutlineViewDataSource, NSOutli
             messagesListViewController = secondSplitViewItem.viewController as? MessagesListViewController
         }
 
-        allKnownContacts = ChatContact.allKnownContactsInContext(moc)
-        allUnknownContacts = ChatContact.allUnknownContactsInContext(moc)
     }
 
 
@@ -51,10 +52,10 @@ class ChatListViewController: NSViewController, NSOutlineViewDataSource, NSOutli
         if item == nil {
             switch index {
             case 0:
-                return NSString(string:"known")
+                return NSString(string:knownCategoryLabel)
 
             case 1:
-                return NSString(string:"unknown")
+                return NSString(string:unKnownCategoryLabel)
 
             default:
                 NSLog("\(__FUNCTION__) : unknown index \(index)")
@@ -64,7 +65,7 @@ class ChatListViewController: NSViewController, NSOutlineViewDataSource, NSOutli
 
         if let knownOrUnknown = item as? String {
 
-            if knownOrUnknown == "known" {
+            if knownOrUnknown == knownCategoryLabel {
                 let contact = allKnownContacts[index]
 //            print("contact : \(contact.name)")
 //            print("res : \(res)")
@@ -138,6 +139,9 @@ class ChatListViewController: NSViewController, NSOutlineViewDataSource, NSOutli
         return false
     }
 
+    let knownCategoryLabel = "known"
+    let unKnownCategoryLabel = "unknown"
+
     func outlineView(outlineView: NSOutlineView, numberOfChildrenOfItem item: AnyObject?) -> Int
     {
 //        print("number of children of item \(item)")
@@ -147,7 +151,7 @@ class ChatListViewController: NSViewController, NSOutlineViewDataSource, NSOutli
         }
 
         if let knownOrUnknown = item as? String {
-            if knownOrUnknown == "known" {
+            if knownOrUnknown == knownCategoryLabel {
                 return allKnownContacts.count
             } else {
                 return allUnknownContacts.count
@@ -160,6 +164,9 @@ class ChatListViewController: NSViewController, NSOutlineViewDataSource, NSOutli
 
         return 1
     }
+
+    let fakeContactName = "ContactName"
+    let fakeChatId = "a chat"
 
     // MARK: NSOutlineViewDelegate
     func outlineView(outlineView: NSOutlineView, viewForTableColumn: NSTableColumn?, item: AnyObject) -> NSView?
@@ -201,8 +208,8 @@ class ChatListViewController: NSViewController, NSOutlineViewDataSource, NSOutli
         for (chatGUID, attachmentsForChatGUID) in attachments {
             allAttachmentsFileNames = allAttachmentsFileNames + "\n\t\(chatGUID)\n"
             for attachment in attachmentsForChatGUID {
-                let attachmentFileName = attachment.fileName ?? "<no filename>"
-                allAttachmentsFileNames = allAttachmentsFileNames + "\(attachment.date) : \(attachmentFileName)\n"
+//                let attachmentFileName = attachment.fileName ?? "<no filename>"
+//                allAttachmentsFileNames = allAttachmentsFileNames + "\(attachment.date) : \(attachmentFileName)\n"
                 allAttachmentsToDisplay.append(attachment)
             }
         }
@@ -214,8 +221,7 @@ class ChatListViewController: NSViewController, NSOutlineViewDataSource, NSOutli
             allMessages = allMessages + "\n\t\(chatGUID)\n"
 
             for message in messagesForChatGUID {
-                let messageContent = message.content ?? "<no message>"
-                allMessages = allMessages + "\(message.date) : \(messageContent)\n"
+                allMessages = allMessages + formatMessage(message) + "\n"
             }
         }
 
@@ -224,6 +230,20 @@ class ChatListViewController: NSViewController, NSOutlineViewDataSource, NSOutli
         messagesListViewController?.messagesTextView.string = allAttachmentsFileNames + "\n\n" + allMessages
     }
 
+    func formatMessage(message:ChatMessage) -> String
+    {
+        let dateFormatter = NSDateFormatter()
+        dateFormatter.timeStyle = .ShortStyle
+        dateFormatter.dateStyle = .ShortStyle
+
+        let messageContent = message.content ?? "<no message>"
+        let sender = message.isFromMe ? "me" : message.chat.contact?.name ?? "<unknown>"
+        let dateString = dateFormatter.stringFromDate(message.date)
+
+        let messageContentAndSender = "\(dateString) - \(sender) : \(messageContent)"
+
+        return messageContentAndSender
+    }
 
     func chatIDsForSelectedRows(selectedRowIndexes : NSIndexSet) -> [Chat]
     {
@@ -267,13 +287,19 @@ class ChatListViewController: NSViewController, NSOutlineViewDataSource, NSOutli
     
     @IBAction func refreshChatHistory(sender: AnyObject) {
         
-        let appDelegate = NSApp.delegate as! AppDelegate
-        
-        appDelegate.clearAllCoreData()
-        
-        ChatsDatabase.sharedInstance.importAllChatsFromDB()
-//        ChatsDatabase.sharedInstance.collectAllMessagesFromAllChats()
+//        let appDelegate = NSApp.delegate as! AppDelegate
+//
+//        appDelegate.clearAllCoreData()
 
         outlineView.reloadData()
+        
+//        ChatsDatabase.sharedInstance.importAllChatsFromDB()
+//
+//        allKnownContacts = ChatContact.allKnownContactsInContext(moc)
+//        allUnknownContacts = ChatContact.allUnknownContactsInContext(moc)
+
+//        ChatsDatabase.sharedInstance.collectAllMessagesFromAllChats()
+
+//        outlineView.reloadData()
     }
 }

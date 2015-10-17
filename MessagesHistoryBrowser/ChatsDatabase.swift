@@ -179,7 +179,9 @@ class ChatsDatabase: NSObject {
             let dateTimeInterval = NSTimeInterval(dateInt)
             let messageDate = NSDate(timeIntervalSinceReferenceDate: dateTimeInterval)
 //            NSLog("message : \(messageContent)")
-            res.append(ChatMessage(managedObjectContext: moc, withMessage: messageContent, withDate: messageDate, inChat: chat))
+            let chatMessage = ChatMessage(managedObjectContext: moc, withMessage: messageContent, withDate: messageDate, inChat: chat)
+            chatMessage.isFromMe = messageData[isFromMeColumn]
+            res.append(chatMessage)
         }
 
 

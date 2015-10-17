@@ -20,12 +20,13 @@
     <entity name="Message" representedClassName=".ChatMessage" syncable="YES">
         <attribute name="content" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="date" attributeType="Date" syncable="YES"/>
+        <attribute name="isFromMe" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <relationship name="chat" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Chat" inverseName="messages" inverseEntity="Chat" syncable="YES"/>
     </entity>
     <elements>
         <element name="Attachment" positionX="-36" positionY="36" width="128" height="90"/>
         <element name="Chat" positionX="-63" positionY="-18" width="128" height="120"/>
         <element name="Contact" positionX="-27" positionY="63" width="128" height="90"/>
-        <element name="Message" positionX="-54" positionY="18" width="128" height="90"/>
+        <element name="Message" positionX="-54" positionY="18" width="128" height="105"/>
     </elements>
 </model>
