@@ -23,6 +23,8 @@ class ChatListViewController: NSViewController, NSOutlineViewDataSource, NSOutli
 
     lazy var moc = (NSApp.delegate as! AppDelegate).managedObjectContext
 
+    var messageFormatter = MessageFormatter()
+
     override func viewDidLoad()
     {
         super.viewDidLoad()
@@ -221,28 +223,13 @@ class ChatListViewController: NSViewController, NSOutlineViewDataSource, NSOutli
             allMessages = allMessages + "\n\t\(chatGUID)\n"
 
             for message in messagesForChatGUID {
-                allMessages = allMessages + formatMessage(message) + "\n"
+                allMessages = allMessages + messageFormatter.formatMessage(message) + "\n"
             }
         }
 
         messagesListViewController?.attachmentsToDisplay = allAttachmentsToDisplay
         messagesListViewController?.attachmentsCollectionView.reloadData()
         messagesListViewController?.messagesTextView.string = allAttachmentsFileNames + "\n\n" + allMessages
-    }
-
-    func formatMessage(message:ChatMessage) -> String
-    {
-        let dateFormatter = NSDateFormatter()
-        dateFormatter.timeStyle = .ShortStyle
-        dateFormatter.dateStyle = .ShortStyle
-
-        let messageContent = message.content ?? "<no message>"
-        let sender = message.isFromMe ? "me" : message.chat.contact?.name ?? "<unknown>"
-        let dateString = dateFormatter.stringFromDate(message.date)
-
-        let messageContentAndSender = "\(dateString) - \(sender) : \(messageContent)"
-
-        return messageContentAndSender
     }
 
     func chatIDsForSelectedRows(selectedRowIndexes : NSIndexSet) -> [Chat]
