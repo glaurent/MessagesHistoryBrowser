@@ -17,10 +17,15 @@ class MessagesListViewController: NSViewController, NSCollectionViewDataSource {
 
     var attachmentsToDisplay:[ChatAttachment]?
 
+    let dateFormatter = NSDateFormatter()
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do view setup here.
+
+        dateFormatter.timeStyle = .ShortStyle
+        dateFormatter.dateStyle = .ShortStyle
 
         attachmentsCollectionView.dataSource = self // Xcode 7.0.1 crashes when trying to open the connections tab of the collection view
 
@@ -57,9 +62,12 @@ class MessagesListViewController: NSViewController, NSCollectionViewDataSource {
 
         if let attachmentFileName = attachment.fileName {
 
-            let c = attachmentFileName.stringByReplacingOccurrencesOfString("~", withString: "/Users/glaurent") // TODO
-            let image = NSImage(byReferencingFile: c)
+            let imagePath = NSString(string:attachmentFileName).stringByStandardizingPath
+            let image = NSImage(byReferencingFile: imagePath)
             item.imageView?.image = image
+            item.textField?.stringValue = dateFormatter.stringFromDate(attachment.date)
+        } else {
+            item.textField?.stringValue = "unknown"
         }
 
         return item
