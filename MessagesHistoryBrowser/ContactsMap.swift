@@ -7,7 +7,7 @@
 //
 
 import Cocoa
-import AddressBook
+import Contacts
 
 class ContactsMap {
 
@@ -15,29 +15,35 @@ class ContactsMap {
 
     static let sharedInstance = ContactsMap()
 
-    var phoneNumbersMap = [String : ABPerson]()
+    var phoneNumbersMap = [String : CNContact]()
 
-    let addressBook = ABAddressBook.sharedAddressBook()
+    let contactStore = CNContactStore()
+
+    let contactIMFetchRequest = CNContactFetchRequest(keysToFetch: [CNContactFamilyNameKey, CNContactGivenNameKey, CNContactNicknameKey, CNContactInstantMessageAddressesKey])
+
+    let contactEmailFetchRequest = CNContactFetchRequest(keysToFetch: [CNContactFamilyNameKey, CNContactGivenNameKey, CNContactNicknameKey, CNContactEmailAddressesKey])
 
     init() {
+        
+        let contactFetchRequest = CNContactFetchRequest(keysToFetch: [CNContactPhoneNumbersKey, CNContactFamilyNameKey, CNContactGivenNameKey, CNContactNicknameKey])
+       
+        do {
+            
+            try contactStore.enumerateContactsWithFetchRequest(contactFetchRequest) { (contact, stop) -> Void in
+                let phoneNumbers = contact.phoneNumbers
+                if phoneNumbers.count > 0 {
+                    for index in 0..<phoneNumbers.count {
+                        let phoneNb = phoneNumbers[index].value as! CNPhoneNumber
+                        let canonPhoneNb = self.canonicalizePhoneNumber(phoneNb.stringValue)
+                        NSLog("\(__FUNCTION__) phoneNb : %@", canonPhoneNb)
+                        self.phoneNumbersMap[canonPhoneNb] = contact
+                    }
 
-        let allContacts = addressBook.people() as! [ABPerson]
-
-        for person in allContacts {
-            let tmp = person.valueForProperty(kABPhoneProperty)
-
-            if let phoneNumbers = tmp as? ABMultiValue {
-
-                for index in 0..<phoneNumbers.count() {
-                    let phoneNb = phoneNumbers.valueAtIndex(index) as! String
-                    let canonPhoneNb = canonicalizePhoneNumber(phoneNb)
-//                    NSLog("\(__FUNCTION__) phoneNb : %@", canonPhoneNb)
-                    phoneNumbersMap[canonPhoneNb] = person
                 }
             }
+        } catch {
+            
         }
-        
-        NSLog("\(__FUNCTION__) imported %d contacts from address book", allContacts.count)
     }
 
     func canonicalizePhoneNumber(rawPhoneNumber:String) -> String {
@@ -63,8 +69,8 @@ class ContactsMap {
     }
 
     func nameForPhoneNumber(phoneNumber:String) -> String? {
-        
-        if let contact = phoneNumbersMap[phoneNumber] as ABPerson? {
+
+        if let contact = phoneNumbersMap[phoneNumber] as CNContact? {
             return contactName(contact)
         }
 
@@ -72,40 +78,66 @@ class ContactsMap {
 
     }
 
-    func nameForInstantMessageAddress(imAddress:String) -> String? {
-        let chatIdentifierSearchElement = ABPerson.searchElementForProperty(kABInstantMessageProperty, label: nil, key: nil, value: imAddress,
-            comparison:ABSearchComparison(kABEqualCaseInsensitive.rawValue))
-
-        let tmpContacts = addressBook.recordsMatchingSearchElement(chatIdentifierSearchElement)
-
-
-        if tmpContacts.count > 0 {
-            let chatContact = tmpContacts[0] as! ABPerson
-            return contactName(chatContact)
+    func nameForInstantMessageAddress(imAddressToSearch:String) -> String?
+    {
+        
+        var res:String?
+        
+        do {
+            
+            try contactStore.enumerateContactsWithFetchRequest(contactIMFetchRequest) { (contact, stop) -> Void in
+                
+                let imAddresses = contact.instantMessageAddresses
+                
+                for labeledValue in imAddresses {
+                    let imAddress = labeledValue.value as! CNInstantMessageAddress
+                    if imAddress.username == imAddressToSearch {
+                        res = self.contactName(contact)
+                        stop.memory = true
+                    }
+                }
+            }
+        } catch {
+            
         }
 
-        return nil
+        return res
+        
     }
 
-    func nameForEmailAddress(emailAddress:String) -> String? {
+    func nameForEmailAddress(emailAddressToSearch:String) -> String? {
 
-        let chatIdentifierSearchElement = ABPerson.searchElementForProperty(kABEmailProperty, label: nil, key: nil, value: emailAddress,
-            comparison:ABSearchComparison(kABEqualCaseInsensitive.rawValue))
-
-        let tmpContacts = addressBook.recordsMatchingSearchElement(chatIdentifierSearchElement)
-
-
-        if tmpContacts.count > 0 {
-            let chatContact = tmpContacts[0] as! ABPerson
-            return contactName(chatContact)
+        var res:String?
+        
+        do {
+            
+            try contactStore.enumerateContactsWithFetchRequest(contactEmailFetchRequest) { (contact, stop) -> Void in
+                
+                let emailAddresses = contact.emailAddresses
+                
+                for labeledValue in emailAddresses {
+                    let emailAddress = labeledValue.value as! String
+                    if emailAddress == emailAddressToSearch {
+                        res = self.contactName(contact)
+                        stop.memory = true
+                    }
+                }
+            }
+        } catch {
+            
         }
+        
+        return res
 
-        return nil
     }
 
-    func contactName(contact:ABPerson) -> String {
-        let firstName = contact.valueForProperty(kABFirstNameProperty) as? String ?? ""
-        let lastName = contact.valueForProperty(kABLastNameProperty) as? String ?? ""
+    func contactName(contact:CNContact) -> String {
+        if contact.nickname != "" {
+            return contact.nickname
+        }
+        
+        let firstName = contact.givenName
+        let lastName = contact.familyName
         return "\(firstName) \(lastName)"
     }
 }
