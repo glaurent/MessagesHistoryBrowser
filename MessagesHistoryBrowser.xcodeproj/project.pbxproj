@@ -7,11 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		AF2B2DEF1BC18BE1000B8293 /* ChatsDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF2B2DEE1BC18BE1000B8293 /* ChatsDatabase.swift */; settings = {ASSET_TAGS = (); }; };
-		AF2B2DF11BC19BAE000B8293 /* ChatMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF2B2DF01BC19BAE000B8293 /* ChatMessage.swift */; settings = {ASSET_TAGS = (); }; };
-		AF2B2DF31BC19E81000B8293 /* MessagesListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF2B2DF21BC19E81000B8293 /* MessagesListViewController.swift */; settings = {ASSET_TAGS = (); }; };
-		AF424CD61BC9609D006EE8D2 /* ChatAttachment.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF424CD51BC9609D006EE8D2 /* ChatAttachment.swift */; settings = {ASSET_TAGS = (); }; };
-		AF424CD81BC963E4006EE8D2 /* ChatContact.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF424CD71BC963E4006EE8D2 /* ChatContact.swift */; settings = {ASSET_TAGS = (); }; };
+		AF2B2DEF1BC18BE1000B8293 /* ChatsDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF2B2DEE1BC18BE1000B8293 /* ChatsDatabase.swift */; };
+		AF2B2DF11BC19BAE000B8293 /* ChatMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF2B2DF01BC19BAE000B8293 /* ChatMessage.swift */; };
+		AF2B2DF31BC19E81000B8293 /* MessagesListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF2B2DF21BC19E81000B8293 /* MessagesListViewController.swift */; };
+		AF424CD61BC9609D006EE8D2 /* ChatAttachment.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF424CD51BC9609D006EE8D2 /* ChatAttachment.swift */; };
+		AF424CD81BC963E4006EE8D2 /* ChatContact.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF424CD71BC963E4006EE8D2 /* ChatContact.swift */; };
+		AF47D8771BDCDD20002CDF4B /* ChatTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF47D8761BDCDD20002CDF4B /* ChatTableViewController.swift */; };
 		AF6F10E91BB81D5900A93152 /* SQLite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AF6F10E81BB81D5900A93152 /* SQLite.framework */; };
 		AF6F10EA1BB81D5900A93152 /* SQLite.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = AF6F10E81BB81D5900A93152 /* SQLite.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		AFD974971BB816B5004CF8D7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFD974961BB816B5004CF8D7 /* AppDelegate.swift */; };
@@ -21,12 +22,12 @@
 		AFD974A11BB816B6004CF8D7 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AFD9749F1BB816B6004CF8D7 /* Main.storyboard */; };
 		AFD974AC1BB816B6004CF8D7 /* MessagesHistoryBrowserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFD974AB1BB816B6004CF8D7 /* MessagesHistoryBrowserTests.swift */; };
 		AFD974B71BB816B6004CF8D7 /* MessagesHistoryBrowserUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFD974B61BB816B6004CF8D7 /* MessagesHistoryBrowserUITests.swift */; };
-		AFD974CA1BB81885004CF8D7 /* Chat.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFD974C81BB81885004CF8D7 /* Chat.swift */; settings = {ASSET_TAGS = (); }; };
-		AFD974CB1BB81885004CF8D7 /* ContactsMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFD974C91BB81885004CF8D7 /* ContactsMap.swift */; settings = {ASSET_TAGS = (); }; };
-		AFD974CD1BB81ACB004CF8D7 /* ChatListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFD974CC1BB81ACB004CF8D7 /* ChatListViewController.swift */; settings = {ASSET_TAGS = (); }; };
-		AFE9B8031BCB088A007FC376 /* AttachmentsCollectionViewItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFE9B8011BCB088A007FC376 /* AttachmentsCollectionViewItem.swift */; settings = {ASSET_TAGS = (); }; };
-		AFE9B8041BCB088A007FC376 /* AttachmentsCollectionViewItem.xib in Resources */ = {isa = PBXBuildFile; fileRef = AFE9B8021BCB088A007FC376 /* AttachmentsCollectionViewItem.xib */; settings = {ASSET_TAGS = (); }; };
-		AFE9B8061BD3A2EE007FC376 /* MessageFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFE9B8051BD3A2EE007FC376 /* MessageFormatter.swift */; settings = {ASSET_TAGS = (); }; };
+		AFD974CA1BB81885004CF8D7 /* Chat.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFD974C81BB81885004CF8D7 /* Chat.swift */; };
+		AFD974CB1BB81885004CF8D7 /* ContactsMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFD974C91BB81885004CF8D7 /* ContactsMap.swift */; };
+		AFD974CD1BB81ACB004CF8D7 /* ChatListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFD974CC1BB81ACB004CF8D7 /* ChatListViewController.swift */; };
+		AFE9B8031BCB088A007FC376 /* AttachmentsCollectionViewItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFE9B8011BCB088A007FC376 /* AttachmentsCollectionViewItem.swift */; };
+		AFE9B8041BCB088A007FC376 /* AttachmentsCollectionViewItem.xib in Resources */ = {isa = PBXBuildFile; fileRef = AFE9B8021BCB088A007FC376 /* AttachmentsCollectionViewItem.xib */; };
+		AFE9B8061BD3A2EE007FC376 /* MessageFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFE9B8051BD3A2EE007FC376 /* MessageFormatter.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -66,6 +67,7 @@
 		AF2B2DF21BC19E81000B8293 /* MessagesListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessagesListViewController.swift; sourceTree = "<group>"; };
 		AF424CD51BC9609D006EE8D2 /* ChatAttachment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatAttachment.swift; sourceTree = "<group>"; };
 		AF424CD71BC963E4006EE8D2 /* ChatContact.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatContact.swift; sourceTree = "<group>"; };
+		AF47D8761BDCDD20002CDF4B /* ChatTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatTableViewController.swift; sourceTree = "<group>"; };
 		AF6F10E81BB81D5900A93152 /* SQLite.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SQLite.framework; path = Carthage/Build/Mac/SQLite.framework; sourceTree = "<group>"; };
 		AFD974931BB816B5004CF8D7 /* MessagesHistoryBrowser.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MessagesHistoryBrowser.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AFD974961BB816B5004CF8D7 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -157,6 +159,7 @@
 		AFD974951BB816B5004CF8D7 /* MessagesHistoryBrowser */ = {
 			isa = PBXGroup;
 			children = (
+				AF47D8761BDCDD20002CDF4B /* ChatTableViewController.swift */,
 				AFD974CC1BB81ACB004CF8D7 /* ChatListViewController.swift */,
 				AFE9B8051BD3A2EE007FC376 /* MessageFormatter.swift */,
 				AF424CD91BC965FF006EE8D2 /* CoreData */,
@@ -338,6 +341,7 @@
 				AFD974991BB816B5004CF8D7 /* ViewController.swift in Sources */,
 				AFD974971BB816B5004CF8D7 /* AppDelegate.swift in Sources */,
 				AFE9B8061BD3A2EE007FC376 /* MessageFormatter.swift in Sources */,
+				AF47D8771BDCDD20002CDF4B /* ChatTableViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

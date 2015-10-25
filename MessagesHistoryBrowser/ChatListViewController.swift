@@ -6,6 +6,8 @@
 //  Copyright © 2015 Guillaume Laurent. All rights reserved.
 //
 
+// NOT USED due to apparent bug in NSOutlineView which causes it to crash after a reloadData()
+
 import Cocoa
 
 class ChatListViewController: NSViewController, NSOutlineViewDataSource, NSOutlineViewDelegate {
