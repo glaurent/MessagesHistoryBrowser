@@ -7,7 +7,6 @@
 //
 
 import Cocoa
-import AddressBook
 import SQLite
 
 class ChatsDatabase: NSObject {

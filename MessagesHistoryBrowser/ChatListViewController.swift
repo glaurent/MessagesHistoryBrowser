@@ -7,7 +7,6 @@
 //
 
 import Cocoa
-import AddressBook
 
 class ChatListViewController: NSViewController, NSOutlineViewDataSource, NSOutlineViewDelegate {
 
