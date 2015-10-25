@@ -41,12 +41,37 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
             messagesListViewController = secondSplitViewItem.viewController as? MessagesListViewController
         }
 
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "showUnknownContactsChanged:", name: AppDelegate.ShowChatsFromUnknownNotification, object: nil)
+
+    }
+
+    func showUnknownContactsChanged(notification:NSNotification) -> Void
+    {
+        let appDelegate = NSApp.delegate as! AppDelegate
+        showChatsFromUnknown = appDelegate.showChatsFromUnknown
+        tableView.reloadData()
+    }
+
+    func contactForRow(row:Int) -> ChatContact {
+        var contact:ChatContact
+
+        if showChatsFromUnknown && row >= allKnownContacts.count {
+            contact = allUnknownContacts[row - allKnownContacts.count]
+        } else {
+            contact = allKnownContacts[row]
+        }
+
+        return contact
     }
 
     // MARK: NSTableView datasource & delegate
 
     func numberOfRowsInTableView(tableView: NSTableView) -> Int
     {
+        if showChatsFromUnknown {
+            return allKnownContacts.count + allUnknownContacts.count
+        }
+
         return allKnownContacts.count
     }
 
@@ -57,7 +82,9 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
 
         let cellView = tableView.makeViewWithIdentifier(tableColumn.identifier, owner: self) as! NSTableCellView
 
-        cellView.textField?.stringValue = allKnownContacts[row].name
+        let contact = contactForRow(row)
+
+        cellView.textField?.stringValue = contact.name
 
         return cellView
     }
@@ -112,7 +139,7 @@ func chatIDsForSelectedRows(selectedRowIndexes : NSIndexSet) -> [Chat]
 {
     let index = selectedRowIndexes.firstIndex // no multiple selection
 
-    let selectedContact = allKnownContacts[index]
+    let selectedContact = contactForRow(index)
 
     return selectedContact.chats.array as! [Chat]
 

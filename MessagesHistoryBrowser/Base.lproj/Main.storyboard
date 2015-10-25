@@ -601,6 +601,12 @@
                                                 <action selector="runToolbarCustomizationPalette:" target="Ady-hI-5gd" id="pQI-g3-MTW"/>
                                             </connections>
                                         </menuItem>
+                                        <menuItem title="Display unknown contacts" id="UI5-I8-ylv">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <binding destination="Voe-Tx-rLC" name="value" keyPath="self.showChatsFromUnknown" id="lcA-NO-jNw"/>
+                                            </connections>
+                                        </menuItem>
                                     </items>
                                 </menu>
                             </menuItem>

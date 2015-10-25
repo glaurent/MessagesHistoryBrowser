@@ -11,6 +11,14 @@ import Cocoa
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
 
+    static let ShowChatsFromUnknownNotification = "ShowChatsFromUnknownNotification"
+
+    var showChatsFromUnknown = false {
+        didSet {
+            NSLog("showChatsFromUnknown set")
+            NSNotificationCenter.defaultCenter().postNotificationName(AppDelegate.ShowChatsFromUnknownNotification, object: self)
+        }
+    }
 
 
     func applicationDidFinishLaunching(aNotification: NSNotification) {
