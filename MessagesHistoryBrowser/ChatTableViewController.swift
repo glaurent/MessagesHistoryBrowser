@@ -45,7 +45,7 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
 
     }
 
-    func showUnknownContactsChanged(notification:NSNotification) -> Void
+    func showUnknownContactsChanged(notification:NSNotification)
     {
         let appDelegate = NSApp.delegate as! AppDelegate
         showChatsFromUnknown = appDelegate.showChatsFromUnknown
@@ -91,6 +91,42 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
 
     func tableViewSelectionDidChange(notification: NSNotification)
     {
+        let index = tableView.selectedRowIndexes.firstIndex // no multiple selection
+
+        let selectedContact = contactForRow(index)
+
+        chatsDatabase.collectMessagesForContact(selectedContact)
+
+        let allContactMessagesT = selectedContact.messages.allObjects.sort { (a, b) -> Bool in
+            let aMessage = a as! ChatMessage
+            let bMessage = b as! ChatMessage
+
+            return aMessage.date.isLessThan(bMessage.date)
+        }
+
+        let allContactAttachmentsT = selectedContact.attachments.allObjects.sort { (a, b) -> Bool in
+            let aAttachment = a as! ChatAttachment
+            let bAttachment = b as! ChatAttachment
+
+            return aAttachment.date.isLessThan(bAttachment.date)
+        }
+
+        let allContactMessages = allContactMessagesT as! [ChatMessage]
+
+        var allMessages = ""
+
+        for message in allContactMessages {
+            allMessages = allMessages + messageFormatter.formatMessage(message) + "\n"
+        }
+
+        messagesListViewController?.attachmentsToDisplay = allContactAttachmentsT as? [ChatAttachment]
+        messagesListViewController?.attachmentsCollectionView.reloadData()
+        messagesListViewController?.messagesTextView.string = allMessages
+    }
+
+
+    func tableViewSelectionDidChange_old(notification: NSNotification)
+    {
 
         let selectedRowIndexes = tableView.selectedRowIndexes
 
@@ -135,31 +171,31 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
         messagesListViewController?.messagesTextView.string = allAttachmentsFileNames + "\n\n" + allMessages
     }
 
-func chatIDsForSelectedRows(selectedRowIndexes : NSIndexSet) -> [Chat]
-{
-    let index = selectedRowIndexes.firstIndex // no multiple selection
+    func chatIDsForSelectedRows(selectedRowIndexes : NSIndexSet) -> [Chat]
+    {
+        let index = selectedRowIndexes.firstIndex // no multiple selection
 
-    let selectedContact = contactForRow(index)
+        let selectedContact = contactForRow(index)
 
-    return selectedContact.chats.array as! [Chat]
+        return selectedContact.chats.allObjects as! [Chat]
 
-}
-
-@IBAction func search(sender: NSSearchField) {
-
-    NSLog("search for '\(sender.stringValue)'")
-
-    let matchingMessages = ChatsDatabase.sharedInstance.searchChatsForString(sender.stringValue)
-
-    var allMatchingMessages = ""
-
-    for message in matchingMessages {
-        let chatMessage = message.chat
-        allMatchingMessages = allMatchingMessages + "\(chatMessage.guid) : " + (message.content ?? "") + "\n"
     }
 
-    messagesListViewController?.messagesTextView.string = allMatchingMessages
-}
+    @IBAction func search(sender: NSSearchField) {
+
+        NSLog("search for '\(sender.stringValue)'")
+
+        let matchingMessages = ChatsDatabase.sharedInstance.searchChatsForString(sender.stringValue)
+
+        var allMatchingMessages = ""
+
+        for message in matchingMessages {
+            let chatMessage = message.chat
+            allMatchingMessages = allMatchingMessages + "\(chatMessage.guid) : " + (message.content ?? "") + "\n"
+        }
+        
+        messagesListViewController?.messagesTextView.string = allMatchingMessages
+    }
 
 
 }

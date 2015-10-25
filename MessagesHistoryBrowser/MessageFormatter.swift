@@ -24,7 +24,7 @@ class MessageFormatter {
     func formatMessage(message:ChatMessage) -> String
     {
         let messageContent = message.content ?? noMessageString
-        let sender = message.isFromMe ? meString : message.chat.contact?.name ?? unknownContact
+        let sender = message.isFromMe ? meString : message.chat.contact.name
         let dateString = dateFormatter.stringFromDate(message.date)
 
         let messageContentAndSender = "\(dateString) - \(sender) : \(messageContent)"

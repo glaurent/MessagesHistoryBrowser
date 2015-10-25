@@ -25,6 +25,7 @@ class ChatMessage : NSManagedObject {
     @NSManaged var isFromMe:Bool
 
     @NSManaged var chat:Chat
+    @NSManaged var contact:ChatContact
 
     convenience init(managedObjectContext:NSManagedObjectContext, withMessage aMessage:String, withDate aDate:NSDate, inChat aChat:Chat) {
 
@@ -34,6 +35,7 @@ class ChatMessage : NSManagedObject {
         content = aMessage
         date = aDate
         chat = aChat
+        contact = aChat.contact
     }
 
 }

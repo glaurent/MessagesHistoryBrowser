@@ -13,7 +13,9 @@ class ChatContact: NSManagedObject {
     @NSManaged var name:String
     @NSManaged var known:Bool
 
-    @NSManaged var chats:NSOrderedSet
+    @NSManaged var chats:NSSet
+    @NSManaged var messages:NSSet
+    @NSManaged var attachments:NSSet
 
     static let fetchRequest = NSFetchRequest(entityName: "Contact")
     static let sortDescriptor = NSSortDescriptor(key: "name", ascending: true)

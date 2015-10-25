@@ -229,7 +229,19 @@ class ChatsDatabase: NSObject {
         for contact in ChatContact.allContactsInContext(moc) {
             for obj in contact.chats {
                 let chat = obj as! Chat
-                messagesForChat(chat)
+                if chat.messages.count == 0 {
+                    messagesForChat(chat)
+                }
+            }
+        }
+    }
+
+    func collectMessagesForContact(contact:ChatContact)
+    {
+        for c in contact.chats {
+            let chat = c as! Chat
+            if chat.messages.count == 0 {
+                collectMessagesForChat(chat)
             }
         }
     }

@@ -11,7 +11,7 @@ import CoreData
 
 class Chat : NSManagedObject {
 
-    @NSManaged var contact:ChatContact?
+    @NSManaged var contact:ChatContact
 
     @NSManaged var guid:String
 

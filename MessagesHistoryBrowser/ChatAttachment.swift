@@ -12,10 +12,10 @@ import CoreData
 class ChatAttachment: NSManagedObject {
 
     @NSManaged var fileName:String?
-
     @NSManaged var date:NSDate
-
     @NSManaged var chat:Chat
+    @NSManaged var contact:ChatContact
+
 
     convenience init(managedObjectContext:NSManagedObjectContext, withFileName aFileName:String, withDate aDate:NSDate, inChat aChat:Chat) {
 
@@ -25,6 +25,7 @@ class ChatAttachment: NSManagedObject {
         fileName = aFileName
         date = aDate
         chat = aChat
+        contact = aChat.contact
     }
     
 }

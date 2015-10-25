@@ -81,7 +81,7 @@ class ChatListViewController: NSViewController, NSOutlineViewDataSource, NSOutli
 
         if let contact = item as? ChatContact {
             let chatsForContactName = contact.chats
-            let chat = chatsForContactName.array[index]
+            let chat = chatsForContactName.allObjects[index]
 //                print("return chat \(chat.guid)")
             return chat
         }
