@@ -24,9 +24,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(aNotification: NSNotification) {
         // Insert code here to initialize your application
         
-//        if Chat.allChatsInContext(managedObjectContext).count == 0 {
-//            ChatsDatabase.sharedInstance.collectAllMessagesFromAllChats()
-//        }
+        // TODO: move this to background task
+        if Chat.allChatsInContext(managedObjectContext).count == 0 {
+            ChatsDatabase.sharedInstance.collectAllMessagesFromAllChats()
+        }
     }
 
     func applicationWillTerminate(aNotification: NSNotification) {
