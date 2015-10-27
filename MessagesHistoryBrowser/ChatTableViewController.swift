@@ -25,6 +25,9 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
     var messageFormatter = MessageFormatter()
 
     var showChatsFromUnknown = false
+    
+    var searchMode = false
+    var searchedContacts:[ChatContact]?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -55,12 +58,17 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
     func contactForRow(row:Int) -> ChatContact {
         var contact:ChatContact
 
-        if showChatsFromUnknown && row >= allKnownContacts.count {
-            contact = allUnknownContacts[row - allKnownContacts.count]
+        if searchMode {
+            
+            contact = searchedContacts![row]
+            
         } else {
-            contact = allKnownContacts[row]
+            if showChatsFromUnknown && row >= allKnownContacts.count {
+                contact = allUnknownContacts[row - allKnownContacts.count]
+            } else {
+                contact = allKnownContacts[row]
+            }
         }
-
         return contact
     }
 
@@ -68,6 +76,10 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
 
     func numberOfRowsInTableView(tableView: NSTableView) -> Int
     {
+        if searchMode {
+            return searchedContacts?.count ?? 0
+        }
+        
         if showChatsFromUnknown {
             return allKnownContacts.count + allUnknownContacts.count
         }
@@ -185,17 +197,49 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
 
         NSLog("search for '\(sender.stringValue)'")
 
-        let matchingMessages = ChatsDatabase.sharedInstance.searchChatsForString(sender.stringValue)
-
-        var allMatchingMessages = ""
-
-        for message in matchingMessages {
-            let chatMessage = message.chat
-            allMatchingMessages = allMatchingMessages + "\(chatMessage.guid) : " + (message.content ?? "") + "\n"
+        if sender.stringValue == "" {
+            
+            searchMode = false
+            searchedContacts = nil
+            
+        } else {
+            
+            let matchingMessages = ChatsDatabase.sharedInstance.searchChatsForString(sender.stringValue)
+            
+            var allMatchingMessages = ""
+            
+            for message in matchingMessages {
+                let chatMessage = message.chat
+                allMatchingMessages = allMatchingMessages + "\(chatMessage.guid) : " + (message.content ?? "") + "\n"
+            }
+            
+            messagesListViewController?.messagesTextView.string = allMatchingMessages
+            
+            searchedContacts = contactsFromMessages(matchingMessages)
+            searchMode = true
+            
         }
         
-        messagesListViewController?.messagesTextView.string = allMatchingMessages
+        tableView.reloadData()
     }
 
 
+    func contactsFromMessages(messages: [ChatMessage]) -> [ChatContact]
+    {
+        let allContacts = messages.map { (message) -> ChatContact in
+            return message.contact
+        }
+        
+        var contactList = [String:ChatContact]()
+        
+        let uniqueContacts = allContacts.filter { (contact) -> Bool in
+            if contactList[contact.name] != nil {
+                return false
+            }
+            contactList[contact.name] = contact
+            return true
+        }
+        
+        return uniqueContacts
+    }
 }
