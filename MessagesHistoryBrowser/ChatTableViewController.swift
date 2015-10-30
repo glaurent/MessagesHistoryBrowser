@@ -211,19 +211,15 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
             searchedContacts = nil
             
         } else {
-            
-            let matchingMessages = ChatsDatabase.sharedInstance.searchChatsForString(sender.stringValue,
+
+            let searchTerm = sender.stringValue
+
+            let matchingMessages = ChatsDatabase.sharedInstance.searchChatsForString(searchTerm,
                 afterDate: afterDateEnabled ? afterDate : nil,
                 beforeDate: beforeDateEnabled ? beforeDate : nil)
-            
-            var allMatchingMessages = ""
-            
-            for message in matchingMessages {
-                let chatMessage = message.chat
-                allMatchingMessages = allMatchingMessages + "\(chatMessage.guid) : " + (message.content ?? "") + "\n"
-            }
-            
-            messagesListViewController?.messagesTextView.string = allMatchingMessages
+
+
+            messagesListViewController?.showMessages(matchingMessages, withHighlightTerm:searchTerm)
             
             searchedContacts = contactsFromMessages(matchingMessages)
             searchMode = true
