@@ -12,6 +12,8 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
 
     @IBOutlet weak var tableView: NSTableView!
     @IBOutlet weak var searchField: NSSearchField!
+    @IBOutlet weak var afterDatePicker: NSDatePicker!
+    @IBOutlet weak var beforeDatePicker: NSDatePicker!
 
     var chatsDatabase:ChatsDatabase!
 
@@ -29,6 +31,12 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
     var searchMode = false
     var searchedContacts:[ChatContact]?
 
+    dynamic var beforeDateEnabled = false
+    dynamic var afterDateEnabled = false
+    
+    dynamic var beforeDate = NSDate()
+    dynamic var afterDate = NSDate()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do view setup here.
@@ -204,7 +212,9 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
             
         } else {
             
-            let matchingMessages = ChatsDatabase.sharedInstance.searchChatsForString(sender.stringValue)
+            let matchingMessages = ChatsDatabase.sharedInstance.searchChatsForString(sender.stringValue,
+                afterDate: afterDateEnabled ? afterDate : nil,
+                beforeDate: beforeDateEnabled ? beforeDate : nil)
             
             var allMatchingMessages = ""
             
@@ -223,6 +233,17 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
         tableView.reloadData()
     }
 
+    @IBAction func redoSearch(sender: NSObject) {
+        if sender == afterDatePicker {
+            afterDateEnabled = true
+        }
+        if sender == beforeDatePicker {
+            beforeDateEnabled = true
+        }
+        
+        search(searchField)
+    }
+    
 
     func contactsFromMessages(messages: [ChatMessage]) -> [ChatContact]
     {

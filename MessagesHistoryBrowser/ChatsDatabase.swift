@@ -256,10 +256,25 @@ class ChatsDatabase: NSObject {
 
         let stringSearchPredicate = NSPredicate(format: "%K CONTAINS %@", argumentArray:argArray)
 
-//        if let afterDate = afterDate {
-//
-//        }
-        fetchRequest.predicate = stringSearchPredicate
+        var subPredicates = [NSPredicate]()
+        
+        if let afterDate = afterDate {
+            let datePredicate = NSPredicate(format: "%K >= %@", argumentArray: [ChatMessage.Attributes.date.rawValue, afterDate])
+            subPredicates.append(datePredicate)
+        }
+        
+        if let beforeDate = beforeDate {
+            let datePredicate = NSPredicate(format: "%K <= %@", argumentArray: [ChatMessage.Attributes.date.rawValue, beforeDate])
+            subPredicates.append(datePredicate)
+        }
+
+        if subPredicates.count > 0 {
+            subPredicates.append(stringSearchPredicate)
+            fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: subPredicates)
+        } else {
+            fetchRequest.predicate = stringSearchPredicate
+        }
+
         do {
             let matchingMessages = try moc.executeFetchRequest(fetchRequest)
             result = matchingMessages as! [ChatMessage]

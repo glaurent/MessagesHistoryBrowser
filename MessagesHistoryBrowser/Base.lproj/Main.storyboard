@@ -3,6 +3,7 @@
     <dependencies>
         <deployment identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="9059"/>
+        <capability name="stacking Non-gravity area distributions on NSStackView" minToolsVersion="7.0" minSystemVersion="10.11"/>
     </dependencies>
     <scenes>
         <!--Application-->
@@ -720,13 +721,13 @@
                                 </connections>
                             </searchField>
                             <scrollView autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7dD-SL-gUk">
-                                <rect key="frame" x="0.0" y="0.0" width="450" height="280"/>
+                                <rect key="frame" x="0.0" y="0.0" width="450" height="252"/>
                                 <clipView key="contentView" id="8Ke-ny-68A">
-                                    <rect key="frame" x="1" y="23" width="448" height="256"/>
+                                    <rect key="frame" x="1" y="0.0" width="448" height="251"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="firstColumnOnly" columnReordering="NO" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" headerView="nSq-37-0ca" viewBased="YES" id="yQc-Jz-Fx4">
-                                            <rect key="frame" x="0.0" y="0.0" width="448" height="256"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="448" height="228"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <animations/>
                                             <size key="intercellSpacing" width="3" height="2"/>
@@ -783,7 +784,7 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                     <animations/>
                                 </scroller>
-                                <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="clj-6B-EVO">
+                                <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="clj-6B-EVO">
                                     <rect key="frame" x="224" y="17" width="15" height="102"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <animations/>
@@ -794,24 +795,106 @@
                                     <animations/>
                                 </tableHeaderView>
                             </scrollView>
+                            <stackView distribution="fill" orientation="horizontal" alignment="centerY" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="77S-WJ-P3C">
+                                <rect key="frame" x="9" y="257" width="317" height="23"/>
+                                <subviews>
+                                    <button translatesAutoresizingMaskIntoConstraints="NO" id="CXs-ND-wjJ">
+                                        <rect key="frame" x="-2" y="3" width="51" height="18"/>
+                                        <animations/>
+                                        <buttonCell key="cell" type="check" title="after" bezelStyle="regularSquare" imagePosition="left" inset="2" id="bux-MY-WHX">
+                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                            <font key="font" metaFont="system"/>
+                                        </buttonCell>
+                                        <connections>
+                                            <action selector="redoSearch:" target="c6g-xc-DOK" id="DhB-j8-ffX"/>
+                                            <binding destination="c6g-xc-DOK" name="value" keyPath="self.afterDateEnabled" id="JGp-En-gM6"/>
+                                        </connections>
+                                    </button>
+                                    <datePicker verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="lou-wM-eNy">
+                                        <rect key="frame" x="55" y="0.0" width="97" height="27"/>
+                                        <animations/>
+                                        <datePickerCell key="cell" borderStyle="bezel" alignment="left" id="kXc-qA-xvl">
+                                            <font key="font" metaFont="system"/>
+                                            <calendarDate key="date" timeIntervalSinceReferenceDate="-595929600" calendarFormat="%Y-%m-%d %H:%M:%S %z">
+                                                <!--1982-02-12 08:00:00 -0800-->
+                                                <timeZone key="timeZone" name="US/Pacific"/>
+                                            </calendarDate>
+                                            <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                        </datePickerCell>
+                                        <connections>
+                                            <action selector="redoSearch:" target="c6g-xc-DOK" id="Ex0-W1-MKl"/>
+                                            <binding destination="c6g-xc-DOK" name="value" keyPath="self.afterDate" id="MR4-aK-cAi"/>
+                                        </connections>
+                                    </datePicker>
+                                    <button translatesAutoresizingMaskIntoConstraints="NO" id="3cB-ks-e81">
+                                        <rect key="frame" x="155" y="3" width="62" height="18"/>
+                                        <animations/>
+                                        <buttonCell key="cell" type="check" title="before" bezelStyle="regularSquare" imagePosition="left" inset="2" id="FC4-rx-l4p">
+                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                            <font key="font" metaFont="system"/>
+                                        </buttonCell>
+                                        <connections>
+                                            <action selector="redoSearch:" target="c6g-xc-DOK" id="wWy-rb-sre"/>
+                                            <binding destination="c6g-xc-DOK" name="value" keyPath="self.beforeDateEnabled" id="0TO-sm-Dmg"/>
+                                        </connections>
+                                    </button>
+                                    <datePicker verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="JJY-fj-bdz">
+                                        <rect key="frame" x="223" y="0.0" width="97" height="27"/>
+                                        <animations/>
+                                        <datePickerCell key="cell" borderStyle="bezel" alignment="left" id="5UX-CT-Hnh">
+                                            <font key="font" metaFont="system"/>
+                                            <calendarDate key="date" timeIntervalSinceReferenceDate="-595929600" calendarFormat="%Y-%m-%d %H:%M:%S %z">
+                                                <!--1982-02-12 08:00:00 -0800-->
+                                                <timeZone key="timeZone" name="US/Pacific"/>
+                                            </calendarDate>
+                                            <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                        </datePickerCell>
+                                        <connections>
+                                            <action selector="redoSearch:" target="c6g-xc-DOK" id="k6T-hO-faZ"/>
+                                            <binding destination="c6g-xc-DOK" name="value" keyPath="self.beforeDate" id="rND-Po-tff"/>
+                                        </connections>
+                                    </datePicker>
+                                </subviews>
+                                <animations/>
+                                <visibilityPriorities>
+                                    <integer value="1000"/>
+                                    <integer value="1000"/>
+                                    <integer value="1000"/>
+                                    <integer value="1000"/>
+                                </visibilityPriorities>
+                                <customSpacing>
+                                    <real value="3.4028234663852886e+38"/>
+                                    <real value="3.4028234663852886e+38"/>
+                                    <real value="3.4028234663852886e+38"/>
+                                    <real value="3.4028234663852886e+38"/>
+                                </customSpacing>
+                            </stackView>
                         </subviews>
                         <constraints>
-                            <constraint firstItem="7dD-SL-gUk" firstAttribute="top" secondItem="cWC-s3-YlP" secondAttribute="bottom" constant="-2" id="4HT-8g-KLR"/>
+                            <constraint firstItem="77S-WJ-P3C" firstAttribute="top" secondItem="cWC-s3-YlP" secondAttribute="bottom" constant="-2" id="6ET-Ft-SUK"/>
                             <constraint firstItem="cWC-s3-YlP" firstAttribute="leading" secondItem="1Kq-np-puo" secondAttribute="leading" id="E7t-pR-Gnq"/>
                             <constraint firstItem="7dD-SL-gUk" firstAttribute="leading" secondItem="1Kq-np-puo" secondAttribute="leading" id="Ia5-k6-xzf"/>
                             <constraint firstItem="cWC-s3-YlP" firstAttribute="top" secondItem="1Kq-np-puo" secondAttribute="top" id="P5H-ug-tOF"/>
                             <constraint firstAttribute="trailing" secondItem="cWC-s3-YlP" secondAttribute="trailing" id="cVS-jB-rD7"/>
                             <constraint firstAttribute="trailing" secondItem="7dD-SL-gUk" secondAttribute="trailing" id="eSR-Mt-1Xl"/>
                             <constraint firstAttribute="bottom" secondItem="7dD-SL-gUk" secondAttribute="bottom" id="eoS-po-Axz"/>
+                            <constraint firstItem="77S-WJ-P3C" firstAttribute="leading" secondItem="1Kq-np-puo" secondAttribute="leading" constant="9" id="fPO-Xx-bQh"/>
+                            <constraint firstAttribute="trailing" secondItem="77S-WJ-P3C" secondAttribute="trailing" constant="124" id="kQd-Gc-Woq"/>
+                            <constraint firstItem="7dD-SL-gUk" firstAttribute="top" secondItem="77S-WJ-P3C" secondAttribute="bottom" constant="5" id="qBZ-2j-fgo"/>
                         </constraints>
                         <animations/>
                     </view>
                     <connections>
+                        <outlet property="afterDatePicker" destination="lou-wM-eNy" id="47L-Ty-GNQ"/>
+                        <outlet property="beforeDatePicker" destination="JJY-fj-bdz" id="xbh-nX-pDD"/>
                         <outlet property="searchField" destination="cWC-s3-YlP" id="H0v-9F-Gfv"/>
                         <outlet property="tableView" destination="yQc-Jz-Fx4" id="9nG-8e-Pxx"/>
                     </connections>
                 </viewController>
                 <customObject id="3Ou-aK-krf" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+                <userDefaultsController representsSharedInstance="YES" id="0Bu-Sd-3Ld"/>
             </objects>
             <point key="canvasLocation" x="1288" y="323"/>
         </scene>
