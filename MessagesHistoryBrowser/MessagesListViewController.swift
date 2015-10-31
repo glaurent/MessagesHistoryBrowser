@@ -19,6 +19,8 @@ class MessagesListViewController: NSViewController, NSCollectionViewDataSource {
 
     let dateFormatter = NSDateFormatter()
 
+    let messageFormatter = MessageFormatter()
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -73,50 +75,26 @@ class MessagesListViewController: NSViewController, NSCollectionViewDataSource {
         return item
     }
 
-    func showMessages(messages:[ChatMessage], withHighlightTerm highlightTerm:String)
+    func clearMessages()
+    {
+        messagesTextView.string = ""
+    }
+
+    func showMessages(messages:[ChatMessage], withHighlightTerm highlightTerm:String? = nil)
     {
         let allMatchingMessages = NSMutableAttributedString()
 
         for message in messages {
 
-            guard let highlightedMessage = formatMessage(message, withHighlightTerm: highlightTerm) else { continue }
+            guard let highlightedMessage = messageFormatter.formatMessage(message, withHighlightTerm: highlightTerm) else { continue }
 
             allMatchingMessages.appendAttributedString(highlightedMessage)
         }
 
-        messagesTextView.string = ""
+        clearMessages()
         messagesTextView.textStorage?.insertAttributedString(allMatchingMessages, atIndex: 0)
 
     }
 
-    func formatMessage(message:ChatMessage, withHighlightTerm highlightTerm:String) -> NSAttributedString?
-    {
-        guard let messageContent = message.content else { return nil }
-        guard messageContent != "" else { return nil }
-
-        let chatContact = message.contact
-
-        let result:NSMutableAttributedString
-        if message.isFromMe {
-            result = NSMutableAttributedString(string: "me", attributes: [NSBackgroundColorAttributeName : NSColor.greenColor()])
-        } else {
-            result = NSMutableAttributedString(string: chatContact.name , attributes: [NSBackgroundColorAttributeName : NSColor.blueColor()])
-        }
-
-        // highlight message content
-        //
-        let messageContentNS = NSString(string: " : " + messageContent + "\n")
-
-        let rangeOfSearchedTerm = messageContentNS.rangeOfString(highlightTerm)
-
-        let highlightedMessage = NSMutableAttributedString(string: messageContentNS as String)
-
-        highlightedMessage.addAttribute(NSForegroundColorAttributeName, value: NSColor.redColor(), range: rangeOfSearchedTerm)
-
-        result.appendAttributedString(highlightedMessage)
-
-        return result
-
-    }
 
 }

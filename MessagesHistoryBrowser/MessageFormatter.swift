@@ -12,24 +12,64 @@ class MessageFormatter {
 
     let dateFormatter = NSDateFormatter()
 
-    var noMessageString = "<no message>"
-    var meString = "me"
-    var unknownContact = "<unknown>"
+    let noMessageString = "<no message>"
+    let meString = "me"
+    let unknownContact = "<unknown>"
 
     init() {
         dateFormatter.timeStyle = .ShortStyle
         dateFormatter.dateStyle = .ShortStyle
     }
 
-    func formatMessage(message:ChatMessage) -> String
+//    func formatMessage(message:ChatMessage) -> String
+//    {
+//        let messageContent = message.content ?? noMessageString
+//        let sender = message.isFromMe ? meString : message.chat.contact.name
+//        let dateString = dateFormatter.stringFromDate(message.date)
+//
+//        let messageContentAndSender = "\(dateString) - \(sender) : \(messageContent)"
+//
+//        return messageContentAndSender
+//    }
+
+
+    func formatMessage(message:ChatMessage, withHighlightTerm highlightTerm:String? = nil) -> NSAttributedString?
     {
-        let messageContent = message.content ?? noMessageString
-        let sender = message.isFromMe ? meString : message.chat.contact.name
-        let dateString = dateFormatter.stringFromDate(message.date)
+        guard let messageContent = message.content else { return nil }
+        guard messageContent != "" else { return nil }
 
-        let messageContentAndSender = "\(dateString) - \(sender) : \(messageContent)"
+        let chatContact = message.contact
 
-        return messageContentAndSender
+        let sender:NSMutableAttributedString
+
+        if message.isFromMe {
+            sender = NSMutableAttributedString(string: meString, attributes: [NSBackgroundColorAttributeName : NSColor.greenColor()])
+        } else {
+            sender = NSMutableAttributedString(string: chatContact.name , attributes: [NSBackgroundColorAttributeName : NSColor.blueColor()])
+        }
+
+        let dateString = NSMutableAttributedString(string: dateFormatter.stringFromDate(message.date))
+
+        let result = dateString
+        result.appendAttributedString(NSAttributedString(string: " - "))
+        result.appendAttributedString(sender)
+
+        // highlight message content
+        //
+        let messageContentNS = NSString(string:" : " + messageContent + "\n")
+
+        let highlightedMessage = NSMutableAttributedString(string: messageContentNS as String)
+
+        if let highlightTerm = highlightTerm {
+            let rangeOfSearchedTerm = messageContentNS.rangeOfString(highlightTerm)
+            highlightedMessage.addAttribute(NSForegroundColorAttributeName, value: NSColor.redColor(), range: rangeOfSearchedTerm)
+        }
+
+        result.appendAttributedString(highlightedMessage)
+        
+        return result
+        
     }
+
 
 }

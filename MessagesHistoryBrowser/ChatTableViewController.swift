@@ -117,6 +117,8 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
 
         chatsDatabase.collectMessagesForContact(selectedContact)
 
+        // sort messages by date
+        //
         let allContactMessagesT = selectedContact.messages.allObjects.sort { (a, b) -> Bool in
             let aMessage = a as! ChatMessage
             let bMessage = b as! ChatMessage
@@ -124,6 +126,8 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
             return aMessage.date.isLessThan(bMessage.date)
         }
 
+        // sort attachments by date
+        //
         let allContactAttachmentsT = selectedContact.attachments.allObjects.sort { (a, b) -> Bool in
             let aAttachment = a as! ChatAttachment
             let bAttachment = b as! ChatAttachment
@@ -133,62 +137,9 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
 
         let allContactMessages = allContactMessagesT as! [ChatMessage]
 
-        var allMessages = ""
-
-        for message in allContactMessages {
-            allMessages = allMessages + messageFormatter.formatMessage(message) + "\n"
-        }
-
         messagesListViewController?.attachmentsToDisplay = allContactAttachmentsT as? [ChatAttachment]
         messagesListViewController?.attachmentsCollectionView.reloadData()
-        messagesListViewController?.messagesTextView.string = allMessages
-    }
-
-
-    func tableViewSelectionDidChange_old(notification: NSNotification)
-    {
-
-        let selectedRowIndexes = tableView.selectedRowIndexes
-
-        let chatIDs = chatIDsForSelectedRows(selectedRowIndexes)
-
-        // messages and attachments indexed by chat GUIDs
-        var messages = [String:[ChatMessage]]()
-        var attachments = [String:[ChatAttachment]]()
-
-        // all attachments for all selected chats
-        var allAttachmentsToDisplay = [ChatAttachment]()
-
-        for chatID in chatIDs {
-            let (messagesForChat, attachmentsForChat) = chatsDatabase.messagesForChat(chatID)
-            messages[chatID.guid] = messagesForChat
-            attachments[chatID.guid] = attachmentsForChat
-        }
-
-        var allAttachmentsFileNames = ""
-        for (chatGUID, attachmentsForChatGUID) in attachments {
-            allAttachmentsFileNames = allAttachmentsFileNames + "\n\t\(chatGUID)\n"
-            for attachment in attachmentsForChatGUID {
-//                let attachmentFileName = attachment.fileName ?? "<no filename>"
-//                allAttachmentsFileNames = allAttachmentsFileNames + "\(attachment.date) : \(attachmentFileName)\n"
-                allAttachmentsToDisplay.append(attachment)
-            }
-        }
-
-        var allMessages = ""
-
-        for (chatGUID, messagesForChatGUID) in messages {
-
-            allMessages = allMessages + "\n\t\(chatGUID)\n"
-
-            for message in messagesForChatGUID {
-                allMessages = allMessages + messageFormatter.formatMessage(message) + "\n"
-            }
-        }
-        
-        messagesListViewController?.attachmentsToDisplay = allAttachmentsToDisplay
-        messagesListViewController?.attachmentsCollectionView.reloadData()
-        messagesListViewController?.messagesTextView.string = allAttachmentsFileNames + "\n\n" + allMessages
+        messagesListViewController?.showMessages(allContactMessages)
     }
 
     func chatIDsForSelectedRows(selectedRowIndexes : NSIndexSet) -> [Chat]
@@ -209,6 +160,8 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
             
             searchMode = false
             searchedContacts = nil
+
+            messagesListViewController?.clearMessages()
             
         } else {
 
@@ -218,9 +171,8 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
                 afterDate: afterDateEnabled ? afterDate : nil,
                 beforeDate: beforeDateEnabled ? beforeDate : nil)
 
-
             messagesListViewController?.showMessages(matchingMessages, withHighlightTerm:searchTerm)
-            
+
             searchedContacts = contactsFromMessages(matchingMessages)
             searchMode = true
             
@@ -229,6 +181,8 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
         tableView.reloadData()
     }
 
+    // restart a search once one of the date pickers has been changed
+    //
     @IBAction func redoSearch(sender: NSObject) {
         if sender == afterDatePicker {
             afterDateEnabled = true

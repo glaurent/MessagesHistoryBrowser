@@ -223,14 +223,14 @@ class ChatListViewController: NSViewController, NSOutlineViewDataSource, NSOutli
 
             allMessages = allMessages + "\n\t\(chatGUID)\n"
 
-            for message in messagesForChatGUID {
-                allMessages = allMessages + messageFormatter.formatMessage(message) + "\n"
-            }
+//            for message in messagesForChatGUID {
+//                allMessages = allMessages + messageFormatter.formatMessage(message) + "\n"
+//            }
         }
 
         messagesListViewController?.attachmentsToDisplay = allAttachmentsToDisplay
         messagesListViewController?.attachmentsCollectionView.reloadData()
-        messagesListViewController?.messagesTextView.string = allAttachmentsFileNames + "\n\n" + allMessages
+//        messagesListViewController?.messagesTextView.string = allAttachmentsFileNames + "\n\n" + allMessages
     }
 
     func chatIDsForSelectedRows(selectedRowIndexes : NSIndexSet) -> [Chat]
