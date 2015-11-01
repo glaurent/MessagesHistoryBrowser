@@ -27,6 +27,13 @@ class ChatsDatabase: NSObject {
 
     lazy var moc = (NSApp.delegate as! AppDelegate).managedObjectContext
 
+    let messageDateSort = { (a:AnyObject, b:AnyObject) -> Bool in
+        let aMessage = a as! ChatMessage
+        let bMessage = b as! ChatMessage
+
+        return aMessage.date.isLessThan(bMessage.date)
+    }
+
     override init() {
 
         do {

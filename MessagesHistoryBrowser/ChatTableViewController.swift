@@ -119,12 +119,7 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
 
         // sort messages by date
         //
-        let allContactMessagesT = selectedContact.messages.allObjects.sort { (a, b) -> Bool in
-            let aMessage = a as! ChatMessage
-            let bMessage = b as! ChatMessage
-
-            return aMessage.date.isLessThan(bMessage.date)
-        }
+        let allContactMessagesT = selectedContact.messages.allObjects.sort(ChatsDatabase.sharedInstance.messageDateSort)
 
         // sort attachments by date
         //
@@ -171,7 +166,9 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
                 afterDate: afterDateEnabled ? afterDate : nil,
                 beforeDate: beforeDateEnabled ? beforeDate : nil)
 
-            messagesListViewController?.showMessages(matchingMessages, withHighlightTerm:searchTerm)
+            let matchingMessagesSorted = matchingMessages.sort(ChatsDatabase.sharedInstance.messageDateSort)
+
+            messagesListViewController?.showMessages(matchingMessagesSorted, withHighlightTerm:searchTerm)
 
             searchedContacts = contactsFromMessages(matchingMessages)
             searchMode = true
