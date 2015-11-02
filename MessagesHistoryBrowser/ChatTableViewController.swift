@@ -132,8 +132,8 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
 
 //        let allContactMessages = allContactMessagesT as! [ChatMessage]
 
-        let allContactChatItems = selectedContact.messages.setByAddingObjectsFromSet(selectedContact.attachments as Set<NSObject>)
-        
+        let allContactChatItems = selectedContact.messages.setByAddingObjectsFromSet(selectedContact.attachments as Set<NSObject>) // COMMENT THIS LINE TO FIX COMPILE ERROR IN AppDelegate
+
         let allContactChatItemsSorted = allContactChatItems.sort(chatsDatabase.messageDateSort) as! [ChatItem]
         
         messagesListViewController?.attachmentsToDisplay = allContactAttachmentsT as? [ChatAttachment]

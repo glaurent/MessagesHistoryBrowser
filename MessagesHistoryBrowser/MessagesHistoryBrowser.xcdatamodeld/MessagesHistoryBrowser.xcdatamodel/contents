@@ -12,7 +12,7 @@
         <relationship name="contact" maxCount="1" deletionRule="Nullify" destinationEntity="Contact" inverseName="chats" inverseEntity="Contact" syncable="YES"/>
         <relationship name="messages" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Message" inverseName="chat" inverseEntity="Message" syncable="YES"/>
     </entity>
-    <entity name="ChatItem" isAbstract="YES" syncable="YES">
+    <entity name="ChatItem" representedClassName=".ChatItem" isAbstract="YES" syncable="YES">
         <attribute name="date" optional="YES" attributeType="Date" syncable="YES"/>
     </entity>
     <entity name="Contact" representedClassName=".ChatContact" syncable="YES">
