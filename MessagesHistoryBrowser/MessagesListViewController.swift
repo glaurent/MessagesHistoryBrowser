@@ -80,15 +80,23 @@ class MessagesListViewController: NSViewController, NSCollectionViewDataSource {
         messagesTextView.string = ""
     }
 
-    func showMessages(messages:[ChatMessage], withHighlightTerm highlightTerm:String? = nil)
+    func showMessages(chatItems:[ChatItem], withHighlightTerm highlightTerm:String? = nil)
     {
         let allMatchingMessages = NSMutableAttributedString()
 
-        for message in messages {
+        for chatItem in chatItems {
 
-            guard let highlightedMessage = messageFormatter.formatMessage(message, withHighlightTerm: highlightTerm) else { continue }
+            if let message = chatItem as? ChatMessage {
+                guard let highlightedMessage = messageFormatter.formatMessage(message, withHighlightTerm: highlightTerm) else { continue }
 
-            allMatchingMessages.appendAttributedString(highlightedMessage)
+                allMatchingMessages.appendAttributedString(highlightedMessage)
+            } else {
+                let attachment = chatItem as! ChatAttachment
+                
+                let attachmentString = NSAttributedString(string: attachment.fileName! + "\n")
+                allMatchingMessages.appendAttributedString(attachmentString)
+                
+            }
         }
 
         clearMessages()

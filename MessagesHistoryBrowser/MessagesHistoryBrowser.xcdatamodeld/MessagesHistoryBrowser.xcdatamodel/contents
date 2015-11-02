@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="9057" systemVersion="15B42" minimumToolsVersion="Automatic">
-    <entity name="Attachment" representedClassName=".ChatAttachment" syncable="YES">
-        <attribute name="date" attributeType="Date" syncable="YES"/>
+    <entity name="Attachment" representedClassName=".ChatAttachment" parentEntity="ChatItem" syncable="YES">
         <attribute name="fileName" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="chat" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Chat" inverseName="attachments" inverseEntity="Chat" syncable="YES"/>
         <relationship name="contact" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Contact" inverseName="attachments" inverseEntity="Contact" syncable="YES"/>
@@ -13,6 +12,9 @@
         <relationship name="contact" maxCount="1" deletionRule="Nullify" destinationEntity="Contact" inverseName="chats" inverseEntity="Contact" syncable="YES"/>
         <relationship name="messages" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Message" inverseName="chat" inverseEntity="Message" syncable="YES"/>
     </entity>
+    <entity name="ChatItem" isAbstract="YES" syncable="YES">
+        <attribute name="date" optional="YES" attributeType="Date" syncable="YES"/>
+    </entity>
     <entity name="Contact" representedClassName=".ChatContact" syncable="YES">
         <attribute name="known" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="name" attributeType="String" defaultValueString="unknown contact" indexed="YES" syncable="YES"/>
@@ -20,17 +22,17 @@
         <relationship name="chats" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Chat" inverseName="contact" inverseEntity="Chat" syncable="YES"/>
         <relationship name="messages" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Message" inverseName="contact" inverseEntity="Message" syncable="YES"/>
     </entity>
-    <entity name="Message" representedClassName=".ChatMessage" syncable="YES">
+    <entity name="Message" representedClassName=".ChatMessage" parentEntity="ChatItem" syncable="YES">
         <attribute name="content" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="date" attributeType="Date" syncable="YES"/>
         <attribute name="isFromMe" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <relationship name="chat" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Chat" inverseName="messages" inverseEntity="Chat" syncable="YES"/>
         <relationship name="contact" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Contact" inverseName="messages" inverseEntity="Contact" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Attachment" positionX="-36" positionY="36" width="128" height="105"/>
+        <element name="Attachment" positionX="-36" positionY="36" width="128" height="90"/>
         <element name="Chat" positionX="-63" positionY="-18" width="128" height="120"/>
+        <element name="ChatItem" positionX="-54" positionY="72" width="128" height="60"/>
         <element name="Contact" positionX="-27" positionY="63" width="128" height="120"/>
-        <element name="Message" positionX="-54" positionY="18" width="128" height="120"/>
+        <element name="Message" positionX="-54" positionY="18" width="128" height="105"/>
     </elements>
 </model>

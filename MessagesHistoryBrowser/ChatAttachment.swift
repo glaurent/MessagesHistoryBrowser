@@ -9,21 +9,18 @@
 import Cocoa
 import CoreData
 
-class ChatAttachment: NSManagedObject {
+class ChatAttachment: ChatItem {
 
     @NSManaged var fileName:String?
-    @NSManaged var date:NSDate
     @NSManaged var chat:Chat
     @NSManaged var contact:ChatContact
-
 
     convenience init(managedObjectContext:NSManagedObjectContext, withFileName aFileName:String, withDate aDate:NSDate, inChat aChat:Chat) {
 
         let entityDescription = NSEntityDescription.entityForName("Attachment", inManagedObjectContext: managedObjectContext)
-        self.init(entity: entityDescription!, insertIntoManagedObjectContext: managedObjectContext)
+        self.init(entityDescription: entityDescription!, managedObjectContext: managedObjectContext, withDate: aDate)
 
         fileName = aFileName
-        date = aDate
         chat = aChat
         contact = aChat.contact
     }

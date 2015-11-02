@@ -119,7 +119,7 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
 
         // sort messages by date
         //
-        let allContactMessagesT = selectedContact.messages.allObjects.sort(ChatsDatabase.sharedInstance.messageDateSort)
+//        let allContactMessagesT = selectedContact.messages.allObjects.sort(ChatsDatabase.sharedInstance.messageDateSort)
 
         // sort attachments by date
         //
@@ -130,11 +130,15 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
             return aAttachment.date.isLessThan(bAttachment.date)
         }
 
-        let allContactMessages = allContactMessagesT as! [ChatMessage]
+//        let allContactMessages = allContactMessagesT as! [ChatMessage]
 
+        let allContactChatItems = selectedContact.messages.setByAddingObjectsFromSet(selectedContact.attachments as Set<NSObject>)
+        
+        let allContactChatItemsSorted = allContactChatItems.sort(chatsDatabase.messageDateSort) as! [ChatItem]
+        
         messagesListViewController?.attachmentsToDisplay = allContactAttachmentsT as? [ChatAttachment]
         messagesListViewController?.attachmentsCollectionView.reloadData()
-        messagesListViewController?.showMessages(allContactMessages)
+        messagesListViewController?.showMessages(allContactChatItemsSorted)
     }
 
     func chatIDsForSelectedRows(selectedRowIndexes : NSIndexSet) -> [Chat]

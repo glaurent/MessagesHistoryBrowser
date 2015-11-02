@@ -9,7 +9,7 @@
 import Cocoa
 import CoreData
 
-class ChatMessage : NSManagedObject {
+class ChatMessage : ChatItem {
 
     static let EntityName = "Message"
 
@@ -21,7 +21,6 @@ class ChatMessage : NSManagedObject {
     }
 
     @NSManaged var content:String?
-    @NSManaged var date:NSDate
     @NSManaged var isFromMe:Bool
 
     @NSManaged var chat:Chat
@@ -30,10 +29,9 @@ class ChatMessage : NSManagedObject {
     convenience init(managedObjectContext:NSManagedObjectContext, withMessage aMessage:String, withDate aDate:NSDate, inChat aChat:Chat) {
 
         let entityDescription = NSEntityDescription.entityForName(ChatMessage.EntityName, inManagedObjectContext: managedObjectContext)
-        self.init(entity: entityDescription!, insertIntoManagedObjectContext: managedObjectContext)
+        self.init(entityDescription: entityDescription!, managedObjectContext: managedObjectContext, withDate:aDate)
 
         content = aMessage
-        date = aDate
         chat = aChat
         contact = aChat.contact
     }
