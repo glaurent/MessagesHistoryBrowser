@@ -63,7 +63,10 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
         tableView.reloadData()
     }
 
-    func contactForRow(row:Int) -> ChatContact {
+    func contactForRow(row:Int) -> ChatContact? {
+        
+        guard (searchMode && row < searchedContacts!.count) || (showChatsFromUnknown && row < allKnownContacts.count + allUnknownContacts.count) || row < allKnownContacts.count else { return nil }
+        
         var contact:ChatContact
 
         if searchMode {
@@ -102,10 +105,10 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
 
         let cellView = tableView.makeViewWithIdentifier(tableColumn.identifier, owner: self) as! NSTableCellView
 
-        let contact = contactForRow(row)
-
-        cellView.textField?.stringValue = contact.name
-
+        if let contact = contactForRow(row) {
+            cellView.textField?.stringValue = contact.name
+        }
+        
         return cellView
     }
 
@@ -113,8 +116,8 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
     {
         let index = tableView.selectedRowIndexes.firstIndex // no multiple selection
 
-        let selectedContact = contactForRow(index)
-
+        guard let selectedContact = contactForRow(index) else { return }
+        
         chatsDatabase.collectMessagesForContact(selectedContact)
 
         // sort messages by date
@@ -145,7 +148,7 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
     {
         let index = selectedRowIndexes.firstIndex // no multiple selection
 
-        let selectedContact = contactForRow(index)
+        guard let selectedContact = contactForRow(index) else { return [Chat]() }
 
         return selectedContact.chats.allObjects as! [Chat]
 
@@ -161,25 +164,39 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
             searchedContacts = nil
 
             messagesListViewController?.clearMessages()
+            tableView.reloadData()
             
         } else {
 
             let searchTerm = sender.stringValue
 
-            let matchingMessages = ChatsDatabase.sharedInstance.searchChatsForString(searchTerm,
+            chatsDatabase.searchChatsForString(searchTerm,
                 afterDate: afterDateEnabled ? afterDate : nil,
-                beforeDate: beforeDateEnabled ? beforeDate : nil)
-
-            let matchingMessagesSorted = matchingMessages.sort(ChatsDatabase.sharedInstance.messageDateSort)
-
-            messagesListViewController?.showMessages(matchingMessagesSorted, withHighlightTerm:searchTerm)
-
-            searchedContacts = contactsFromMessages(matchingMessages)
-            searchMode = true
+                beforeDate: beforeDateEnabled ? beforeDate : nil,
+                completion: { (matchingMessages) -> (Void) in
+                    let matchingMessagesSorted = matchingMessages.sort(ChatsDatabase.sharedInstance.messageDateSort)
+                    
+                    self.messagesListViewController?.showMessages(matchingMessagesSorted, withHighlightTerm:searchTerm)
+                    
+                    self.searchedContacts = self.contactsFromMessages(matchingMessages)
+                    self.searchMode = true
+                    self.tableView.reloadData()
+            })
+            
+//            let matchingMessages = ChatsDatabase.sharedInstance.searchChatsForString(searchTerm,
+//                afterDate: afterDateEnabled ? afterDate : nil,
+//                beforeDate: beforeDateEnabled ? beforeDate : nil)
+//
+//            let matchingMessagesSorted = matchingMessages.sort(ChatsDatabase.sharedInstance.messageDateSort)
+//
+//            messagesListViewController?.showMessages(matchingMessagesSorted, withHighlightTerm:searchTerm)
+//
+//            searchedContacts = contactsFromMessages(matchingMessages)
+//            searchMode = true
             
         }
         
-        tableView.reloadData()
+//        tableView.reloadData()
     }
 
     // restart a search once one of the date pickers has been changed

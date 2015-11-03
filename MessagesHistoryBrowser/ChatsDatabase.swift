@@ -291,5 +291,17 @@ class ChatsDatabase: NSObject {
 
         return result
     }
+    
+    func searchChatsForString(string:String, afterDate:NSDate? = nil, beforeDate:NSDate? = nil, completion:([ChatMessage] -> (Void)))
+    {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) { () -> Void in
+            
+            let result = self.searchChatsForString(string, afterDate: afterDate, beforeDate: beforeDate)
+            
+            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                completion(result)
+            })
+        }
+    }
 
 }
