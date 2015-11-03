@@ -166,7 +166,7 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
             messagesListViewController?.clearMessages()
             tableView.reloadData()
             
-        } else {
+        } else if sender.stringValue.characters.count >= 3 {
 
             let searchTerm = sender.stringValue
 
