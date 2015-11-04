@@ -25,25 +25,35 @@ class ContactsMap {
 
     init() {
         
-        let contactFetchRequest = CNContactFetchRequest(keysToFetch: [CNContactPhoneNumbersKey, CNContactFamilyNameKey, CNContactGivenNameKey, CNContactNicknameKey])
-       
-        do {
-            
-            try contactStore.enumerateContactsWithFetchRequest(contactFetchRequest) { (contact, stop) -> Void in
-                let phoneNumbers = contact.phoneNumbers
-                if phoneNumbers.count > 0 {
-                    for index in 0..<phoneNumbers.count {
-                        let phoneNb = phoneNumbers[index].value as! CNPhoneNumber
-                        let canonPhoneNb = self.canonicalizePhoneNumber(phoneNb.stringValue)
-                        NSLog("\(__FUNCTION__) phoneNb : %@", canonPhoneNb)
-                        self.phoneNumbersMap[canonPhoneNb] = contact
-                    }
+    }
 
+    func populate(completion : () -> Void)
+    {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0)) { () -> Void in
+
+            let contactFetchRequest = CNContactFetchRequest(keysToFetch: [CNContactPhoneNumbersKey, CNContactFamilyNameKey, CNContactGivenNameKey, CNContactNicknameKey])
+
+            do {
+
+                try self.contactStore.enumerateContactsWithFetchRequest(contactFetchRequest) { (contact, stop) -> Void in
+                    let phoneNumbers = contact.phoneNumbers
+                    if phoneNumbers.count > 0 {
+                        for index in 0..<phoneNumbers.count {
+                            let phoneNb = phoneNumbers[index].value as! CNPhoneNumber
+                            let canonPhoneNb = self.canonicalizePhoneNumber(phoneNb.stringValue)
+                            NSLog("\(__FUNCTION__) phoneNb : %@", canonPhoneNb)
+                            self.phoneNumbersMap[canonPhoneNb] = contact
+                        }
+
+                    }
                 }
+            } catch {
+                
             }
-        } catch {
-            
+
+            dispatch_sync(dispatch_get_main_queue(), completion)
         }
+
     }
 
     func canonicalizePhoneNumber(rawPhoneNumber:String) -> String {

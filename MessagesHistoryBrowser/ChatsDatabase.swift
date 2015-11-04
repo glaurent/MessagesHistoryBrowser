@@ -48,10 +48,6 @@ class ChatsDatabase: NSObject {
 
             super.init()
 
-            if Chat.allChatsInContext(moc).count == 0 {
-                importAllChatsFromDB()
-            }
-
         } catch {
             super.init()
             NSLog("%@ error", __FUNCTION__)
@@ -59,8 +55,27 @@ class ChatsDatabase: NSObject {
 
     }
 
-    func importAllChatsFromDB()
+    func populate(progress:NSProgress, completion:() -> Void)
     {
+        contactsPhoneNumber.populate({ () -> Void in
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), { () -> Void in
+                if Chat.allChatsInContext(self.moc).count == 0 {
+                    self.importAllChatsFromDB(progress)
+                    self.collectAllMessagesFromAllChats(progress)
+                }
+
+                dispatch_async(dispatch_get_main_queue(), completion)
+            })
+        })
+
+    }
+
+    func importAllChatsFromDB(progress:NSProgress)
+    {
+        NSOperationQueue .mainQueue().addOperationWithBlock({ () -> Void in
+            progress.localizedDescription = NSLocalizedString("Importing chats...", comment: "")
+        })
+
         let chats = Table("chat")
         
         let chatRowIDColumn = Expression<Int>("ROWID")
@@ -70,7 +85,17 @@ class ChatsDatabase: NSObject {
         
         // Iterate over all chats
         //
-        for chatData in db.prepare(chats.select(chatRowIDColumn, chatGUIDColumn, serviceNameColumn, chatIdentifierColumn)) {
+
+        let nbRows = Int64(db.scalar(chats.count))
+        progress.becomeCurrentWithPendingUnitCount(nbRows)
+
+
+        let chatImportProgress = NSProgress(totalUnitCount: nbRows)
+        var rowIndex:Int64 = 0
+
+        let dbRows = db.prepare(chats.select(chatRowIDColumn, chatGUIDColumn, serviceNameColumn, chatIdentifierColumn))
+
+        for chatData in dbRows {
             
             let guid = chatData[chatGUIDColumn]
             let rowID = chatData[chatRowIDColumn]
@@ -82,9 +107,20 @@ class ChatsDatabase: NSObject {
             let _ = Chat(managedObjectContext:moc, withContact:chatContact, withGUID: guid, andRowID: rowID)
             
             NSLog("chat : %@ \tcontact : %@\trowId: %d", guid, chatContact.name, rowID)
-            
+
+            NSOperationQueue .mainQueue().addOperationWithBlock({ () -> Void in
+                chatImportProgress.completedUnitCount = rowIndex
+            })
+
+//            dispatch_async(dispatch_get_main_queue(), { (Void) -> Void in
+//                progress(rowIndex: rowIndex, totalNbRows: nbRows)
+//            })
+
+            ++rowIndex
         }
-        
+
+        progress.resignCurrent()
+
         do { try moc.save() } catch {}
 
     }
@@ -231,16 +267,32 @@ class ChatsDatabase: NSObject {
         return res
     }
 
-    func collectAllMessagesFromAllChats()
+    func collectAllMessagesFromAllChats(progress:NSProgress)
     {
-        for contact in ChatContact.allContactsInContext(moc) {
+        let allContacts = ChatContact.allContactsInContext(moc)
+        let allContactsCount = Int64(allContacts.count)
+
+        progress.becomeCurrentWithPendingUnitCount(allContactsCount)
+
+        let messagesImportProgress = NSProgress(totalUnitCount: allContactsCount)
+
+        NSOperationQueue .mainQueue().addOperationWithBlock({ () -> Void in
+            progress.localizedDescription = NSLocalizedString("Importing messages...", comment: "")
+        })
+
+        for contact in allContacts {
             for obj in contact.chats {
                 let chat = obj as! Chat
+                NSOperationQueue .mainQueue().addOperationWithBlock({ () -> Void in
+                    messagesImportProgress.completedUnitCount++
+                })
                 if chat.messages.count == 0 {
                     messagesForChat(chat)
                 }
             }
         }
+
+        progress.resignCurrent()
     }
 
     func collectMessagesForContact(contact:ChatContact)
@@ -294,7 +346,7 @@ class ChatsDatabase: NSObject {
     
     func searchChatsForString(string:String, afterDate:NSDate? = nil, beforeDate:NSDate? = nil, completion:([ChatMessage] -> (Void)))
     {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) { () -> Void in
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0)) { () -> Void in
             
             let result = self.searchChatsForString(string, afterDate: afterDate, beforeDate: beforeDate)
             

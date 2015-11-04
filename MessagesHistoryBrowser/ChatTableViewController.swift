@@ -15,12 +15,17 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
     @IBOutlet weak var afterDatePicker: NSDatePicker!
     @IBOutlet weak var beforeDatePicker: NSDatePicker!
 
+    @IBOutlet weak var dbPopulateProgressIndicator: NSProgressIndicator!
+    @IBOutlet weak var progressReportView: NSView!
+
+    dynamic var progress:NSProgress = NSProgress(totalUnitCount: 700)
+
     var chatsDatabase:ChatsDatabase!
 
     var messagesListViewController:MessagesListViewController?
 
-    var allKnownContacts:[ChatContact]!
-    var allUnknownContacts:[ChatContact]!
+    var allKnownContacts = [ChatContact]()
+    var allUnknownContacts = [ChatContact]()
 
     lazy var moc = (NSApp.delegate as! AppDelegate).managedObjectContext
 
@@ -43,9 +48,6 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
 
         chatsDatabase = ChatsDatabase.sharedInstance
 
-        allKnownContacts = ChatContact.allKnownContactsInContext(moc)
-        allUnknownContacts = ChatContact.allUnknownContactsInContext(moc)
-
         if let parentSplitViewController = parentViewController as? NSSplitViewController {
             let secondSplitViewItem = parentSplitViewController.splitViewItems[1]
 
@@ -53,6 +55,13 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
         }
 
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "showUnknownContactsChanged:", name: AppDelegate.ShowChatsFromUnknownNotification, object: nil)
+
+        chatsDatabase.populate(progress, completion: { () -> Void in
+                self.progressReportView.hidden = true
+                self.allKnownContacts = ChatContact.allKnownContactsInContext(self.moc)
+                self.allUnknownContacts = ChatContact.allUnknownContactsInContext(self.moc)
+                self.tableView.reloadData()
+        })
 
     }
 
@@ -63,7 +72,8 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
         tableView.reloadData()
     }
 
-    func contactForRow(row:Int) -> ChatContact? {
+    func contactForRow(row:Int) -> ChatContact?
+    {
         
         guard (searchMode && row < searchedContacts!.count) || (showChatsFromUnknown && row < allKnownContacts.count + allUnknownContacts.count) || row < allKnownContacts.count else { return nil }
         

@@ -22,12 +22,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
 
     func applicationDidFinishLaunching(aNotification: NSNotification) {
-        // Insert code here to initialize your application
-        
-        // TODO: move this to background task
-        if Chat.allChatsInContext(managedObjectContext).count == 0 {
-            ChatsDatabase.sharedInstance.collectAllMessagesFromAllChats()
-        }
+        // Insert code here to initialize your application        
     }
 
     func applicationWillTerminate(aNotification: NSNotification) {

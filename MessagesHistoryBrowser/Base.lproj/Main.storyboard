@@ -871,24 +871,61 @@
                                     <real value="3.4028234663852886e+38"/>
                                 </customSpacing>
                             </stackView>
+                            <customView translatesAutoresizingMaskIntoConstraints="NO" id="PId-FV-l0o" userLabel="ProgressReportView">
+                                <rect key="frame" x="0.0" y="0.0" width="450" height="280"/>
+                                <subviews>
+                                    <progressIndicator wantsLayer="YES" maxValue="100" style="bar" translatesAutoresizingMaskIntoConstraints="NO" id="LcQ-1Y-GBm">
+                                        <rect key="frame" x="64" y="130" width="322" height="20"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="322" id="do5-qG-93O"/>
+                                            <constraint firstAttribute="height" constant="18" id="tjQ-of-yef"/>
+                                        </constraints>
+                                        <animations/>
+                                        <connections>
+                                            <binding destination="c6g-xc-DOK" name="maxValue" keyPath="self.progress.totalUnitCount" id="UfW-XU-3mm"/>
+                                            <binding destination="c6g-xc-DOK" name="value" keyPath="self.progress.fractionCompleted" previousBinding="UfW-XU-3mm" id="UMC-1j-xfL"/>
+                                        </connections>
+                                    </progressIndicator>
+                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="G2L-Mo-7yd">
+                                        <rect key="frame" x="62" y="99" width="326" height="17"/>
+                                        <animations/>
+                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Label" id="jdD-9y-Tp5">
+                                            <font key="font" metaFont="system"/>
+                                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                    </textField>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="LcQ-1Y-GBm" firstAttribute="centerY" secondItem="PId-FV-l0o" secondAttribute="centerY" id="Jn8-ZY-Ooe"/>
+                                    <constraint firstItem="LcQ-1Y-GBm" firstAttribute="centerX" secondItem="PId-FV-l0o" secondAttribute="centerX" id="LFB-lH-q2p"/>
+                                </constraints>
+                                <animations/>
+                            </customView>
                         </subviews>
                         <constraints>
                             <constraint firstItem="77S-WJ-P3C" firstAttribute="top" secondItem="cWC-s3-YlP" secondAttribute="bottom" constant="-2" id="6ET-Ft-SUK"/>
                             <constraint firstItem="cWC-s3-YlP" firstAttribute="leading" secondItem="1Kq-np-puo" secondAttribute="leading" id="E7t-pR-Gnq"/>
+                            <constraint firstAttribute="trailing" secondItem="PId-FV-l0o" secondAttribute="trailing" id="HCI-Z3-xLb"/>
                             <constraint firstItem="7dD-SL-gUk" firstAttribute="leading" secondItem="1Kq-np-puo" secondAttribute="leading" id="Ia5-k6-xzf"/>
                             <constraint firstItem="cWC-s3-YlP" firstAttribute="top" secondItem="1Kq-np-puo" secondAttribute="top" id="P5H-ug-tOF"/>
+                            <constraint firstAttribute="bottom" secondItem="PId-FV-l0o" secondAttribute="bottom" id="VMk-xU-UtB"/>
+                            <constraint firstItem="PId-FV-l0o" firstAttribute="top" secondItem="1Kq-np-puo" secondAttribute="top" constant="20" id="XfH-Rx-5at"/>
                             <constraint firstAttribute="trailing" secondItem="cWC-s3-YlP" secondAttribute="trailing" id="cVS-jB-rD7"/>
                             <constraint firstAttribute="trailing" secondItem="7dD-SL-gUk" secondAttribute="trailing" id="eSR-Mt-1Xl"/>
                             <constraint firstAttribute="bottom" secondItem="7dD-SL-gUk" secondAttribute="bottom" id="eoS-po-Axz"/>
                             <constraint firstItem="77S-WJ-P3C" firstAttribute="leading" secondItem="1Kq-np-puo" secondAttribute="leading" constant="9" id="fPO-Xx-bQh"/>
                             <constraint firstAttribute="trailing" secondItem="77S-WJ-P3C" secondAttribute="trailing" constant="124" id="kQd-Gc-Woq"/>
                             <constraint firstItem="7dD-SL-gUk" firstAttribute="top" secondItem="77S-WJ-P3C" secondAttribute="bottom" constant="5" id="qBZ-2j-fgo"/>
+                            <constraint firstItem="PId-FV-l0o" firstAttribute="leading" secondItem="1Kq-np-puo" secondAttribute="leading" id="vvD-m2-JR3"/>
                         </constraints>
                         <animations/>
                     </view>
                     <connections>
                         <outlet property="afterDatePicker" destination="lou-wM-eNy" id="47L-Ty-GNQ"/>
                         <outlet property="beforeDatePicker" destination="JJY-fj-bdz" id="xbh-nX-pDD"/>
+                        <outlet property="dbPopulateProgressIndicator" destination="LcQ-1Y-GBm" id="2dg-bF-RWD"/>
+                        <outlet property="progressReportView" destination="PId-FV-l0o" id="jrD-zc-Oaf"/>
                         <outlet property="searchField" destination="cWC-s3-YlP" id="H0v-9F-Gfv"/>
                         <outlet property="tableView" destination="yQc-Jz-Fx4" id="9nG-8e-Pxx"/>
                     </connections>
