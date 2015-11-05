@@ -26,6 +26,7 @@ class ChatsDatabase: NSObject {
     var db:Connection!
 
     lazy var moc = (NSApp.delegate as! AppDelegate).managedObjectContext
+    lazy var privateMoc = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
 
     let messageDateSort = { (a:AnyObject, b:AnyObject) -> Bool in
         let aItem = a as! ChatItem
@@ -48,6 +49,8 @@ class ChatsDatabase: NSObject {
 
             super.init()
 
+            privateMoc.parentContext = moc
+
         } catch {
             super.init()
             NSLog("%@ error", __FUNCTION__)
@@ -59,10 +62,16 @@ class ChatsDatabase: NSObject {
     {
         contactsPhoneNumber.populate({ () -> Void in
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), { () -> Void in
-                if Chat.allChatsInContext(self.moc).count == 0 {
+                if Chat.allChatsInContext(self.privateMoc).count == 0 {
                     self.importAllChatsFromDB(progress)
                     self.collectAllMessagesFromAllChats(progress)
                 }
+
+                dispatch_sync(dispatch_get_main_queue(), { () -> Void in
+
+                    do { try self.privateMoc.save() } catch { NSLog("bgMoc save error : \(error)") }
+
+                    })
 
                 dispatch_async(dispatch_get_main_queue(), completion)
             })
@@ -104,7 +113,7 @@ class ChatsDatabase: NSObject {
             
             let chatContact = contactForIdentifier(identifier, service:serviceName)
             
-            let _ = Chat(managedObjectContext:moc, withContact:chatContact, withGUID: guid, andRowID: rowID)
+            let _ = Chat(managedObjectContext:privateMoc, withContact:chatContact, withGUID: guid, andRowID: rowID)
             
             NSLog("chat : %@ \tcontact : %@\trowId: %d", guid, chatContact.name, rowID)
 
@@ -121,7 +130,7 @@ class ChatsDatabase: NSObject {
 
         progress.resignCurrent()
 
-        do { try moc.save() } catch {}
+        do { try privateMoc.save() } catch {}
 
     }
 
@@ -161,7 +170,7 @@ class ChatsDatabase: NSObject {
             contactIsKnown = false
         }
 
-        let contact = ChatContact.contactIn(moc, named: contactName)
+        let contact = ChatContact.contactIn(privateMoc, named: contactName)
         contact.known = contactIsKnown
         return contact
     }
@@ -221,7 +230,7 @@ class ChatsDatabase: NSObject {
             let dateTimeInterval = NSTimeInterval(dateInt)
             let messageDate = NSDate(timeIntervalSinceReferenceDate: dateTimeInterval)
 //            NSLog("message : \(messageContent)")
-            let chatMessage = ChatMessage(managedObjectContext: moc, withMessage: messageContent, withDate: messageDate, inChat: chat)
+            let chatMessage = ChatMessage(managedObjectContext: privateMoc, withMessage: messageContent, withDate: messageDate, inChat: chat)
             chatMessage.isFromMe = messageData[isFromMeColumn]
             res.append(chatMessage)
         }
@@ -261,7 +270,7 @@ class ChatsDatabase: NSObject {
             let attachmentTimeInterval = NSTimeInterval(attachmentDateInt)
             let attachmentDate = NSDate(timeIntervalSinceReferenceDate: attachmentTimeInterval)
 
-            let _ = ChatAttachment(managedObjectContext: moc, withFileName: attachmentFileName, withDate: attachmentDate, inChat:chat)
+            let _ = ChatAttachment(managedObjectContext: privateMoc, withFileName: attachmentFileName, withDate: attachmentDate, inChat:chat)
         }
 
         return res
@@ -269,7 +278,7 @@ class ChatsDatabase: NSObject {
 
     func collectAllMessagesFromAllChats(progress:NSProgress)
     {
-        let allContacts = ChatContact.allContactsInContext(moc)
+        let allContacts = ChatContact.allContactsInContext(privateMoc)
         let allContactsCount = Int64(allContacts.count)
 
         progress.becomeCurrentWithPendingUnitCount(allContactsCount)
@@ -335,7 +344,7 @@ class ChatsDatabase: NSObject {
         }
 
         do {
-            let matchingMessages = try moc.executeFetchRequest(fetchRequest)
+            let matchingMessages = try privateMoc.executeFetchRequest(fetchRequest)
             result = matchingMessages as! [ChatMessage]
         } catch let error as NSError {
             print("\(__FUNCTION__) : Could not fetch \(error), \(error.userInfo)")
