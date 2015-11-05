@@ -62,18 +62,20 @@ class ChatsDatabase: NSObject {
     {
         contactsPhoneNumber.populate({ () -> Void in
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), { () -> Void in
+
                 if Chat.allChatsInContext(self.privateMoc).count == 0 {
                     self.importAllChatsFromDB(progress)
                     self.collectAllMessagesFromAllChats(progress)
                 }
 
-                dispatch_sync(dispatch_get_main_queue(), { () -> Void in
+                dispatch_async(dispatch_get_main_queue(), { () -> Void in
 
                     do { try self.privateMoc.save() } catch { NSLog("bgMoc save error : \(error)") }
 
-                    })
+                    completion()
 
-                dispatch_async(dispatch_get_main_queue(), completion)
+                })
+
             })
         })
 

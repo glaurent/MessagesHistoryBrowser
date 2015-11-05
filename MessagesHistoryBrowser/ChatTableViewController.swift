@@ -56,6 +56,10 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
 
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "showUnknownContactsChanged:", name: AppDelegate.ShowChatsFromUnknownNotification, object: nil)
 
+//        progress.addObserver(self, forKeyPath: "localizedDescription", options: NSKeyValueObservingOptions.New, context: nil)
+
+        progress.addObserver(self, forKeyPath: "fractionCompleted", options: NSKeyValueObservingOptions.New, context: nil)
+
         chatsDatabase.populate(progress, completion: { () -> Void in
                 self.progressReportView.hidden = true
                 self.allKnownContacts = ChatContact.allKnownContactsInContext(self.moc)
@@ -241,4 +245,15 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
         
         return uniqueContacts
     }
+
+
+    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
+//        print("\(__FUNCTION__) : \(change)")
+
+        if keyPath == "fractionCompleted" {
+            let newValue = change!["new"] as! NSNumber
+            dbPopulateProgressIndicator.doubleValue = newValue.doubleValue
+        }
+    }
+
 }

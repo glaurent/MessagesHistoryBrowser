@@ -874,7 +874,7 @@
                             <customView translatesAutoresizingMaskIntoConstraints="NO" id="PId-FV-l0o" userLabel="ProgressReportView">
                                 <rect key="frame" x="0.0" y="0.0" width="450" height="280"/>
                                 <subviews>
-                                    <progressIndicator wantsLayer="YES" maxValue="100" style="bar" translatesAutoresizingMaskIntoConstraints="NO" id="LcQ-1Y-GBm">
+                                    <progressIndicator wantsLayer="YES" maxValue="1" style="bar" translatesAutoresizingMaskIntoConstraints="NO" id="LcQ-1Y-GBm">
                                         <rect key="frame" x="64" y="130" width="322" height="20"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="322" id="do5-qG-93O"/>
@@ -882,8 +882,7 @@
                                         </constraints>
                                         <animations/>
                                         <connections>
-                                            <binding destination="c6g-xc-DOK" name="maxValue" keyPath="self.progress.totalUnitCount" id="UfW-XU-3mm"/>
-                                            <binding destination="c6g-xc-DOK" name="value" keyPath="self.progress.fractionCompleted" previousBinding="UfW-XU-3mm" id="UMC-1j-xfL"/>
+                                            <binding destination="c6g-xc-DOK" name="value" keyPath="self.progress.fractionCompleted" id="DWk-ip-DGD"/>
                                         </connections>
                                     </progressIndicator>
                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="G2L-Mo-7yd">
@@ -894,6 +893,13 @@
                                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                         </textFieldCell>
+                                        <connections>
+                                            <binding destination="c6g-xc-DOK" name="value" keyPath="self.progress.localizedDescription" id="5EO-1E-YTe">
+                                                <dictionary key="options">
+                                                    <bool key="NSAllowsEditingMultipleValuesSelection" value="NO"/>
+                                                </dictionary>
+                                            </binding>
+                                        </connections>
                                     </textField>
                                 </subviews>
                                 <constraints>
