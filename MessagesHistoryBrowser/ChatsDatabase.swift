@@ -288,19 +288,20 @@ class ChatsDatabase: NSObject {
         let messagesImportProgress = NSProgress(totalUnitCount: allContactsCount)
 
         NSOperationQueue .mainQueue().addOperationWithBlock({ () -> Void in
-            progress.localizedDescription = NSLocalizedString("Importing messages...", comment: "")
+            progress.localizedDescription = NSLocalizedString("Importing chat messages...", comment: "")
         })
 
         for contact in allContacts {
             for obj in contact.chats {
                 let chat = obj as! Chat
-                NSOperationQueue .mainQueue().addOperationWithBlock({ () -> Void in
-                    messagesImportProgress.completedUnitCount++
-                })
                 if chat.messages.count == 0 {
                     messagesForChat(chat)
                 }
             }
+            
+            NSOperationQueue .mainQueue().addOperationWithBlock({ () -> Void in
+                messagesImportProgress.completedUnitCount++
+            })
         }
 
         progress.resignCurrent()

@@ -885,10 +885,10 @@
                                             <binding destination="c6g-xc-DOK" name="value" keyPath="self.progress.fractionCompleted" id="DWk-ip-DGD"/>
                                         </connections>
                                     </progressIndicator>
-                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="G2L-Mo-7yd">
-                                        <rect key="frame" x="62" y="99" width="326" height="17"/>
+                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="G2L-Mo-7yd">
+                                        <rect key="frame" x="62" y="106" width="326" height="17"/>
                                         <animations/>
-                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Label" id="jdD-9y-Tp5">
+                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="progress report" id="jdD-9y-Tp5">
                                             <font key="font" metaFont="system"/>
                                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -903,8 +903,11 @@
                                     </textField>
                                 </subviews>
                                 <constraints>
+                                    <constraint firstItem="G2L-Mo-7yd" firstAttribute="centerX" secondItem="LcQ-1Y-GBm" secondAttribute="centerX" id="8bM-PG-VdJ"/>
                                     <constraint firstItem="LcQ-1Y-GBm" firstAttribute="centerY" secondItem="PId-FV-l0o" secondAttribute="centerY" id="Jn8-ZY-Ooe"/>
                                     <constraint firstItem="LcQ-1Y-GBm" firstAttribute="centerX" secondItem="PId-FV-l0o" secondAttribute="centerX" id="LFB-lH-q2p"/>
+                                    <constraint firstItem="G2L-Mo-7yd" firstAttribute="width" secondItem="LcQ-1Y-GBm" secondAttribute="width" id="dbw-jw-Ys5"/>
+                                    <constraint firstItem="G2L-Mo-7yd" firstAttribute="top" secondItem="LcQ-1Y-GBm" secondAttribute="bottom" constant="8" id="h6I-Iy-34l"/>
                                 </constraints>
                                 <animations/>
                             </customView>
