@@ -58,7 +58,7 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
 
 //        progress.addObserver(self, forKeyPath: "localizedDescription", options: NSKeyValueObservingOptions.New, context: nil)
 
-        progress.addObserver(self, forKeyPath: "fractionCompleted", options: NSKeyValueObservingOptions.New, context: nil)
+//        progress.addObserver(self, forKeyPath: "fractionCompleted", options: NSKeyValueObservingOptions.New, context: nil)
 
         chatsDatabase.populate(progress, completion: { () -> Void in
                 self.progressReportView.hidden = true
@@ -247,13 +247,13 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
     }
 
 
-    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
+//    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
 //        print("\(__FUNCTION__) : \(change)")
 
-        if keyPath == "fractionCompleted" {
-            let newValue = change!["new"] as! NSNumber
-            dbPopulateProgressIndicator.doubleValue = newValue.doubleValue
-        }
-    }
+//        if keyPath == "fractionCompleted" {
+//            let newValue = change!["new"] as! NSNumber
+//            dbPopulateProgressIndicator.doubleValue = newValue.doubleValue
+//        }
+//    }
 
 }
