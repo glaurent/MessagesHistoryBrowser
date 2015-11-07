@@ -35,6 +35,7 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
     
     var searchMode = false
     var searchedContacts:[ChatContact]?
+    var searchedMessages:[ChatMessage]?
 
     dynamic var beforeDateEnabled = false
     dynamic var afterDateEnabled = false
@@ -130,32 +131,47 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
     {
         let index = tableView.selectedRowIndexes.firstIndex // no multiple selection
 
-        guard let selectedContact = contactForRow(index) else { return }
-        
-        chatsDatabase.collectMessagesForContact(selectedContact)
+        if let selectedContact = contactForRow(index) {
 
-        // sort messages by date
-        //
-//        let allContactMessagesT = selectedContact.messages.allObjects.sort(ChatsDatabase.sharedInstance.messageDateSort)
 
-        // sort attachments by date
-        //
-        let allContactAttachmentsT = selectedContact.attachments.allObjects.sort { (a, b) -> Bool in
-            let aAttachment = a as! ChatAttachment
-            let bAttachment = b as! ChatAttachment
+            if (searchMode) {
 
-            return aAttachment.date.isLessThan(bAttachment.date)
+                if let searchedMessages = searchedMessages {
+
+                    let allContactMessages = searchedMessages.filter({ (message) -> Bool in
+                        return message.contact == selectedContact
+                    })
+
+                    messagesListViewController?.showMessages(allContactMessages)
+                }
+
+            } else {
+
+                chatsDatabase.collectMessagesForContact(selectedContact)
+
+                // sort attachments by date
+                //
+                let allContactAttachmentsT = selectedContact.attachments.allObjects.sort(ChatsDatabase.sharedInstance.messageDateSort)
+
+                let allContactChatItems = selectedContact.messages.setByAddingObjectsFromSet(selectedContact.attachments as Set<NSObject>) // COMMENT THIS LINE TO FIX COMPILE ERROR IN AppDelegate
+
+                let allContactChatItemsSorted = allContactChatItems.sort(chatsDatabase.messageDateSort) as! [ChatItem]
+                
+                messagesListViewController?.attachmentsToDisplay = allContactAttachmentsT as? [ChatAttachment]
+                messagesListViewController?.attachmentsCollectionView.reloadData()
+                messagesListViewController?.showMessages(allContactChatItemsSorted)
+            }
+
+        } else {
+
+            if (searchMode) {
+                if let searchedMessages = searchedMessages {
+                    messagesListViewController?.showMessages(searchedMessages)
+                }
+            } else {
+                messagesListViewController?.showMessages([ChatMessage]())
+            }
         }
-
-//        let allContactMessages = allContactMessagesT as! [ChatMessage]
-
-        let allContactChatItems = selectedContact.messages.setByAddingObjectsFromSet(selectedContact.attachments as Set<NSObject>) // COMMENT THIS LINE TO FIX COMPILE ERROR IN AppDelegate
-
-        let allContactChatItemsSorted = allContactChatItems.sort(chatsDatabase.messageDateSort) as! [ChatItem]
-        
-        messagesListViewController?.attachmentsToDisplay = allContactAttachmentsT as? [ChatAttachment]
-        messagesListViewController?.attachmentsCollectionView.reloadData()
-        messagesListViewController?.showMessages(allContactChatItemsSorted)
     }
 
     func chatIDsForSelectedRows(selectedRowIndexes : NSIndexSet) -> [Chat]
@@ -193,6 +209,7 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
                     self.messagesListViewController?.showMessages(matchingMessagesSorted, withHighlightTerm:searchTerm)
                     
                     self.searchedContacts = self.contactsFromMessages(matchingMessages)
+                    self.searchedMessages = matchingMessagesSorted
                     self.searchMode = true
                     self.tableView.reloadData()
             })
@@ -222,7 +239,7 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
         if sender == beforeDatePicker {
             beforeDateEnabled = true
         }
-        
+
         search(searchField)
     }
     
