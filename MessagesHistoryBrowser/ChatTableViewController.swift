@@ -33,7 +33,7 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
 
     var showChatsFromUnknown = false
     
-    var searchMode = false
+    var searchTerm:String?
     var searchedContacts:[ChatContact]?
     var searchedMessages:[ChatMessage]?
 
@@ -80,11 +80,11 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
     func contactForRow(row:Int) -> ChatContact?
     {
         
-        guard (searchMode && row < searchedContacts!.count) || (showChatsFromUnknown && row < allKnownContacts.count + allUnknownContacts.count) || row < allKnownContacts.count else { return nil }
+        guard (searchTerm != nil && row < searchedContacts!.count) || (showChatsFromUnknown && row < allKnownContacts.count + allUnknownContacts.count) || row < allKnownContacts.count else { return nil }
         
         var contact:ChatContact
 
-        if searchMode {
+        if searchTerm != nil {
             
             contact = searchedContacts![row]
             
@@ -102,7 +102,7 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
 
     func numberOfRowsInTableView(tableView: NSTableView) -> Int
     {
-        if searchMode {
+        if searchTerm != nil {
             return searchedContacts?.count ?? 0
         }
         
@@ -133,19 +133,15 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
 
         if let selectedContact = contactForRow(index) {
 
+            if let searchTerm = searchTerm, searchedMessages = searchedMessages {
 
-            if (searchMode) {
+                let allContactMessages = searchedMessages.filter({ (message) -> Bool in
+                    return message.contact == selectedContact
+                })
 
-                if let searchedMessages = searchedMessages {
+                messagesListViewController?.showMessages(allContactMessages, withHighlightTerm:searchTerm)
 
-                    let allContactMessages = searchedMessages.filter({ (message) -> Bool in
-                        return message.contact == selectedContact
-                    })
-
-                    messagesListViewController?.showMessages(allContactMessages)
-                }
-
-            } else {
+            } else { // no search term, display full chat history of contact, with attachments
 
                 chatsDatabase.collectMessagesForContact(selectedContact)
 
@@ -162,12 +158,10 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
                 messagesListViewController?.showMessages(allContactChatItemsSorted)
             }
 
-        } else {
+        } else { // no contact selected, clean up
 
-            if (searchMode) {
-                if let searchedMessages = searchedMessages {
-                    messagesListViewController?.showMessages(searchedMessages)
-                }
+            if let searchTerm = searchTerm, searchedMessages = searchedMessages {
+                messagesListViewController?.showMessages(searchedMessages, withHighlightTerm: searchTerm)
             } else {
                 messagesListViewController?.showMessages([ChatMessage]())
             }
@@ -192,7 +186,7 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
 
         if sender.stringValue == "" {
             
-            searchMode = false
+            searchTerm = nil
             searchedContacts = nil
 
             messagesListViewController?.clearMessages()
@@ -200,19 +194,18 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
             
         } else if sender.stringValue.characters.count >= 3 {
 
-            let searchTerm = sender.stringValue
+            searchTerm = sender.stringValue
 
-            chatsDatabase.searchChatsForString(searchTerm,
+            chatsDatabase.searchChatsForString(searchTerm!,
                 afterDate: afterDateEnabled ? afterDate : nil,
                 beforeDate: beforeDateEnabled ? beforeDate : nil,
                 completion: { (matchingMessages) -> (Void) in
                     let matchingMessagesSorted = matchingMessages.sort(ChatsDatabase.sharedInstance.messageDateSort)
                     
-                    self.messagesListViewController?.showMessages(matchingMessagesSorted, withHighlightTerm:searchTerm)
+                    self.messagesListViewController?.showMessages(matchingMessagesSorted, withHighlightTerm:self.searchTerm)
                     
                     self.searchedContacts = self.contactsFromMessages(matchingMessages)
                     self.searchedMessages = matchingMessagesSorted
-                    self.searchMode = true
                     self.tableView.reloadData()
             })
             

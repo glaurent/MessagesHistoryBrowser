@@ -350,7 +350,7 @@ class ChatsDatabase: NSObject {
 
         do {
             let matchingMessages = try privateMoc.executeFetchRequest(fetchRequest)
-            result = matchingMessages as! [ChatMessage]
+            result = (matchingMessages as! [ChatMessage]).sort(messageDateSort)
 
             result = addSurroundingMessages(result)
 
@@ -380,41 +380,54 @@ class ChatsDatabase: NSObject {
 
     func addSurroundingMessages(messages:[ChatMessage]) -> [ChatMessage]
     {
+        // messages are time-sorted
+
         var result = [ChatMessage]()
 
         let messagesSortedPerContact = sortMessagesPerContact(messages)
 
-        for (contact, messages) in messagesSortedPerContact {
+        for (contact, contactMessages) in messagesSortedPerContact {
             let allContactMessages = contact.messages.sort(messageDateSort) as! [ChatMessage]
 
             var initialMessagesPlusSurroundingMessages = [ChatMessage]()
 
-            for message in messages {
-                let messagesAroundThisMessage = surroundingMessagesForMessage(message, inMessages: allContactMessages, numberBeforeAndAfter: nbOfMessagesBeforeAfter)
-                initialMessagesPlusSurroundingMessages.appendContentsOf(messagesAroundThisMessage)
+            var lastSlice = Range<Int>(start:0, end:0)
+
+            for message in contactMessages {
+                let (messagesRangeAroundThisMessage, disjointSlice) = surroundingMessagesForMessage(message, inMessages: allContactMessages, numberBeforeAndAfter: nbOfMessagesBeforeAfter, previousSliceRange:lastSlice)
+
+                if disjointSlice {
+                    initialMessagesPlusSurroundingMessages.appendContentsOf(allContactMessages[messagesRangeAroundThisMessage])
+                }
+
+                lastSlice = messagesRangeAroundThisMessage
+
             }
+
             result.appendContentsOf(initialMessagesPlusSurroundingMessages) // TODO: remove duplicates
         }
 
         return result
     }
 
-    func surroundingMessagesForMessage(message:ChatMessage, inMessages allMessages:[ChatMessage], numberBeforeAndAfter:Int) -> [ChatMessage]
+    func surroundingMessagesForMessage(message:ChatMessage, inMessages allMessages:[ChatMessage], numberBeforeAndAfter:Int, previousSliceRange:Range<Int>) -> (Range<Int>, Bool)
     {
         let messageIndex = messageIndexInDateSortedMessages(message, inMessages: allMessages)
 
-        let minIndex = max(messageIndex - numberBeforeAndAfter, 0)
-        let maxIndex = min(messageIndex + numberBeforeAndAfter, allMessages.count - 1)
+        let startIndex = max(messageIndex - numberBeforeAndAfter, 0)
+        let endIndex = min(messageIndex + numberBeforeAndAfter, allMessages.count - 1)
 
-        var result = [ChatMessage]()
+        var slice = Range<Int>(start: startIndex, end: endIndex)
+        var disjointSlice = true
 
-        let f = allMessages[minIndex...maxIndex]
+        // check possible join with previous slice
+        if startIndex <= previousSliceRange.endIndex {
+            slice = Range<Int>(start: previousSliceRange.startIndex, end: endIndex)
+            disjointSlice = false
+        }
 
-        result = [ChatMessage](f)
-
-        return result
+        return (slice, disjointSlice)
     }
-
 
     // Taken from http://rshankar.com/binary-search-in-swift/
     //
