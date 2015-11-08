@@ -174,6 +174,8 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
         }
     }
 
+    // MARK: actions
+
     func chatIDsForSelectedRows(selectedRowIndexes : NSIndexSet) -> [Chat]
     {
         let index = selectedRowIndexes.firstIndex // no multiple selection

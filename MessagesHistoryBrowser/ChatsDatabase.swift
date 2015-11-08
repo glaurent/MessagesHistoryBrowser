@@ -298,7 +298,7 @@ class ChatsDatabase: NSObject {
                     messagesForChat(chat)
                 }
             }
-            
+
             NSOperationQueue .mainQueue().addOperationWithBlock({ () -> Void in
                 messagesImportProgress.completedUnitCount++
             })
@@ -316,6 +316,8 @@ class ChatsDatabase: NSObject {
             }
         }
     }
+
+    // MARK: String Search
 
     func searchChatsForString(string:String, afterDate:NSDate? = nil, beforeDate:NSDate? = nil) -> [ChatMessage]
     {
@@ -349,13 +351,95 @@ class ChatsDatabase: NSObject {
         do {
             let matchingMessages = try privateMoc.executeFetchRequest(fetchRequest)
             result = matchingMessages as! [ChatMessage]
+
+            result = addSurroundingMessages(result)
+
         } catch let error as NSError {
             print("\(__FUNCTION__) : Could not fetch \(error), \(error.userInfo)")
         }
 
         return result
     }
-    
+
+    func sortMessagesPerContact(messages:[ChatMessage]) -> [ChatContact:[ChatMessage]]
+    {
+        var result = [ChatContact:[ChatMessage]]()
+
+        for message in messages {
+            if result[message.contact] == nil {
+                result[message.contact] = [ChatMessage]()
+            }
+
+            result[message.contact]?.append(message)
+        }
+
+        return result
+    }
+
+    let nbOfMessagesBeforeAfter = 2 // TODO: make this user configurable
+
+    func addSurroundingMessages(messages:[ChatMessage]) -> [ChatMessage]
+    {
+        var result = [ChatMessage]()
+
+        let messagesSortedPerContact = sortMessagesPerContact(messages)
+
+        for (contact, messages) in messagesSortedPerContact {
+            let allContactMessages = contact.messages.sort(messageDateSort) as! [ChatMessage]
+
+            var initialMessagesPlusSurroundingMessages = [ChatMessage]()
+
+            for message in messages {
+                let messagesAroundThisMessage = surroundingMessagesForMessage(message, inMessages: allContactMessages, numberBeforeAndAfter: nbOfMessagesBeforeAfter)
+                initialMessagesPlusSurroundingMessages.appendContentsOf(messagesAroundThisMessage)
+            }
+            result.appendContentsOf(initialMessagesPlusSurroundingMessages) // TODO: remove duplicates
+        }
+
+        return result
+    }
+
+    func surroundingMessagesForMessage(message:ChatMessage, inMessages allMessages:[ChatMessage], numberBeforeAndAfter:Int) -> [ChatMessage]
+    {
+        let messageIndex = messageIndexInDateSortedMessages(message, inMessages: allMessages)
+
+        let minIndex = max(messageIndex - numberBeforeAndAfter, 0)
+        let maxIndex = min(messageIndex + numberBeforeAndAfter, allMessages.count - 1)
+
+        var result = [ChatMessage]()
+
+        let f = allMessages[minIndex...maxIndex]
+
+        result = [ChatMessage](f)
+
+        return result
+    }
+
+
+    // Taken from http://rshankar.com/binary-search-in-swift/
+    //
+    func messageIndexInDateSortedMessages(message:ChatMessage, inMessages allMessages:[ChatMessage]) -> Int
+    {
+        var lowerIndex = 0;
+        var upperIndex = allMessages.count - 1
+
+        while (true) {
+            let currentIndex = (lowerIndex + upperIndex)/2
+            if (allMessages[currentIndex] == message) {
+                return currentIndex
+            } else if (lowerIndex > upperIndex) {
+                return allMessages.count
+            } else {
+                let messageDateCompare = allMessages[currentIndex].date.compare(message.date)
+                if (messageDateCompare == .OrderedDescending) {
+                    upperIndex = currentIndex - 1
+                } else {
+                    lowerIndex = currentIndex + 1
+                }
+            }
+        }
+    }
+
     func searchChatsForString(string:String, afterDate:NSDate? = nil, beforeDate:NSDate? = nil, completion:([ChatMessage] -> (Void)))
     {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0)) { () -> Void in
