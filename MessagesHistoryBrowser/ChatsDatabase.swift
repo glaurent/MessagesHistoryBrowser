@@ -226,13 +226,16 @@ class ChatsDatabase: NSObject {
 
         let query = db.prepare(messagesTable.select(isFromMeColumn, textColumn, dateColumn).filter(allHandleIDs.contains(handleIdColumn)))
 
+        let chatInPrivateMoc = privateMoc.objectWithID(chat.objectID) as! Chat
+        
         for messageData in query {
             let messageContent = messageData[textColumn] ?? ""
             let dateInt = messageData[dateColumn]
             let dateTimeInterval = NSTimeInterval(dateInt)
             let messageDate = NSDate(timeIntervalSinceReferenceDate: dateTimeInterval)
 //            NSLog("message : \(messageContent)")
-            let chatMessage = ChatMessage(managedObjectContext: privateMoc, withMessage: messageContent, withDate: messageDate, inChat: chat)
+            
+            let chatMessage = ChatMessage(managedObjectContext: privateMoc, withMessage: messageContent, withDate: messageDate, inChat: chatInPrivateMoc)
             chatMessage.isFromMe = messageData[isFromMeColumn]
             res.append(chatMessage)
         }
@@ -272,7 +275,7 @@ class ChatsDatabase: NSObject {
             let attachmentTimeInterval = NSTimeInterval(attachmentDateInt)
             let attachmentDate = NSDate(timeIntervalSinceReferenceDate: attachmentTimeInterval)
 
-            let _ = ChatAttachment(managedObjectContext: privateMoc, withFileName: attachmentFileName, withDate: attachmentDate, inChat:chat)
+            let _ = ChatAttachment(managedObjectContext: privateMoc, withFileName: attachmentFileName, withDate: attachmentDate, inChat:chatInPrivateMoc)
         }
 
         return res
