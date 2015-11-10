@@ -8,6 +8,7 @@
     <entity name="Chat" representedClassName=".Chat" syncable="YES">
         <attribute name="guid" attributeType="String" syncable="YES"/>
         <attribute name="rowID" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="serviceName" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="attachments" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Attachment" inverseName="chat" inverseEntity="Attachment" syncable="YES"/>
         <relationship name="contact" maxCount="1" deletionRule="Nullify" destinationEntity="Contact" inverseName="chats" inverseEntity="Contact" syncable="YES"/>
         <relationship name="messages" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Message" inverseName="chat" inverseEntity="Message" syncable="YES"/>
@@ -30,7 +31,7 @@
     </entity>
     <elements>
         <element name="Attachment" positionX="-36" positionY="36" width="128" height="90"/>
-        <element name="Chat" positionX="-63" positionY="-18" width="128" height="120"/>
+        <element name="Chat" positionX="-63" positionY="-18" width="128" height="135"/>
         <element name="ChatItem" positionX="-54" positionY="72" width="128" height="60"/>
         <element name="Contact" positionX="-27" positionY="63" width="128" height="120"/>
         <element name="Message" positionX="-54" positionY="18" width="128" height="105"/>

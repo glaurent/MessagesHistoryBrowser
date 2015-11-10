@@ -13,6 +13,8 @@ class Chat : NSManagedObject {
 
     @NSManaged var contact:ChatContact
 
+    @NSManaged var serviceName:String
+
     @NSManaged var guid:String
 
     @NSManaged var rowID:NSNumber
@@ -22,12 +24,13 @@ class Chat : NSManagedObject {
     @NSManaged var attachments:NSSet
 
 
-    convenience init(managedObjectContext:NSManagedObjectContext, withContact aContact:ChatContact, withGUID aGuid:String, andRowID aRowID:Int) {
+    convenience init(managedObjectContext:NSManagedObjectContext, withContact aContact:ChatContact, withServiceName aServiceName:String, withGUID aGuid:String, andRowID aRowID:Int) {
 
         let entityDescription = NSEntityDescription.entityForName("Chat", inManagedObjectContext: managedObjectContext)
         self.init(entity: entityDescription!, insertIntoManagedObjectContext: managedObjectContext)
 
         contact = aContact
+        serviceName = aServiceName
         guid = aGuid
         rowID = aRowID
     }

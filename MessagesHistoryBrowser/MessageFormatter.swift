@@ -71,5 +71,18 @@ class MessageFormatter {
         
     }
 
+    func colorForMessageService(serviceName:String) -> NSColor?
+    {
+        var color:NSColor?
+        
+        switch serviceName {
+        case "iMessage": color = NSColor.blueColor()
+        case "SMS" : color = NSColor.greenColor()
+        case "jabber": color = NSColor.orangeColor()
+        default: color = nil
+        }
+        
+        return color
+    }
 
 }
