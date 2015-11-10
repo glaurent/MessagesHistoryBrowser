@@ -11,14 +11,26 @@ import Cocoa
 class MessageFormatter {
 
     let dateFormatter = NSDateFormatter()
-
+    let fullDateFormatter = NSDateFormatter()
+    
     let noMessageString = "<no message>"
     let meString = "me"
     let unknownContact = "<unknown>"
 
+    var terseTimeMode:Bool {
+        didSet {
+            dateFormatter.dateStyle = terseTimeMode ? .NoStyle : .ShortStyle
+        }
+    }
+    
     init() {
         dateFormatter.timeStyle = .ShortStyle
-        dateFormatter.dateStyle = .ShortStyle
+        dateFormatter.dateStyle = .NoStyle
+        
+        fullDateFormatter.timeStyle = .LongStyle
+        fullDateFormatter.dateStyle = .LongStyle
+
+        terseTimeMode = true
     }
 
 //    func formatMessage(message:ChatMessage) -> String
@@ -71,6 +83,11 @@ class MessageFormatter {
         
     }
 
+    func formatMessageDate(messageDate:NSDate) -> NSAttributedString
+    {
+        return NSMutableAttributedString(string: fullDateFormatter.stringFromDate(messageDate) + "\n")
+    }
+    
     func colorForMessageService(serviceName:String) -> NSColor?
     {
         var color:NSColor?
