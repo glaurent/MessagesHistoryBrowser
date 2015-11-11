@@ -158,7 +158,18 @@ class MessagesListViewController: NSViewController, NSCollectionViewDataSource {
 
     func isAttachmentImage(attachment:ChatAttachment) -> Bool
     {
-        return true
+        guard let attachmentFileName = attachment.fileName else { return false }
+
+        let pathString = NSString(string:attachmentFileName)
+
+        let pathExtension = pathString.pathExtension
+
+        if let utType = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, pathExtension, nil)?.takeRetainedValue() {
+
+            return UTTypeConformsTo(utType, kUTTypeImage)
+        }
+
+        return false
     }
 
 }
