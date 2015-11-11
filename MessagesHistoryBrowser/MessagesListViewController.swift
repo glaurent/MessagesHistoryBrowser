@@ -113,10 +113,41 @@ class MessagesListViewController: NSViewController, NSCollectionViewDataSource {
                 allMatchingMessages.appendAttributedString(highlightedMessage)
             } else {
                 let attachment = chatItem as! ChatAttachment
-                
-                let attachmentString = NSAttributedString(string: attachment.fileName! + "\n")
-                allMatchingMessages.appendAttributedString(attachmentString)
-                
+
+                guard let attachmentFileName = attachment.fileName else { continue }
+
+                let attachmentPath = NSString(string:attachmentFileName).stringByStandardizingPath
+
+                let attachmentURL = NSURL(fileURLWithPath: attachmentPath, isDirectory: false)
+
+                do {
+                    let textAttachment:NSTextAttachment
+
+                    if isAttachmentImage(attachment) {
+
+                        textAttachment = NSTextAttachment()
+                        let image = NSImage(byReferencingFile: attachmentPath)
+                        let textAttachmentCell = ImageAttachmentCell(imageCell: image)
+                        textAttachment.attachmentCell = textAttachmentCell
+
+                    } else {
+
+                        let attachmentFileWrapper = try NSFileWrapper(URL: attachmentURL, options:NSFileWrapperReadingOptions(rawValue: 0))
+                        textAttachment = NSTextAttachment(fileWrapper: attachmentFileWrapper)
+
+                    }
+
+                    let attachmentString = NSAttributedString(attachment: textAttachment)
+
+                    let attachmentStringWithNewLine = NSMutableAttributedString(attributedString: attachmentString)
+
+                    attachmentStringWithNewLine.appendAttributedString(NSAttributedString(string: "\n"))
+
+                    allMatchingMessages.appendAttributedString(attachmentStringWithNewLine)
+
+                } catch {
+                    NSLog("Couldn't create filewrapper for \(attachment.fileName)")
+                }
             }
         }
 
@@ -125,5 +156,9 @@ class MessagesListViewController: NSViewController, NSCollectionViewDataSource {
 
     }
 
+    func isAttachmentImage(attachment:ChatAttachment) -> Bool
+    {
+        return true
+    }
 
 }
