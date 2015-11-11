@@ -20,6 +20,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
+    var chatTableViewController:ChatTableViewController?
+
+    var hasChatSelected:Bool {
+        get {
+            return chatTableViewController?.hasChatSelected ?? false
+        }
+    }
 
     func applicationDidFinishLaunching(aNotification: NSNotification) {
         // Insert code here to initialize your application        

@@ -21,16 +21,16 @@ class MessageFormatter {
         dateFormatter.dateStyle = .ShortStyle
     }
 
-//    func formatMessage(message:ChatMessage) -> String
-//    {
-//        let messageContent = message.content ?? noMessageString
-//        let sender = message.isFromMe ? meString : message.chat.contact.name
-//        let dateString = dateFormatter.stringFromDate(message.date)
-//
-//        let messageContentAndSender = "\(dateString) - \(sender) : \(messageContent)"
-//
-//        return messageContentAndSender
-//    }
+    func formatMessageAsString(message:ChatMessage) -> String
+    {
+        let messageContent = message.content ?? noMessageString
+        let sender = message.isFromMe ? meString : message.chat.contact.name
+        let dateString = dateFormatter.stringFromDate(message.date)
+
+        let messageContentAndSender = "\(dateString) - \(sender) : \(messageContent)"
+
+        return messageContentAndSender
+    }
 
 
     func formatMessage(message:ChatMessage, withHighlightTerm highlightTerm:String? = nil) -> NSAttributedString?

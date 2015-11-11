@@ -42,10 +42,17 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
     
     dynamic var beforeDate = NSDate()
     dynamic var afterDate = NSDate()
-    
+
+    var hasChatSelected:Bool {
+        get { return tableView != nil && tableView.selectedRow >= 0 }
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do view setup here.
+
+        let appDelegate = NSApp.delegate as! AppDelegate
+        appDelegate.chatTableViewController = self
 
         chatsDatabase = ChatsDatabase.sharedInstance
 
@@ -62,10 +69,15 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
 //        progress.addObserver(self, forKeyPath: "fractionCompleted", options: NSKeyValueObservingOptions.New, context: nil)
 
         chatsDatabase.populate(progress, completion: { () -> Void in
-                self.progressReportView.hidden = true
-                self.allKnownContacts = ChatContact.allKnownContactsInContext(self.moc)
-                self.allUnknownContacts = ChatContact.allUnknownContactsInContext(self.moc)
-                self.tableView.reloadData()
+            self.progressReportView.hidden = true
+            self.allKnownContacts = ChatContact.allKnownContactsInContext(self.moc)
+            self.allUnknownContacts = ChatContact.allUnknownContactsInContext(self.moc)
+            self.tableView.reloadData()
+
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0)) { () -> Void in
+                do { try self.moc.save() } catch { NSLog("DB save failed") } // TODO : what if this occurs while app is quitting ? AppDelegate saves the DB too
+            }
+
         })
 
     }
@@ -267,5 +279,59 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
 //            dbPopulateProgressIndicator.doubleValue = newValue.doubleValue
 //        }
 //    }
+
+    // MARK: file save
+
+    enum SaveError : ErrorType {
+        case dataConversionFailed
+    }
+
+    func saveContactChats(contact:ChatContact, atURL url:NSURL)
+    {
+        do {
+
+            chatsDatabase.collectMessagesForContact(contact)
+
+            let messages = contact.messages.sort(chatsDatabase.messageDateSort) as! [ChatMessage]
+
+            let reducer = { (currentValue:String, message:ChatMessage) -> String in
+                return currentValue + "\n" + self.messageFormatter.formatMessageAsString(message)
+            }
+
+            let allMessagesAsString = messages.reduce("", combine:reducer)
+
+            let tmpNSString = NSString(string: allMessagesAsString)
+
+            if let data = tmpNSString.dataUsingEncoding(NSUTF8StringEncoding) {
+
+                NSFileManager.defaultManager().createFileAtPath(url.path!, contents: data, attributes: nil)
+
+            } else {
+                throw SaveError.dataConversionFailed
+            }
+
+        } catch {
+            NSLog("save failed")
+        }
+    }
+
+    @IBAction func saveChat(sender:AnyObject)
+    {
+        guard let window = view.window else { return }
+
+        guard let selectedContact = contactForRow(tableView.selectedRow) else { return }
+
+        let savePanel = NSSavePanel()
+
+        savePanel.nameFieldStringValue = selectedContact.name
+
+        savePanel.beginSheetModalForWindow(window) { (modalResponse) -> Void in
+            NSLog("do save at URL \(savePanel.URL)")
+
+            guard let saveURL = savePanel.URL else { return }
+
+            self.saveContactChats(selectedContact, atURL: saveURL)
+        }
+    }
 
 }
