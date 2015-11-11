@@ -115,11 +115,11 @@ class ChatsDatabase: NSObject {
             
             let chatContact = contactForIdentifier(identifier, service:serviceName)
             
-            let _ = Chat(managedObjectContext:privateMoc, withContact:chatContact, withGUID: guid, andRowID: rowID)
+            let _ = Chat(managedObjectContext:privateMoc, withContact:chatContact, withServiceName:serviceName,  withGUID: guid, andRowID: rowID)
             
             NSLog("chat : %@ \tcontact : %@\trowId: %d", guid, chatContact.name, rowID)
 
-            NSOperationQueue .mainQueue().addOperationWithBlock({ () -> Void in
+            NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
                 chatImportProgress.completedUnitCount = rowIndex
             })
 

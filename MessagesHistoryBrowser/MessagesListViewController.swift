@@ -21,6 +21,14 @@ class MessagesListViewController: NSViewController, NSCollectionViewDataSource {
 
     let messageFormatter = MessageFormatter()
 
+    let delayBetweenChatsInSeconds = NSTimeInterval(24 * 3600)
+    
+    var terseTimeMode = true {
+        didSet {
+            messageFormatter.terseTimeMode = terseTimeMode
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -41,6 +49,8 @@ class MessagesListViewController: NSViewController, NSCollectionViewDataSource {
         gridLayout.minimumInteritemSpacing = 10
         gridLayout.margins = NSEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
         attachmentsCollectionView.collectionViewLayout = gridLayout
+        
+//        terseTimeMode = false
 
     }
 
@@ -79,13 +89,24 @@ class MessagesListViewController: NSViewController, NSCollectionViewDataSource {
     {
         messagesTextView.string = ""
     }
-
+    
     func showMessages(chatItems:[ChatItem], withHighlightTerm highlightTerm:String? = nil)
     {
         let allMatchingMessages = NSMutableAttributedString()
 
+        var lastShownDate:NSDate?
+        
         for chatItem in chatItems {
 
+            if terseTimeMode {
+                if lastShownDate == nil || chatItem.date.timeIntervalSinceDate(lastShownDate!) > delayBetweenChatsInSeconds {
+                    let highlightedDate = messageFormatter.formatMessageDate(chatItem.date)
+                    allMatchingMessages.appendAttributedString(highlightedDate)
+                }
+                
+                lastShownDate = chatItem.date
+            }
+            
             if let message = chatItem as? ChatMessage {
                 guard let highlightedMessage = messageFormatter.formatMessage(message, withHighlightTerm: highlightTerm) else { continue }
 
