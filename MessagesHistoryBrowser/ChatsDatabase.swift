@@ -70,7 +70,7 @@ class ChatsDatabase: NSObject {
 
                 dispatch_async(dispatch_get_main_queue(), { () -> Void in
 
-                    do { try self.privateMoc.save() } catch { NSLog("bgMoc save error : \(error)") }
+                    do { try self.moc.save() } catch { NSLog("bgMoc save error : \(error)") }
 
                     completion()
 
