@@ -8,9 +8,11 @@
 
 import Cocoa
 
-class MessagesListViewController: NSViewController, NSCollectionViewDataSource {
+class MessagesListViewController: NSViewController, NSCollectionViewDataSource, AttachmentsCollectionViewDelegate {
 
-    static let collectionViewItemID = "AttachmentsCollectionViewItem"
+    let collectionViewItemID = "AttachmentsCollectionViewItem"
+
+    let windowControllerId = "ImageAttachmentDisplayWindowController"
 
     @IBOutlet weak var attachmentsCollectionView: NSCollectionView!
     @IBOutlet var messagesTextView: NSTextView!
@@ -28,7 +30,12 @@ class MessagesListViewController: NSViewController, NSCollectionViewDataSource {
             messageFormatter.terseTimeMode = terseTimeMode
         }
     }
-    
+
+    lazy var currentImageAttachmentDisplayWindowController:NSWindowController = {
+        let wc = self.storyboard!.instantiateControllerWithIdentifier(self.windowControllerId) as? NSWindowController
+        return wc!
+    }()
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -37,19 +44,21 @@ class MessagesListViewController: NSViewController, NSCollectionViewDataSource {
         dateFormatter.timeStyle = .ShortStyle
         dateFormatter.dateStyle = .ShortStyle
 
-        attachmentsCollectionView.dataSource = self // Xcode 7.0.1 crashes when trying to open the connections tab of the collection view
+        let aNib = NSNib(nibNamed: collectionViewItemID, bundle: nil)
 
-        let aNib = NSNib(nibNamed: MessagesListViewController.collectionViewItemID, bundle: nil)
+        attachmentsCollectionView.registerNib(aNib, forItemWithIdentifier: collectionViewItemID)
 
-        attachmentsCollectionView.registerNib(aNib, forItemWithIdentifier: MessagesListViewController.collectionViewItemID)
+//        let gridLayout = NSCollectionViewGridLayout()
+//        gridLayout.minimumItemSize = NSSize(width: 100, height: 100)
+//        gridLayout.maximumItemSize = NSSize(width: 175, height: 175)
+//        gridLayout.minimumInteritemSpacing = 10
+//        gridLayout.margins = NSEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
+//        attachmentsCollectionView.collectionViewLayout = gridLayout
 
-        let gridLayout = NSCollectionViewGridLayout()
-        gridLayout.minimumItemSize = NSSize(width: 100, height: 100)
-        gridLayout.maximumItemSize = NSSize(width: 175, height: 175)
-        gridLayout.minimumInteritemSpacing = 10
-        gridLayout.margins = NSEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
-        attachmentsCollectionView.collectionViewLayout = gridLayout
-        
+        if let flowLayout = attachmentsCollectionView.collectionViewLayout as? NSCollectionViewFlowLayout {
+            flowLayout.minimumInteritemSpacing = 15.0
+        }
+
 //        terseTimeMode = false
 
     }
@@ -70,7 +79,7 @@ class MessagesListViewController: NSViewController, NSCollectionViewDataSource {
 
         let attachment = attachmentsToDisplay[indexPath.item]
 
-        let item = collectionView.makeItemWithIdentifier(MessagesListViewController.collectionViewItemID, forIndexPath: indexPath)
+        let item = collectionView.makeItemWithIdentifier(collectionViewItemID, forIndexPath: indexPath)
 
         if let attachmentFileName = attachment.fileName {
 
@@ -83,6 +92,39 @@ class MessagesListViewController: NSViewController, NSCollectionViewDataSource {
         }
 
         return item
+    }
+
+
+    func collectionView(collectionView: NSCollectionView, didSelectItemsAtIndexPaths indexPaths: Set<NSIndexPath>)
+    {
+        NSLog("didSelectItemsAtIndexPaths \(indexPaths)")
+    }
+
+    func displayAttachmentAtIndexPath(indexPath: NSIndexPath) {
+        NSLog("displayAttachmentAtIndexPath \(indexPath)")
+
+        let imageAttachmentDisplayViewController = currentImageAttachmentDisplayWindowController.contentViewController as! ImageAttachmentDisplayViewController
+
+        if let image = imageForAttachmentAtIndexPath(indexPath) {
+
+            imageAttachmentDisplayViewController.image = image
+
+            currentImageAttachmentDisplayWindowController.showWindow(nil)
+
+        }
+
+    }
+
+    func imageForAttachmentAtIndexPath(indexPath:NSIndexPath) -> NSImage?
+    {
+        if let attachment = attachmentsToDisplay?[indexPath.item], attachmentFileName = attachment.fileName {
+
+            let imagePath = NSString(string:attachmentFileName).stringByStandardizingPath
+            let image = NSImage(byReferencingFile: imagePath)
+            return image
+        }
+
+        return nil
     }
 
     func clearMessages()

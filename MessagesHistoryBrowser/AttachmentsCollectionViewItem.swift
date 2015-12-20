@@ -10,9 +10,23 @@ import Cocoa
 
 class AttachmentsCollectionViewItem: NSCollectionViewItem {
 
+    override var selected:Bool {
+        didSet {
+            if selected {
+                view.layer?.borderColor = NSColor.selectedMenuItemColor().CGColor
+                view.layer?.borderWidth = 4.0
+            } else {
+                view.layer?.borderColor = NSColor.clearColor().CGColor
+                view.layer?.borderWidth = 0.0
+            }
+        }
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do view setup here.
+
+        view.layer?.cornerRadius = 5.0
     }
-    
+
 }
