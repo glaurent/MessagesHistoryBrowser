@@ -12,18 +12,35 @@ class ImageAttachmentDisplayViewController: NSViewController {
 
     @IBOutlet weak var imageView: NSImageView!
 
+    var halfScreenSize:NSSize!
+
+    let windowTopBarHeight:CGFloat = 22.0
+
     var image:NSImage? {
         set {
-            // TODO - limit image size
+
             if let newImage = newValue {
                 let newImageSize = newImage.size
                 let mainScreenSize = NSScreen.mainScreen()!.frame.size
 
+                var newSize:NSSize
+
                 if newImageSize.height > mainScreenSize.height || newImageSize.width > mainScreenSize.width {
-                    view.frame.size = NSSize(width: mainScreenSize.width / 2.0, height: mainScreenSize.height / 2.0)
+
+                    newSize = size(newImageSize, inBounds:halfScreenSize)
+//                    NSLog("initial size : \(newImage.size) - scaled down newSize : \(newSize)")
+
+//                    newSize = NSSize(width: mainScreenSize.width / 2.0, height: mainScreenSize.height / 2.0)
                 } else {
-                    view.frame.size = newImageSize
+                    newSize = NSSize(width: newImageSize.width, height: newImageSize.height + windowTopBarHeight) // window top bar
                 }
+
+                var windowFrame = view.window!.frame
+                windowFrame.size = newSize
+//                NSLog("initial size : \(newImage.size) - scaled down newSize : \(newSize)")
+
+                view.window?.setFrame(windowFrame, display: true, animate: true)
+
                 view.needsLayout = true
                 
                 imageView.image = newImage
@@ -41,9 +58,25 @@ class ImageAttachmentDisplayViewController: NSViewController {
 
         let mainScreenSize = NSScreen.mainScreen()!.frame.size
 
+        halfScreenSize = NSSize(width: mainScreenSize.width / 2.0, height: mainScreenSize.height / 2.0)
+
         view.window?.maxSize = NSSize(width: mainScreenSize.width * 0.75, height: mainScreenSize.height / 0.75)
     }
 
+    func size(aSize:NSSize, inBounds bounds:NSSize) -> NSSize
+    {
+        let ratio = aSize.width / aSize.height
 
+        let newWidthCandidate = bounds.height * ratio
+        let newHeightCandidate = bounds.width / ratio
+
+        let newHeight = newWidthCandidate / ratio
+
+        if newHeight < bounds.height {
+            return NSSize(width: newWidthCandidate, height: newHeight + windowTopBarHeight)
+        } else {
+            return NSSize(width: newHeightCandidate * ratio, height: newHeightCandidate + windowTopBarHeight)
+        }
+    }
 
 }
