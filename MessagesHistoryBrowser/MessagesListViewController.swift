@@ -95,6 +95,13 @@ class MessagesListViewController: NSViewController, NSCollectionViewDataSource, 
     func collectionView(collectionView: NSCollectionView, didSelectItemsAtIndexPaths indexPaths: Set<NSIndexPath>)
     {
         NSLog("didSelectItemsAtIndexPaths \(indexPaths)")
+
+        if let attachment = attachmentsToDisplay?[indexPaths.first!.item] {
+            if let range = attachment.associatedRange {
+                messagesTextView.scrollRangeToVisible(range)
+            }
+        }
+
     }
 
     // MARK: attachments display
@@ -181,6 +188,9 @@ class MessagesListViewController: NSViewController, NSCollectionViewDataSource, 
                         let image = NSImage(byReferencingFile: attachmentPath)
                         let textAttachmentCell = ImageAttachmentCell(imageCell: image)
                         textAttachment.attachmentCell = textAttachmentCell
+
+                        let associatedRange = NSRange(location: allMatchingMessages.length, length: 1)
+                        attachment.associatedRange = associatedRange
 
                     } else {
 

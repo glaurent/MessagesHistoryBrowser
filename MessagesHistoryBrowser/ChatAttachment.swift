@@ -15,6 +15,8 @@ class ChatAttachment: ChatItem {
     @NSManaged var chat:Chat
     @NSManaged var contact:ChatContact
 
+    var associatedRange:NSRange?
+
     convenience init(managedObjectContext:NSManagedObjectContext, withFileName aFileName:String, withDate aDate:NSDate, inChat aChat:Chat) {
 
         let entityDescription = NSEntityDescription.entityForName("Attachment", inManagedObjectContext: managedObjectContext)
