@@ -31,10 +31,7 @@ class MessagesListViewController: NSViewController, NSCollectionViewDataSource, 
         }
     }
 
-    lazy var currentImageAttachmentDisplayWindowController:NSWindowController = {
-        let wc = self.storyboard!.instantiateControllerWithIdentifier(self.windowControllerId) as? NSWindowController
-        return wc!
-    }()
+    var currentImageAttachmentDisplayWindowController:NSWindowController?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -100,19 +97,32 @@ class MessagesListViewController: NSViewController, NSCollectionViewDataSource, 
         NSLog("didSelectItemsAtIndexPaths \(indexPaths)")
     }
 
+    // MARK: attachments display
+
     func displayAttachmentAtIndexPath(indexPath: NSIndexPath) {
         NSLog("displayAttachmentAtIndexPath \(indexPath)")
 
-        let imageAttachmentDisplayViewController = currentImageAttachmentDisplayWindowController.contentViewController as! ImageAttachmentDisplayViewController
+        if currentImageAttachmentDisplayWindowController == nil {
+            currentImageAttachmentDisplayWindowController = self.storyboard!.instantiateControllerWithIdentifier(self.windowControllerId) as? NSWindowController
+        }
+
+        let imageAttachmentDisplayViewController = currentImageAttachmentDisplayWindowController?.contentViewController as! ImageAttachmentDisplayViewController
 
         if let image = imageForAttachmentAtIndexPath(indexPath) {
 
             imageAttachmentDisplayViewController.image = image
 
-            currentImageAttachmentDisplayWindowController.showWindow(nil)
+//            currentImageAttachmentDisplayWindowController.window?.level = Int(CGWindowLevelKey.FloatingWindowLevelKey.rawValue)
+            currentImageAttachmentDisplayWindowController?.showWindow(self)
+            view.window?.makeKeyWindow()
 
         }
 
+    }
+
+    func hideAttachmentDisplayWindow()
+    {
+        currentImageAttachmentDisplayWindowController?.window?.orderOut(self)
     }
 
     func imageForAttachmentAtIndexPath(indexPath:NSIndexPath) -> NSImage?

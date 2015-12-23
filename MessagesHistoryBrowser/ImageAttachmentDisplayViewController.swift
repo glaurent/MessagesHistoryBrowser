@@ -16,6 +16,8 @@ class ImageAttachmentDisplayViewController: NSViewController {
 
     let windowTopBarHeight:CGFloat = 22.0
 
+    let maxSizeScreenRatio:CGFloat = 4.0 // images won't be displayed larger than (screen size) * ratio
+
     var image:NSImage? {
         set {
 
@@ -25,7 +27,7 @@ class ImageAttachmentDisplayViewController: NSViewController {
 
                 var newSize:NSSize
 
-                if newImageSize.height > mainScreenSize.height || newImageSize.width > mainScreenSize.width {
+                if newImageSize.height > (mainScreenSize.height / maxSizeScreenRatio) || newImageSize.width > (mainScreenSize.width / maxSizeScreenRatio) {
 
                     newSize = size(newImageSize, inBounds:halfScreenSize)
 //                    NSLog("initial size : \(newImage.size) - scaled down newSize : \(newSize)")
@@ -58,9 +60,9 @@ class ImageAttachmentDisplayViewController: NSViewController {
 
         let mainScreenSize = NSScreen.mainScreen()!.frame.size
 
-        halfScreenSize = NSSize(width: mainScreenSize.width / 2.0, height: mainScreenSize.height / 2.0)
+        halfScreenSize = NSSize(width: mainScreenSize.width / maxSizeScreenRatio, height: mainScreenSize.height / maxSizeScreenRatio)
 
-        view.window?.maxSize = NSSize(width: mainScreenSize.width * 0.75, height: mainScreenSize.height / 0.75)
+        view.window?.maxSize = NSSize(width: mainScreenSize.width / maxSizeScreenRatio, height: mainScreenSize.height / maxSizeScreenRatio)
     }
 
     func size(aSize:NSSize, inBounds bounds:NSSize) -> NSSize
