@@ -337,19 +337,31 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
 
     func refreshChatHistory() {
 
+        // hide normal UI, show progress report
+        //
+        dispatch_async(dispatch_get_main_queue()) { () -> Void in
+            self.tableView.hidden = true
+            self.messagesListViewController?.view.hidden = true
+            self.progressReportView.hidden = false
+        }
+
         let appDelegate = NSApp.delegate as! AppDelegate
 
         appDelegate.clearAllCoreData()
 
-        tableView.reloadData()
-        
-        progressReportView.hidden = false
-
         ChatsDatabase.sharedInstance.populate(progress) { () -> Void in
+
+            // hide progress report, restore normal UI
+            //
             self.progressReportView.hidden = true
+            self.tableView.hidden = false
+            self.messagesListViewController?.view.hidden = false
+
             self.allKnownContacts = ChatContact.allKnownContactsInContext(self.moc)
             self.allUnknownContacts = ChatContact.allUnknownContactsInContext(self.moc)
             self.tableView.reloadData()
+
+            appDelegate.isRefreshingHistory = false
 
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0)) { () -> Void in
                 do { try self.moc.save() } catch { NSLog("DB save failed") } // TODO : what if this occurs while app is quitting ? AppDelegate saves the DB too

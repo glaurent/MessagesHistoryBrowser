@@ -63,6 +63,11 @@
                                         <menuItem title="Refresh Chat History" keyEquivalent="r" id="h5R-5O-XsL">
                                             <connections>
                                                 <action selector="refreshChatHistory:" target="Ady-hI-5gd" id="d1k-W9-cmP"/>
+                                                <binding destination="Voe-Tx-rLC" name="enabled" keyPath="self.isRefreshingHistory" id="kRk-ul-lBX">
+                                                    <dictionary key="options">
+                                                        <string key="NSValueTransformerName">NSNegateBoolean</string>
+                                                    </dictionary>
+                                                </binding>
                                             </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="m54-Is-iLE"/>
@@ -752,7 +757,7 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                 </tableHeaderView>
                             </scrollView>
-                            <stackView distribution="fill" orientation="horizontal" alignment="centerY" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="77S-WJ-P3C">
+                            <stackView distribution="fillProportionally" orientation="horizontal" alignment="centerY" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="77S-WJ-P3C">
                                 <rect key="frame" x="9" y="257" width="317" height="23"/>
                                 <subviews>
                                     <button translatesAutoresizingMaskIntoConstraints="NO" id="CXs-ND-wjJ">

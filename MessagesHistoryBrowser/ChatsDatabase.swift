@@ -13,7 +13,9 @@ class ChatsDatabase: NSObject {
 
     static let sharedInstance = ChatsDatabase()
 
-    let chatsDBPath = "/Users/glaurent/tmp/chat.db"
+//    let chatsDBPath = "/Users/glaurent/tmp/chat.db"
+
+    let chatsDBPath = NSString(string:"~/Library/Messages/chat.db").stringByStandardizingPath
 
     var contactsPhoneNumber:ContactsMap! // want delayed init
 
@@ -117,7 +119,7 @@ class ChatsDatabase: NSObject {
             
             let _ = Chat(managedObjectContext:privateMoc, withContact:chatContact, withServiceName:serviceName,  withGUID: guid, andRowID: rowID)
             
-            NSLog("chat : %@ \tcontact : %@\trowId: %d", guid, chatContact.name, rowID)
+//            NSLog("chat : %@ \tcontact : %@\trowId: %d", guid, chatContact.name, rowID)
 
             NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
                 chatImportProgress.completedUnitCount = rowIndex

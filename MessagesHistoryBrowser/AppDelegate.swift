@@ -28,6 +28,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
+    dynamic var isRefreshingHistory = false
+
     func applicationDidFinishLaunching(aNotification: NSNotification) {
         // Insert code here to initialize your application        
     }
@@ -179,6 +181,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     @IBAction func refreshChatHistory(sender: AnyObject) {
+        isRefreshingHistory = true
         chatTableViewController?.refreshChatHistory()
     }
 
