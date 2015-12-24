@@ -85,7 +85,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             coordinator = NSPersistentStoreCoordinator(managedObjectModel: self.managedObjectModel)
             let url = self.applicationDocumentsDirectory.URLByAppendingPathComponent("CocoaAppCD.storedata")
             do {
-                try coordinator!.addPersistentStoreWithType(NSXMLStoreType, configuration: nil, URL: url, options: nil)
+                try coordinator!.addPersistentStoreWithType(NSBinaryStoreType, configuration: nil, URL: url, options: nil)
             } catch {
                 failError = error as! NSError
             }
@@ -178,6 +178,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         return .TerminateNow
     }
 
+    @IBAction func refreshChatHistory(sender: AnyObject) {
+        chatTableViewController?.refreshChatHistory()
+    }
 
     func clearAllCoreData() {
 
@@ -187,11 +190,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             managedObjectContext.deleteObject(contact)
         }
 
-        do {
-            try managedObjectContext.save()
-        } catch {
-
-        }
+//        do {
+//            try managedObjectContext.save()
+//        } catch {
+//
+//        }
     }
 
 }

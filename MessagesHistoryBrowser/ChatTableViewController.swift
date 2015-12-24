@@ -335,4 +335,27 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
         }
     }
 
+    func refreshChatHistory() {
+
+        let appDelegate = NSApp.delegate as! AppDelegate
+
+        appDelegate.clearAllCoreData()
+
+        tableView.reloadData()
+        
+        progressReportView.hidden = false
+
+        ChatsDatabase.sharedInstance.populate(progress) { () -> Void in
+            self.progressReportView.hidden = true
+            self.allKnownContacts = ChatContact.allKnownContactsInContext(self.moc)
+            self.allUnknownContacts = ChatContact.allUnknownContactsInContext(self.moc)
+            self.tableView.reloadData()
+
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0)) { () -> Void in
+                do { try self.moc.save() } catch { NSLog("DB save failed") } // TODO : what if this occurs while app is quitting ? AppDelegate saves the DB too
+            }
+        }
+
+    }
+
 }

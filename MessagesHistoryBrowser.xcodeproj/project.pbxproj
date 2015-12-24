@@ -147,6 +147,26 @@
 			path = ..;
 			sourceTree = "<group>";
 		};
+		AF8003B91C2C8040008A1D64 /* Attachments Collection View */ = {
+			isa = PBXGroup;
+			children = (
+				AF82EDB61C23723F00F8132D /* AttachmentsCollectionViewDelegate.swift */,
+				AFAF8B131BF3B91E009D92F6 /* ImageAttachmentCell.swift */,
+				AFE9B8011BCB088A007FC376 /* AttachmentsCollectionViewItem.swift */,
+				AF82EDB41C23708B00F8132D /* AttachmentsCollectionView.swift */,
+				AFE9B8021BCB088A007FC376 /* AttachmentsCollectionViewItem.xib */,
+			);
+			name = "Attachments Collection View";
+			sourceTree = "<group>";
+		};
+		AF8003BA1C2C806A008A1D64 /* unused */ = {
+			isa = PBXGroup;
+			children = (
+				AFD974CC1BB81ACB004CF8D7 /* ChatListViewController.swift */,
+			);
+			name = unused;
+			sourceTree = "<group>";
+		};
 		AFD9748A1BB816B5004CF8D7 = {
 			isa = PBXGroup;
 			children = (
@@ -172,23 +192,19 @@
 			children = (
 				AF8003B71C273838008A1D64 /* ImageAttachmentDisplayViewController.swift */,
 				AF47D8761BDCDD20002CDF4B /* ChatTableViewController.swift */,
-				AFD974CC1BB81ACB004CF8D7 /* ChatListViewController.swift */,
 				AFE9B8051BD3A2EE007FC376 /* MessageFormatter.swift */,
 				AF424CD91BC965FF006EE8D2 /* CoreData */,
 				AFD974C91BB81885004CF8D7 /* ContactsMap.swift */,
 				AF2B2DEE1BC18BE1000B8293 /* ChatsDatabase.swift */,
 				AF2B2DF21BC19E81000B8293 /* MessagesListViewController.swift */,
-				AF82EDB61C23723F00F8132D /* AttachmentsCollectionViewDelegate.swift */,
-				AFAF8B131BF3B91E009D92F6 /* ImageAttachmentCell.swift */,
-				AFE9B8011BCB088A007FC376 /* AttachmentsCollectionViewItem.swift */,
-				AF82EDB41C23708B00F8132D /* AttachmentsCollectionView.swift */,
-				AFE9B8021BCB088A007FC376 /* AttachmentsCollectionViewItem.xib */,
+				AF8003B91C2C8040008A1D64 /* Attachments Collection View */,
 				AFD974961BB816B5004CF8D7 /* AppDelegate.swift */,
 				AFD974981BB816B5004CF8D7 /* ViewController.swift */,
 				AFD9749D1BB816B5004CF8D7 /* Assets.xcassets */,
 				AFD9749F1BB816B6004CF8D7 /* Main.storyboard */,
 				AFD974A21BB816B6004CF8D7 /* Info.plist */,
 				AFD9749A1BB816B5004CF8D7 /* MessagesHistoryBrowser.xcdatamodeld */,
+				AF8003BA1C2C806A008A1D64 /* unused */,
 				AF6F10EC1BB8222500A93152 /* Frameworks */,
 			);
 			path = MessagesHistoryBrowser;
