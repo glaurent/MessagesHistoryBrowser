@@ -51,12 +51,12 @@ class ChatContact: NSManagedObject {
 
     class func allKnownContactsInContext(managedObjectContext:NSManagedObjectContext) -> [ChatContact] {
 
-        return allContactsInContext(managedObjectContext, withPredicate: NSPredicate(format: "known == YES"))
+        return allContactsInContext(managedObjectContext, withPredicate: NSPredicate(format: "known == YES && messages[SIZE] > 0"))
     }
 
     class func allUnknownContactsInContext(managedObjectContext:NSManagedObjectContext) -> [ChatContact] {
 
-        return allContactsInContext(managedObjectContext, withPredicate: NSPredicate(format: "known == NO"))
+        return allContactsInContext(managedObjectContext, withPredicate: NSPredicate(format: "known == NO && messages[SIZE] > 0"))
     }
 
     class func allContactsInContext(managedObjectContext:NSManagedObjectContext, withPredicate predicate:NSPredicate? = nil) -> [ChatContact] {
