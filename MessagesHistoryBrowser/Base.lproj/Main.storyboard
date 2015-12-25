@@ -629,7 +629,7 @@
                 <customObject id="Voe-Tx-rLC" customClass="AppDelegate" customModule="MessagesHistoryBrowser" customModuleProvider="target"/>
                 <customObject id="Ady-hI-5gd" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="75" y="0.0"/>
+            <point key="canvasLocation" x="75" y="-236"/>
         </scene>
         <!--Window Controller-->
         <scene sceneID="R2V-B0-nI4">
@@ -676,11 +676,48 @@
             <objects>
                 <viewController id="c6g-xc-DOK" customClass="ChatTableViewController" customModule="MessagesHistoryBrowser" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="1Kq-np-puo">
-                        <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
+                        <rect key="frame" x="0.0" y="0.0" width="553" height="300"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
+                            <customView translatesAutoresizingMaskIntoConstraints="NO" id="PId-FV-l0o" userLabel="ProgressReportView">
+                                <rect key="frame" x="0.0" y="0.0" width="553" height="280"/>
+                                <subviews>
+                                    <progressIndicator wantsLayer="YES" maxValue="1" style="bar" translatesAutoresizingMaskIntoConstraints="NO" id="LcQ-1Y-GBm">
+                                        <rect key="frame" x="116" y="130" width="322" height="20"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="322" id="do5-qG-93O"/>
+                                            <constraint firstAttribute="height" constant="18" id="tjQ-of-yef"/>
+                                        </constraints>
+                                        <connections>
+                                            <binding destination="c6g-xc-DOK" name="value" keyPath="self.progress.fractionCompleted" id="DWk-ip-DGD"/>
+                                        </connections>
+                                    </progressIndicator>
+                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="G2L-Mo-7yd">
+                                        <rect key="frame" x="114" y="106" width="326" height="17"/>
+                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="progress report" id="jdD-9y-Tp5">
+                                            <font key="font" metaFont="system"/>
+                                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                        <connections>
+                                            <binding destination="c6g-xc-DOK" name="value" keyPath="self.progress.localizedDescription" id="5EO-1E-YTe">
+                                                <dictionary key="options">
+                                                    <bool key="NSAllowsEditingMultipleValuesSelection" value="NO"/>
+                                                </dictionary>
+                                            </binding>
+                                        </connections>
+                                    </textField>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="G2L-Mo-7yd" firstAttribute="centerX" secondItem="LcQ-1Y-GBm" secondAttribute="centerX" id="8bM-PG-VdJ"/>
+                                    <constraint firstItem="LcQ-1Y-GBm" firstAttribute="centerY" secondItem="PId-FV-l0o" secondAttribute="centerY" id="Jn8-ZY-Ooe"/>
+                                    <constraint firstItem="LcQ-1Y-GBm" firstAttribute="centerX" secondItem="PId-FV-l0o" secondAttribute="centerX" id="LFB-lH-q2p"/>
+                                    <constraint firstItem="G2L-Mo-7yd" firstAttribute="width" secondItem="LcQ-1Y-GBm" secondAttribute="width" id="dbw-jw-Ys5"/>
+                                    <constraint firstItem="G2L-Mo-7yd" firstAttribute="top" secondItem="LcQ-1Y-GBm" secondAttribute="bottom" constant="8" id="h6I-Iy-34l"/>
+                                </constraints>
+                            </customView>
                             <searchField wantsLayer="YES" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="cWC-s3-YlP">
-                                <rect key="frame" x="0.0" y="278" width="450" height="22"/>
+                                <rect key="frame" x="0.0" y="278" width="553" height="22"/>
                                 <searchFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" borderStyle="bezel" usesSingleLineMode="YES" bezelStyle="round" id="gBh-7T-Jv6">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -691,13 +728,13 @@
                                 </connections>
                             </searchField>
                             <scrollView autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7dD-SL-gUk">
-                                <rect key="frame" x="0.0" y="0.0" width="450" height="252"/>
+                                <rect key="frame" x="0.0" y="0.0" width="553" height="252"/>
                                 <clipView key="contentView" id="8Ke-ny-68A">
-                                    <rect key="frame" x="1" y="0.0" width="448" height="251"/>
+                                    <rect key="frame" x="1" y="0.0" width="551" height="251"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="firstColumnOnly" columnReordering="NO" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" headerView="nSq-37-0ca" viewBased="YES" id="yQc-Jz-Fx4">
-                                            <rect key="frame" x="0.0" y="0.0" width="448" height="228"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="551" height="228"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <size key="intercellSpacing" width="3" height="2"/>
                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -753,15 +790,23 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
                                 <tableHeaderView key="headerView" id="nSq-37-0ca">
-                                    <rect key="frame" x="0.0" y="0.0" width="448" height="23"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="551" height="23"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </tableHeaderView>
                             </scrollView>
                             <stackView distribution="fillProportionally" orientation="horizontal" alignment="centerY" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="77S-WJ-P3C">
-                                <rect key="frame" x="9" y="257" width="317" height="23"/>
+                                <rect key="frame" x="9" y="257" width="420" height="23"/>
                                 <subviews>
+                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="QDg-Ou-2tA">
+                                        <rect key="frame" x="-2" y="3" width="99" height="17"/>
+                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Filter messages" id="UjA-YL-n5o">
+                                            <font key="font" metaFont="system"/>
+                                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                    </textField>
                                     <button translatesAutoresizingMaskIntoConstraints="NO" id="CXs-ND-wjJ">
-                                        <rect key="frame" x="-2" y="3" width="51" height="18"/>
+                                        <rect key="frame" x="101" y="3" width="51" height="18"/>
                                         <buttonCell key="cell" type="check" title="after" bezelStyle="regularSquare" imagePosition="left" inset="2" id="bux-MY-WHX">
                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                             <font key="font" metaFont="system"/>
@@ -772,7 +817,7 @@
                                         </connections>
                                     </button>
                                     <datePicker verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="lou-wM-eNy">
-                                        <rect key="frame" x="55" y="0.0" width="97" height="27"/>
+                                        <rect key="frame" x="158" y="0.0" width="97" height="27"/>
                                         <datePickerCell key="cell" borderStyle="bezel" alignment="left" id="kXc-qA-xvl">
                                             <font key="font" metaFont="system"/>
                                             <calendarDate key="date" timeIntervalSinceReferenceDate="-595929600" calendarFormat="%Y-%m-%d %H:%M:%S %z">
@@ -788,7 +833,7 @@
                                         </connections>
                                     </datePicker>
                                     <button translatesAutoresizingMaskIntoConstraints="NO" id="3cB-ks-e81">
-                                        <rect key="frame" x="155" y="3" width="62" height="18"/>
+                                        <rect key="frame" x="258" y="3" width="62" height="18"/>
                                         <buttonCell key="cell" type="check" title="before" bezelStyle="regularSquare" imagePosition="left" inset="2" id="FC4-rx-l4p">
                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                             <font key="font" metaFont="system"/>
@@ -799,7 +844,7 @@
                                         </connections>
                                     </button>
                                     <datePicker verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="JJY-fj-bdz">
-                                        <rect key="frame" x="223" y="0.0" width="97" height="27"/>
+                                        <rect key="frame" x="326" y="0.0" width="97" height="27"/>
                                         <datePickerCell key="cell" borderStyle="bezel" alignment="left" id="5UX-CT-Hnh">
                                             <font key="font" metaFont="system"/>
                                             <calendarDate key="date" timeIntervalSinceReferenceDate="-595929600" calendarFormat="%Y-%m-%d %H:%M:%S %z">
@@ -820,51 +865,16 @@
                                     <integer value="1000"/>
                                     <integer value="1000"/>
                                     <integer value="1000"/>
+                                    <integer value="1000"/>
                                 </visibilityPriorities>
                                 <customSpacing>
                                     <real value="3.4028234663852886e+38"/>
                                     <real value="3.4028234663852886e+38"/>
                                     <real value="3.4028234663852886e+38"/>
                                     <real value="3.4028234663852886e+38"/>
+                                    <real value="3.4028234663852886e+38"/>
                                 </customSpacing>
                             </stackView>
-                            <customView translatesAutoresizingMaskIntoConstraints="NO" id="PId-FV-l0o" userLabel="ProgressReportView">
-                                <rect key="frame" x="0.0" y="0.0" width="450" height="280"/>
-                                <subviews>
-                                    <progressIndicator wantsLayer="YES" maxValue="1" style="bar" translatesAutoresizingMaskIntoConstraints="NO" id="LcQ-1Y-GBm">
-                                        <rect key="frame" x="64" y="130" width="322" height="20"/>
-                                        <constraints>
-                                            <constraint firstAttribute="width" constant="322" id="do5-qG-93O"/>
-                                            <constraint firstAttribute="height" constant="18" id="tjQ-of-yef"/>
-                                        </constraints>
-                                        <connections>
-                                            <binding destination="c6g-xc-DOK" name="value" keyPath="self.progress.fractionCompleted" id="DWk-ip-DGD"/>
-                                        </connections>
-                                    </progressIndicator>
-                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="G2L-Mo-7yd">
-                                        <rect key="frame" x="62" y="106" width="326" height="17"/>
-                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="progress report" id="jdD-9y-Tp5">
-                                            <font key="font" metaFont="system"/>
-                                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                        </textFieldCell>
-                                        <connections>
-                                            <binding destination="c6g-xc-DOK" name="value" keyPath="self.progress.localizedDescription" id="5EO-1E-YTe">
-                                                <dictionary key="options">
-                                                    <bool key="NSAllowsEditingMultipleValuesSelection" value="NO"/>
-                                                </dictionary>
-                                            </binding>
-                                        </connections>
-                                    </textField>
-                                </subviews>
-                                <constraints>
-                                    <constraint firstItem="G2L-Mo-7yd" firstAttribute="centerX" secondItem="LcQ-1Y-GBm" secondAttribute="centerX" id="8bM-PG-VdJ"/>
-                                    <constraint firstItem="LcQ-1Y-GBm" firstAttribute="centerY" secondItem="PId-FV-l0o" secondAttribute="centerY" id="Jn8-ZY-Ooe"/>
-                                    <constraint firstItem="LcQ-1Y-GBm" firstAttribute="centerX" secondItem="PId-FV-l0o" secondAttribute="centerX" id="LFB-lH-q2p"/>
-                                    <constraint firstItem="G2L-Mo-7yd" firstAttribute="width" secondItem="LcQ-1Y-GBm" secondAttribute="width" id="dbw-jw-Ys5"/>
-                                    <constraint firstItem="G2L-Mo-7yd" firstAttribute="top" secondItem="LcQ-1Y-GBm" secondAttribute="bottom" constant="8" id="h6I-Iy-34l"/>
-                                </constraints>
-                            </customView>
                         </subviews>
                         <constraints>
                             <constraint firstItem="77S-WJ-P3C" firstAttribute="top" secondItem="cWC-s3-YlP" secondAttribute="bottom" constant="-2" id="6ET-Ft-SUK"/>
@@ -878,7 +888,6 @@
                             <constraint firstAttribute="trailing" secondItem="7dD-SL-gUk" secondAttribute="trailing" id="eSR-Mt-1Xl"/>
                             <constraint firstAttribute="bottom" secondItem="7dD-SL-gUk" secondAttribute="bottom" id="eoS-po-Axz"/>
                             <constraint firstItem="77S-WJ-P3C" firstAttribute="leading" secondItem="1Kq-np-puo" secondAttribute="leading" constant="9" id="fPO-Xx-bQh"/>
-                            <constraint firstAttribute="trailing" secondItem="77S-WJ-P3C" secondAttribute="trailing" constant="124" id="kQd-Gc-Woq"/>
                             <constraint firstItem="7dD-SL-gUk" firstAttribute="top" secondItem="77S-WJ-P3C" secondAttribute="bottom" constant="5" id="qBZ-2j-fgo"/>
                             <constraint firstItem="PId-FV-l0o" firstAttribute="leading" secondItem="1Kq-np-puo" secondAttribute="leading" id="vvD-m2-JR3"/>
                         </constraints>
@@ -1000,6 +1009,14 @@
                             <constraint firstAttribute="trailing" secondItem="jJb-m6-5rx" secondAttribute="trailing" id="uNM-9H-u6T"/>
                         </constraints>
                     </view>
+                    <attributedString key="userComments">
+                        <fragment content="not used anymore, kept around just in case">
+                            <attributes>
+                                <font key="NSFont" metaFont="smallSystem"/>
+                                <paragraphStyle key="NSParagraphStyle" alignment="natural" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                            </attributes>
+                        </fragment>
+                    </attributedString>
                     <connections>
                         <outlet property="outlineView" destination="kQB-4V-BsW" id="CDv-qD-CHL"/>
                         <outlet property="searchField" destination="jJb-m6-5rx" id="xad-Eb-Bgc"/>
@@ -1007,7 +1024,7 @@
                 </viewController>
                 <customObject id="Ncb-TZ-hjk" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1884" y="273"/>
+            <point key="canvasLocation" x="2161" y="323"/>
         </scene>
         <!--Messages List View Controller-->
         <scene sceneID="ELx-7x-MUW">
