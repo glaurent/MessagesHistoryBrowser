@@ -40,10 +40,6 @@ class ChatsDatabase: NSObject {
 
         do {
 
-//            let appDelegate = NSApp.delegate as! AppDelegate
-//
-//            appDelegate.clearAllCoreData()
-
             contactsPhoneNumber = ContactsMap.sharedInstance
 
             db = try Connection(chatsDBPath, readonly:true)
@@ -63,7 +59,7 @@ class ChatsDatabase: NSObject {
         contactsPhoneNumber.populate({ () -> Void in
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), { () -> Void in
 
-                if Chat.allChatsInContext(self.moc).count == 0 {
+                if Chat.numberOfChatsInContext(self.moc) == 0 {
                     self.importAllChatsFromDB(progress)
                     self.collectAllMessagesFromAllChats(progress)
                 }

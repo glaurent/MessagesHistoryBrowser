@@ -35,6 +35,19 @@ class Chat : NSManagedObject {
         rowID = aRowID
     }
 
+    class func numberOfChatsInContext(managedObjectContext:NSManagedObjectContext) -> Int {
+        let fetchRequest = NSFetchRequest(entityName: "Chat")
+
+        var res:Int = 0
+
+        var err:NSError?
+
+        res = managedObjectContext.countForFetchRequest(fetchRequest, error: &err)
+
+        return res
+
+    }
+
     class func allChatsInContext(managedObjectContext:NSManagedObjectContext) -> [Chat] {
         let fetchRequest = NSFetchRequest(entityName: "Chat")
 
