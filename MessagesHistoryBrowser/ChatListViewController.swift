@@ -22,7 +22,7 @@ class ChatListViewController: NSViewController, NSOutlineViewDataSource, NSOutli
     var allKnownContacts:[ChatContact]!
     var allUnknownContacts:[ChatContact]!
 
-    lazy var moc = (NSApp.delegate as! AppDelegate).managedObjectContext
+    lazy var moc = MOCController.sharedInstance.managedObjectContext
 
     var messageFormatter = MessageFormatter()
 

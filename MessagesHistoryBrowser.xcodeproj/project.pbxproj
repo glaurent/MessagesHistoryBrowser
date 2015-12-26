@@ -16,6 +16,7 @@
 		AF6F10E91BB81D5900A93152 /* SQLite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AF6F10E81BB81D5900A93152 /* SQLite.framework */; };
 		AF6F10EA1BB81D5900A93152 /* SQLite.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = AF6F10E81BB81D5900A93152 /* SQLite.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		AF8003B81C273838008A1D64 /* ImageAttachmentDisplayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF8003B71C273838008A1D64 /* ImageAttachmentDisplayViewController.swift */; };
+		AF8003BC1C2E9D04008A1D64 /* MOCController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF8003BB1C2E9D04008A1D64 /* MOCController.swift */; };
 		AF82EDB51C23708B00F8132D /* AttachmentsCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF82EDB41C23708B00F8132D /* AttachmentsCollectionView.swift */; };
 		AF82EDB71C23723F00F8132D /* AttachmentsCollectionViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF82EDB61C23723F00F8132D /* AttachmentsCollectionViewDelegate.swift */; };
 		AFAF8B141BF3B91E009D92F6 /* ImageAttachmentCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFAF8B131BF3B91E009D92F6 /* ImageAttachmentCell.swift */; };
@@ -75,6 +76,7 @@
 		AF47D8761BDCDD20002CDF4B /* ChatTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatTableViewController.swift; sourceTree = "<group>"; };
 		AF6F10E81BB81D5900A93152 /* SQLite.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SQLite.framework; path = Carthage/Build/Mac/SQLite.framework; sourceTree = "<group>"; };
 		AF8003B71C273838008A1D64 /* ImageAttachmentDisplayViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageAttachmentDisplayViewController.swift; sourceTree = "<group>"; };
+		AF8003BB1C2E9D04008A1D64 /* MOCController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MOCController.swift; sourceTree = "<group>"; };
 		AF82EDB41C23708B00F8132D /* AttachmentsCollectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttachmentsCollectionView.swift; sourceTree = "<group>"; };
 		AF82EDB61C23723F00F8132D /* AttachmentsCollectionViewDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttachmentsCollectionViewDelegate.swift; sourceTree = "<group>"; };
 		AFAF8B131BF3B91E009D92F6 /* ImageAttachmentCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageAttachmentCell.swift; sourceTree = "<group>"; };
@@ -129,6 +131,7 @@
 		AF424CD91BC965FF006EE8D2 /* CoreData */ = {
 			isa = PBXGroup;
 			children = (
+				AF8003BB1C2E9D04008A1D64 /* MOCController.swift */,
 				AFD974C81BB81885004CF8D7 /* Chat.swift */,
 				AF2B2DF01BC19BAE000B8293 /* ChatMessage.swift */,
 				AF424CD71BC963E4006EE8D2 /* ChatContact.swift */,
@@ -372,6 +375,7 @@
 				AF82EDB71C23723F00F8132D /* AttachmentsCollectionViewDelegate.swift in Sources */,
 				AFD974CA1BB81885004CF8D7 /* Chat.swift in Sources */,
 				AF8003B81C273838008A1D64 /* ImageAttachmentDisplayViewController.swift in Sources */,
+				AF8003BC1C2E9D04008A1D64 /* MOCController.swift in Sources */,
 				AFE9B8031BCB088A007FC376 /* AttachmentsCollectionViewItem.swift in Sources */,
 				AF424CD81BC963E4006EE8D2 /* ChatContact.swift in Sources */,
 				AFD974991BB816B5004CF8D7 /* ViewController.swift in Sources */,

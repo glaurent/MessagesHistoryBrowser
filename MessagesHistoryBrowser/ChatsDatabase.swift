@@ -27,8 +27,7 @@ class ChatsDatabase: NSObject {
 
     var db:Connection!
 
-    lazy var moc = (NSApp.delegate as! AppDelegate).managedObjectContext
-    lazy var privateMoc = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
+    lazy var moc = MOCController.sharedInstance.managedObjectContext
 
     let messageDateSort = { (a:AnyObject, b:AnyObject) -> Bool in
         let aItem = a as! ChatItem
@@ -51,8 +50,6 @@ class ChatsDatabase: NSObject {
 
             super.init()
 
-            privateMoc.parentContext = moc
-
         } catch {
             super.init()
             NSLog("%@ error", __FUNCTION__)
@@ -60,19 +57,20 @@ class ChatsDatabase: NSObject {
 
     }
 
+
     func populate(progress:NSProgress, completion:() -> Void)
     {
         contactsPhoneNumber.populate({ () -> Void in
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), { () -> Void in
 
-                if Chat.allChatsInContext(self.privateMoc).count == 0 {
+                if Chat.allChatsInContext(self.moc).count == 0 {
                     self.importAllChatsFromDB(progress)
                     self.collectAllMessagesFromAllChats(progress)
                 }
 
+                // run completion block on main queue
+                //
                 dispatch_async(dispatch_get_main_queue(), { () -> Void in
-
-                    do { try self.privateMoc.save() } catch { NSLog("bgMoc save error : \(error)") }
 
                     completion()
 
@@ -117,9 +115,9 @@ class ChatsDatabase: NSObject {
             
             let chatContact = contactForIdentifier(identifier, service:serviceName)
             
-            let _ = Chat(managedObjectContext:privateMoc, withContact:chatContact, withServiceName:serviceName,  withGUID: guid, andRowID: rowID)
+            let _ = Chat(managedObjectContext:moc, withContact:chatContact, withServiceName:serviceName,  withGUID: guid, andRowID: rowID)
             
-//            NSLog("chat : %@ \tcontact : %@\trowId: %d", guid, chatContact.name, rowID)
+            NSLog("chat : %@ \tcontact : %@\trowId: %d", guid, chatContact.name, rowID)
 
             NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
                 chatImportProgress.completedUnitCount = rowIndex
@@ -134,7 +132,7 @@ class ChatsDatabase: NSObject {
 
         progress.resignCurrent()
 
-        do { try privateMoc.save() } catch {}
+        MOCController.sharedInstance.save()
 
     }
 
@@ -174,7 +172,7 @@ class ChatsDatabase: NSObject {
             contactIsKnown = false
         }
 
-        let contact = ChatContact.contactIn(privateMoc, named: contactName)
+        let contact = ChatContact.contactIn(moc, named: contactName)
         contact.known = contactIsKnown
         return contact
     }
@@ -196,10 +194,8 @@ class ChatsDatabase: NSObject {
     
     }
 
-    func collectMessagesForChat(chat:Chat) -> [ChatMessage]
+    func collectMessagesForChat(chat:Chat)
     {
-        var res:[ChatMessage] = []
-
         let messagesTable  = Table("message")
         let isFromMeColumn = Expression<Bool>("is_from_me")
         let textColumn     = Expression<String?>("text")
@@ -228,7 +224,7 @@ class ChatsDatabase: NSObject {
 
         let query = db.prepare(messagesTable.select(isFromMeColumn, textColumn, dateColumn).filter(allHandleIDs.contains(handleIdColumn)))
 
-        let chatInPrivateMoc = privateMoc.objectWithID(chat.objectID) as! Chat
+        let chatInMoc = moc.objectWithID(chat.objectID) as! Chat
         
         for messageData in query {
             let messageContent = messageData[textColumn] ?? ""
@@ -236,10 +232,9 @@ class ChatsDatabase: NSObject {
             let dateTimeInterval = NSTimeInterval(dateInt)
             let messageDate = NSDate(timeIntervalSinceReferenceDate: dateTimeInterval)
 //            NSLog("message : \(messageContent)")
-            
-            let chatMessage = ChatMessage(managedObjectContext: privateMoc, withMessage: messageContent, withDate: messageDate, inChat: chatInPrivateMoc)
+
+            let chatMessage = ChatMessage(managedObjectContext: moc, withMessage: messageContent, withDate: messageDate, inChat: chatInMoc)
             chatMessage.isFromMe = messageData[isFromMeColumn]
-            res.append(chatMessage)
         }
 
 
@@ -277,15 +272,14 @@ class ChatsDatabase: NSObject {
             let attachmentTimeInterval = NSTimeInterval(attachmentDateInt)
             let attachmentDate = NSDate(timeIntervalSinceReferenceDate: attachmentTimeInterval)
 
-            let _ = ChatAttachment(managedObjectContext: privateMoc, withFileName: attachmentFileName, withDate: attachmentDate, inChat:chatInPrivateMoc)
+            let _ = ChatAttachment(managedObjectContext: moc, withFileName: attachmentFileName, withDate: attachmentDate, inChat:chatInMoc)
         }
 
-        return res
     }
 
     func collectAllMessagesFromAllChats(progress:NSProgress)
     {
-        let allContacts = ChatContact.allContactsInContext(privateMoc)
+        let allContacts = ChatContact.allContactsInContext(moc)
         let allContactsCount = Int64(allContacts.count)
 
         progress.becomeCurrentWithPendingUnitCount(allContactsCount)
@@ -354,7 +348,7 @@ class ChatsDatabase: NSObject {
         }
 
         do {
-            let matchingMessages = try privateMoc.executeFetchRequest(fetchRequest)
+            let matchingMessages = try moc.executeFetchRequest(fetchRequest)
             result = (matchingMessages as! [ChatMessage]).sort(messageDateSort)
 
             result = addSurroundingMessages(result)

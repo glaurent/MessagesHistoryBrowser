@@ -109,17 +109,20 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }()
 
-    lazy var managedObjectContext: NSManagedObjectContext = {
-        // Returns the managed object context for the application (which is already bound to the persistent store coordinator for the application.) This property is optional since there are legitimate error conditions that could cause the creation of the context to fail.
-        let coordinator = self.persistentStoreCoordinator
-        var managedObjectContext = NSManagedObjectContext(concurrencyType: .MainQueueConcurrencyType)
-        managedObjectContext.persistentStoreCoordinator = coordinator
-        return managedObjectContext
-    }()
+//    lazy var managedObjectContext: NSManagedObjectContext = {
+//        // Returns the managed object context for the application (which is already bound to the persistent store coordinator for the application.) This property is optional since there are legitimate error conditions that could cause the creation of the context to fail.
+//        let coordinator = self.persistentStoreCoordinator
+//        var managedObjectContext = NSManagedObjectContext(concurrencyType: .MainQueueConcurrencyType)
+//        managedObjectContext.persistentStoreCoordinator = coordinator
+//        return managedObjectContext
+//    }()
 
     // MARK: - Core Data Saving and Undo support
 
     @IBAction func saveAction(sender: AnyObject!) {
+
+        let managedObjectContext = MOCController.sharedInstance.managedObjectContext
+
         // Performs the save action for the application, which is to send the save: message to the application's managed object context. Any encountered errors are presented to the user.
         if !managedObjectContext.commitEditing() {
             NSLog("\(NSStringFromClass(self.dynamicType)) unable to commit editing before saving")
@@ -136,12 +139,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     func windowWillReturnUndoManager(window: NSWindow) -> NSUndoManager? {
         // Returns the NSUndoManager for the application. In this case, the manager returned is that of the managed object context for the application.
-        return managedObjectContext.undoManager
+        return MOCController.sharedInstance.managedObjectContext.undoManager
     }
 
     func applicationShouldTerminate(sender: NSApplication) -> NSApplicationTerminateReply {
         // Save changes in the application's managed object context before the application terminates.
-        
+        let managedObjectContext = MOCController.sharedInstance.managedObjectContext
+
         if !managedObjectContext.commitEditing() {
             NSLog("\(NSStringFromClass(self.dynamicType)) unable to commit editing to terminate")
             return .TerminateCancel
@@ -183,21 +187,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @IBAction func refreshChatHistory(sender: AnyObject) {
         isRefreshingHistory = true
         chatTableViewController?.refreshChatHistory()
-    }
-
-    func clearAllCoreData() {
-
-        let allContacts = ChatContact.allContactsInContext(managedObjectContext)
-
-        for contact in allContacts {
-            managedObjectContext.deleteObject(contact)
-        }
-
-//        do {
-//            try managedObjectContext.save()
-//        } catch {
-//
-//        }
     }
 
 }

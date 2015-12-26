@@ -635,7 +635,7 @@
         <scene sceneID="R2V-B0-nI4">
             <objects>
                 <windowController id="B8D-0N-5wS" sceneMemberID="viewController">
-                    <window key="window" title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" animationBehavior="default" id="IQv-IB-iLA">
+                    <window key="window" title="Message History Browser" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" animationBehavior="default" id="IQv-IB-iLA">
                         <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
                         <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
                         <rect key="contentRect" x="196" y="240" width="480" height="270"/>
@@ -679,43 +679,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="553" height="300"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
-                            <customView translatesAutoresizingMaskIntoConstraints="NO" id="PId-FV-l0o" userLabel="ProgressReportView">
-                                <rect key="frame" x="0.0" y="0.0" width="553" height="280"/>
-                                <subviews>
-                                    <progressIndicator wantsLayer="YES" maxValue="1" style="bar" translatesAutoresizingMaskIntoConstraints="NO" id="LcQ-1Y-GBm">
-                                        <rect key="frame" x="116" y="130" width="322" height="20"/>
-                                        <constraints>
-                                            <constraint firstAttribute="width" constant="322" id="do5-qG-93O"/>
-                                            <constraint firstAttribute="height" constant="18" id="tjQ-of-yef"/>
-                                        </constraints>
-                                        <connections>
-                                            <binding destination="c6g-xc-DOK" name="value" keyPath="self.progress.fractionCompleted" id="DWk-ip-DGD"/>
-                                        </connections>
-                                    </progressIndicator>
-                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="G2L-Mo-7yd">
-                                        <rect key="frame" x="114" y="106" width="326" height="17"/>
-                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="progress report" id="jdD-9y-Tp5">
-                                            <font key="font" metaFont="system"/>
-                                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                        </textFieldCell>
-                                        <connections>
-                                            <binding destination="c6g-xc-DOK" name="value" keyPath="self.progress.localizedDescription" id="5EO-1E-YTe">
-                                                <dictionary key="options">
-                                                    <bool key="NSAllowsEditingMultipleValuesSelection" value="NO"/>
-                                                </dictionary>
-                                            </binding>
-                                        </connections>
-                                    </textField>
-                                </subviews>
-                                <constraints>
-                                    <constraint firstItem="G2L-Mo-7yd" firstAttribute="centerX" secondItem="LcQ-1Y-GBm" secondAttribute="centerX" id="8bM-PG-VdJ"/>
-                                    <constraint firstItem="LcQ-1Y-GBm" firstAttribute="centerY" secondItem="PId-FV-l0o" secondAttribute="centerY" id="Jn8-ZY-Ooe"/>
-                                    <constraint firstItem="LcQ-1Y-GBm" firstAttribute="centerX" secondItem="PId-FV-l0o" secondAttribute="centerX" id="LFB-lH-q2p"/>
-                                    <constraint firstItem="G2L-Mo-7yd" firstAttribute="width" secondItem="LcQ-1Y-GBm" secondAttribute="width" id="dbw-jw-Ys5"/>
-                                    <constraint firstItem="G2L-Mo-7yd" firstAttribute="top" secondItem="LcQ-1Y-GBm" secondAttribute="bottom" constant="8" id="h6I-Iy-34l"/>
-                                </constraints>
-                            </customView>
                             <searchField wantsLayer="YES" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="cWC-s3-YlP">
                                 <rect key="frame" x="0.0" y="278" width="553" height="22"/>
                                 <searchFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" borderStyle="bezel" usesSingleLineMode="YES" bezelStyle="round" id="gBh-7T-Jv6">
@@ -728,13 +691,13 @@
                                 </connections>
                             </searchField>
                             <scrollView autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7dD-SL-gUk">
-                                <rect key="frame" x="0.0" y="0.0" width="553" height="252"/>
+                                <rect key="frame" x="0.0" y="0.0" width="553" height="248"/>
                                 <clipView key="contentView" id="8Ke-ny-68A">
-                                    <rect key="frame" x="1" y="0.0" width="551" height="251"/>
+                                    <rect key="frame" x="1" y="0.0" width="551" height="247"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="firstColumnOnly" columnReordering="NO" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" headerView="nSq-37-0ca" viewBased="YES" id="yQc-Jz-Fx4">
-                                            <rect key="frame" x="0.0" y="0.0" width="551" height="228"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="551" height="224"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <size key="intercellSpacing" width="3" height="2"/>
                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -794,8 +757,8 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                 </tableHeaderView>
                             </scrollView>
-                            <stackView distribution="fillProportionally" orientation="horizontal" alignment="centerY" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="77S-WJ-P3C">
-                                <rect key="frame" x="9" y="257" width="420" height="23"/>
+                            <stackView distribution="fillProportionally" orientation="horizontal" alignment="firstBaseline" spacing="11" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="77S-WJ-P3C">
+                                <rect key="frame" x="9" y="253" width="432" height="27"/>
                                 <subviews>
                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="QDg-Ou-2tA">
                                         <rect key="frame" x="-2" y="3" width="99" height="17"/>
@@ -806,7 +769,7 @@
                                         </textFieldCell>
                                     </textField>
                                     <button translatesAutoresizingMaskIntoConstraints="NO" id="CXs-ND-wjJ">
-                                        <rect key="frame" x="101" y="3" width="51" height="18"/>
+                                        <rect key="frame" x="104" y="2" width="51" height="18"/>
                                         <buttonCell key="cell" type="check" title="after" bezelStyle="regularSquare" imagePosition="left" inset="2" id="bux-MY-WHX">
                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                             <font key="font" metaFont="system"/>
@@ -817,7 +780,7 @@
                                         </connections>
                                     </button>
                                     <datePicker verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="lou-wM-eNy">
-                                        <rect key="frame" x="158" y="0.0" width="97" height="27"/>
+                                        <rect key="frame" x="164" y="0.0" width="97" height="27"/>
                                         <datePickerCell key="cell" borderStyle="bezel" alignment="left" id="kXc-qA-xvl">
                                             <font key="font" metaFont="system"/>
                                             <calendarDate key="date" timeIntervalSinceReferenceDate="-595929600" calendarFormat="%Y-%m-%d %H:%M:%S %z">
@@ -833,7 +796,7 @@
                                         </connections>
                                     </datePicker>
                                     <button translatesAutoresizingMaskIntoConstraints="NO" id="3cB-ks-e81">
-                                        <rect key="frame" x="258" y="3" width="62" height="18"/>
+                                        <rect key="frame" x="267" y="2" width="62" height="18"/>
                                         <buttonCell key="cell" type="check" title="before" bezelStyle="regularSquare" imagePosition="left" inset="2" id="FC4-rx-l4p">
                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                             <font key="font" metaFont="system"/>
@@ -844,7 +807,7 @@
                                         </connections>
                                     </button>
                                     <datePicker verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="JJY-fj-bdz">
-                                        <rect key="frame" x="326" y="0.0" width="97" height="27"/>
+                                        <rect key="frame" x="338" y="0.0" width="97" height="27"/>
                                         <datePickerCell key="cell" borderStyle="bezel" alignment="left" id="5UX-CT-Hnh">
                                             <font key="font" metaFont="system"/>
                                             <calendarDate key="date" timeIntervalSinceReferenceDate="-595929600" calendarFormat="%Y-%m-%d %H:%M:%S %z">
@@ -875,6 +838,43 @@
                                     <real value="3.4028234663852886e+38"/>
                                 </customSpacing>
                             </stackView>
+                            <customView translatesAutoresizingMaskIntoConstraints="NO" id="PId-FV-l0o" userLabel="ProgressReportView">
+                                <rect key="frame" x="0.0" y="0.0" width="553" height="280"/>
+                                <subviews>
+                                    <progressIndicator wantsLayer="YES" maxValue="1" style="bar" translatesAutoresizingMaskIntoConstraints="NO" id="LcQ-1Y-GBm">
+                                        <rect key="frame" x="116" y="130" width="322" height="20"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="322" id="do5-qG-93O"/>
+                                            <constraint firstAttribute="height" constant="18" id="tjQ-of-yef"/>
+                                        </constraints>
+                                        <connections>
+                                            <binding destination="c6g-xc-DOK" name="value" keyPath="self.progress.fractionCompleted" id="DWk-ip-DGD"/>
+                                        </connections>
+                                    </progressIndicator>
+                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="G2L-Mo-7yd">
+                                        <rect key="frame" x="114" y="106" width="326" height="17"/>
+                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="progress report" id="jdD-9y-Tp5">
+                                            <font key="font" metaFont="system"/>
+                                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                        <connections>
+                                            <binding destination="c6g-xc-DOK" name="value" keyPath="self.progress.localizedDescription" id="5EO-1E-YTe">
+                                                <dictionary key="options">
+                                                    <bool key="NSAllowsEditingMultipleValuesSelection" value="NO"/>
+                                                </dictionary>
+                                            </binding>
+                                        </connections>
+                                    </textField>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="G2L-Mo-7yd" firstAttribute="centerX" secondItem="LcQ-1Y-GBm" secondAttribute="centerX" id="8bM-PG-VdJ"/>
+                                    <constraint firstItem="LcQ-1Y-GBm" firstAttribute="centerY" secondItem="PId-FV-l0o" secondAttribute="centerY" id="Jn8-ZY-Ooe"/>
+                                    <constraint firstItem="LcQ-1Y-GBm" firstAttribute="centerX" secondItem="PId-FV-l0o" secondAttribute="centerX" id="LFB-lH-q2p"/>
+                                    <constraint firstItem="G2L-Mo-7yd" firstAttribute="width" secondItem="LcQ-1Y-GBm" secondAttribute="width" id="dbw-jw-Ys5"/>
+                                    <constraint firstItem="G2L-Mo-7yd" firstAttribute="top" secondItem="LcQ-1Y-GBm" secondAttribute="bottom" constant="8" id="h6I-Iy-34l"/>
+                                </constraints>
+                            </customView>
                         </subviews>
                         <constraints>
                             <constraint firstItem="77S-WJ-P3C" firstAttribute="top" secondItem="cWC-s3-YlP" secondAttribute="bottom" constant="-2" id="6ET-Ft-SUK"/>
