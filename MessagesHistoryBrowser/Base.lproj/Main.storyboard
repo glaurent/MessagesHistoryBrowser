@@ -838,7 +838,7 @@
                                     <real value="3.4028234663852886e+38"/>
                                 </customSpacing>
                             </stackView>
-                            <customView translatesAutoresizingMaskIntoConstraints="NO" id="PId-FV-l0o" userLabel="ProgressReportView">
+                            <customView hidden="YES" translatesAutoresizingMaskIntoConstraints="NO" id="PId-FV-l0o" userLabel="ProgressReportView">
                                 <rect key="frame" x="0.0" y="0.0" width="553" height="280"/>
                                 <subviews>
                                     <progressIndicator wantsLayer="YES" maxValue="1" style="bar" translatesAutoresizingMaskIntoConstraints="NO" id="LcQ-1Y-GBm">

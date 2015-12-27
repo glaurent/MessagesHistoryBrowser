@@ -70,7 +70,11 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
 
 //        progressReportView.hidden = false
 
-        chatsDatabase.populate(progress, completion: { () -> Void in
+        chatsDatabase.populate(progress, start: {
+            () -> Void in
+            self.progressReportView.hidden = false
+            },
+            completion: { () -> Void in
 
             MOCController.sharedInstance.save()
 
@@ -350,25 +354,26 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
 
         MOCController.sharedInstance.clearAllCoreData()
 
-        ChatsDatabase.sharedInstance.populate(progress) { () -> Void in
+        ChatsDatabase.sharedInstance.populate(progress, start: {
+            () -> Void in
+            self.progressReportView.hidden = false
+            }, completion:  { () -> Void in
 
-            // hide progress report, restore normal UI
-            //
-            self.progressReportView.hidden = true
-            self.tableView.hidden = false
-            self.messagesListViewController?.view.hidden = false
+                // hide progress report, restore normal UI
+                //
+                self.progressReportView.hidden = true
+                self.tableView.hidden = false
+                self.messagesListViewController?.view.hidden = false
 
-            self.allKnownContacts = ChatContact.allKnownContactsInContext(self.moc)
-            self.allUnknownContacts = ChatContact.allUnknownContactsInContext(self.moc)
-            self.tableView.reloadData()
+                self.allKnownContacts = ChatContact.allKnownContactsInContext(self.moc)
+                self.allUnknownContacts = ChatContact.allUnknownContactsInContext(self.moc)
+                self.tableView.reloadData()
 
-            appDelegate.isRefreshingHistory = false
-
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0)) { () -> Void in
-                do { try self.moc.save() } catch { NSLog("DB save failed") } // TODO : what if this occurs while app is quitting ? AppDelegate saves the DB too
-            }
-        }
-
+                appDelegate.isRefreshingHistory = false
+                
+                MOCController.sharedInstance.save()
+        })
     }
+    
 
 }

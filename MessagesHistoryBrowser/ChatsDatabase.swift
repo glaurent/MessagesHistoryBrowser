@@ -54,12 +54,18 @@ class ChatsDatabase: NSObject {
     }
 
 
-    func populate(progress:NSProgress, completion:() -> Void)
+    func populate(progress:NSProgress, start:() -> Void, completion:() -> Void)
     {
         contactsPhoneNumber.populate({ () -> Void in
+
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), { () -> Void in
 
                 if Chat.numberOfChatsInContext(self.moc) == 0 {
+
+                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                        start()
+                    })
+
                     self.importAllChatsFromDB(progress)
                     self.collectAllMessagesFromAllChats(progress)
                 }
