@@ -22,7 +22,13 @@ class MessageFormatter {
             dateFormatter.dateStyle = terseTimeMode ? .NoStyle : .ShortStyle
         }
     }
-    
+
+    let dateParagraphStyle = NSMutableParagraphStyle()
+
+    let meColor = NSColor.clearColor()
+    let contactColor = NSColor(red: 0x66 / 255.0, green: 0x66 / 255.0, blue: 0xff / 255.0, alpha: 1.0)
+    let searchHighlightColor = NSColor.redColor()
+
     init() {
         dateFormatter.timeStyle = .ShortStyle
         dateFormatter.dateStyle = .NoStyle
@@ -31,8 +37,16 @@ class MessageFormatter {
         fullDateFormatter.dateStyle = .LongStyle
 
         terseTimeMode = true
+
+        dateParagraphStyle.alignment = .Center
+//        dateParagraphStyle.lineSpacing = 15
+        dateParagraphStyle.paragraphSpacing = 15
+        dateParagraphStyle.paragraphSpacingBefore = 15
+
     }
 
+    // used for log saves
+    //
     func formatMessageAsString(message:ChatMessage) -> String
     {
         let messageContent = message.content ?? noMessageString
@@ -50,21 +64,22 @@ class MessageFormatter {
         guard let messageContent = message.content else { return nil }
         guard messageContent != "" else { return nil }
 
-        let chatContact = message.contact
+//        let chatContact = message.contact
 
-        let sender:NSMutableAttributedString
-
-        if message.isFromMe {
-            sender = NSMutableAttributedString(string: meString, attributes: [NSBackgroundColorAttributeName : NSColor.greenColor()])
-        } else {
-            sender = NSMutableAttributedString(string: chatContact.name , attributes: [NSBackgroundColorAttributeName : NSColor.blueColor()])
-        }
-
-        let dateString = NSMutableAttributedString(string: dateFormatter.stringFromDate(message.date))
-
-        let result = dateString
+//        let sender:NSMutableAttributedString
+//
+//        if message.isFromMe {
+//            sender = NSMutableAttributedString(string: meString, attributes: [NSBackgroundColorAttributeName : meColor])
+//        } else {
+//            sender = NSMutableAttributedString(string: chatContact.name , attributes: [NSBackgroundColorAttributeName : contactColor])
+//        }
+//
+//        let dateString = NSMutableAttributedString(string: dateFormatter.stringFromDate(message.date))
+//
+//        let result = dateString
+        let result = formatMessagePreamble(message)
         result.appendAttributedString(NSAttributedString(string: " - "))
-        result.appendAttributedString(sender)
+//        result.appendAttributedString(sender)
 
         // highlight message content
         //
@@ -74,7 +89,7 @@ class MessageFormatter {
 
         if let highlightTerm = highlightTerm {
             let rangeOfSearchedTerm = messageContentNS.rangeOfString(highlightTerm)
-            highlightedMessage.addAttribute(NSForegroundColorAttributeName, value: NSColor.redColor(), range: rangeOfSearchedTerm)
+            highlightedMessage.addAttribute(NSForegroundColorAttributeName, value: searchHighlightColor, range: rangeOfSearchedTerm)
         }
 
         result.appendAttributedString(highlightedMessage)
@@ -83,9 +98,35 @@ class MessageFormatter {
         
     }
 
+    func formatMessagePreamble(message:ChatMessage) -> NSMutableAttributedString
+    {
+        let dateString = NSMutableAttributedString(string: dateFormatter.stringFromDate(message.date))
+        let range = NSRange(location: 0, length: dateString.length)
+
+        if message.isFromMe {
+            dateString.addAttribute(NSBackgroundColorAttributeName, value: meColor, range: range)
+        } else {
+            dateString.addAttribute(NSBackgroundColorAttributeName, value: contactColor, range: range)
+        }
+
+        return dateString
+    }
+
     func formatMessageDate(messageDate:NSDate) -> NSAttributedString
     {
-        return NSMutableAttributedString(string: fullDateFormatter.stringFromDate(messageDate) + "\n")
+        let res = NSMutableAttributedString(string: fullDateFormatter.stringFromDate(messageDate) + "\n")
+
+        let range = NSRange(location: 0, length: res.length)
+
+//        res.addAttribute(NSParagraphStyleAttributeName, value: dateParagraphStyle, range: range)
+//        res.addAttribute(NSForegroundColorAttributeName, value: NSColor.lightGrayColor(), range: range)
+
+        res.addAttributes([
+            NSParagraphStyleAttributeName  : dateParagraphStyle,
+            NSForegroundColorAttributeName : NSColor.lightGrayColor()],
+            range: range)
+
+        return res
     }
     
     func colorForMessageService(serviceName:String) -> NSColor?
