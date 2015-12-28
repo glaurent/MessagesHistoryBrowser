@@ -159,21 +159,7 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
                 messagesListViewController?.showMessages(allContactMessages, withHighlightTerm:searchTerm)
 
             } else { // no search term, display full chat history of contact, with attachments
-
-                chatsDatabase.collectMessagesForContact(selectedContact)
-
-                // sort attachments by date
-                //
-                let allContactAttachmentsT = selectedContact.attachments.allObjects.sort(ChatsDatabase.sharedInstance.messageDateSort)
-
-                let allContactChatItems = selectedContact.messages.setByAddingObjectsFromSet(selectedContact.attachments as Set<NSObject>) // COMMENT THIS LINE TO FIX COMPILE ERROR IN AppDelegate
-
-                let allContactChatItemsSorted = allContactChatItems.sort(chatsDatabase.messageDateSort) as! [ChatItem]
-
-                messagesListViewController?.hideAttachmentDisplayWindow()
-                messagesListViewController?.attachmentsToDisplay = allContactAttachmentsT as? [ChatAttachment]
-                messagesListViewController?.attachmentsCollectionView.reloadData()
-                messagesListViewController?.showMessages(allContactChatItemsSorted)
+                displayMessageListForContact(selectedContact)
             }
 
         } else { // no contact selected, clean up
@@ -184,6 +170,60 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
                 messagesListViewController?.showMessages([ChatMessage]())
             }
         }
+    }
+
+    func displayMessageListForContact(contact:ChatContact)
+    {
+        chatsDatabase.collectMessagesForContact(contact)
+
+        // sort attachments by date
+        //
+        let allContactAttachmentsT = contact.attachments.allObjects.sort(ChatsDatabase.sharedInstance.messageDateSort)
+
+//                let allContactChatItems = selectedContact.messages.setByAddingObjectsFromSet(selectedContact.attachments as Set<NSObject>) // COMMENT THIS LINE TO FIX COMPILE ERROR IN AppDelegate
+//
+//                let allContactChatItemsSorted = allContactChatItems.sort(chatsDatabase.messageDateSort) as! [ChatItem]
+
+        let allContactChatItemsSorted = allChatItemsForContact(contact,
+            afterDate: afterDateEnabled ? afterDate : nil,
+            beforeDate: beforeDateEnabled ? beforeDate : nil)
+
+        messagesListViewController?.hideAttachmentDisplayWindow()
+        messagesListViewController?.attachmentsToDisplay = allContactAttachmentsT as? [ChatAttachment]
+        messagesListViewController?.attachmentsCollectionView.reloadData()
+        messagesListViewController?.showMessages(allContactChatItemsSorted)
+
+    }
+
+    func allChatItemsForContact(contact: ChatContact, afterDate:NSDate? = nil, beforeDate:NSDate? = nil) -> [ChatItem]
+    {
+        let allContactChatItems = contact.messages.setByAddingObjectsFromSet(contact.attachments as Set<NSObject>) // COMMENT THIS LINE TO FIX COMPILE ERROR IN AppDelegate
+
+
+        if afterDate != nil || beforeDate != nil {
+            let filteredContactChatItems = allContactChatItems.filter { (obj:NSObject) -> Bool in
+                guard let item = obj as? ChatItem else { return false }
+
+                var res = true
+                if let afterDate = afterDate {
+                    res = afterDate.compare(item.date) == .OrderedAscending
+
+                    if !res {
+                        return false
+                    }
+                }
+
+                if let beforeDate = beforeDate {
+                    res = beforeDate.compare(item.date) == .OrderedDescending
+                }
+
+                return res
+            }
+
+            return filteredContactChatItems.sort(chatsDatabase.messageDateSort) as! [ChatItem]
+        }
+
+        return allContactChatItems.sort(chatsDatabase.messageDateSort) as! [ChatItem]
     }
 
     // MARK: actions
@@ -253,7 +293,16 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
             beforeDateEnabled = true
         }
 
-        search(searchField)
+        if searchField.stringValue.characters.count > 3 {
+            search(searchField)
+        } else {
+            // refresh normal chatlist
+            let index = tableView.selectedRowIndexes.firstIndex // no multiple selection
+
+            if let selectedContact = contactForRow(index) {
+                displayMessageListForContact(selectedContact)
+            }
+        }
     }
     
 
