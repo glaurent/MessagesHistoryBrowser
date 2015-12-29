@@ -23,6 +23,8 @@ class MessageFormatter {
         }
     }
 
+    var detailedSender = false
+
     let dateParagraphStyle = NSMutableParagraphStyle()
 
     let meColor = NSColor.clearColor()
@@ -64,26 +66,11 @@ class MessageFormatter {
         guard let messageContent = message.content else { return nil }
         guard messageContent != "" else { return nil }
 
-//        let chatContact = message.contact
-
-//        let sender:NSMutableAttributedString
-//
-//        if message.isFromMe {
-//            sender = NSMutableAttributedString(string: meString, attributes: [NSBackgroundColorAttributeName : meColor])
-//        } else {
-//            sender = NSMutableAttributedString(string: chatContact.name , attributes: [NSBackgroundColorAttributeName : contactColor])
-//        }
-//
-//        let dateString = NSMutableAttributedString(string: dateFormatter.stringFromDate(message.date))
-//
-//        let result = dateString
-        let result = formatMessagePreamble(message)
-        result.appendAttributedString(NSAttributedString(string: " - "))
-//        result.appendAttributedString(sender)
+        let result = formatMessagePreamble(message, detailed: detailedSender)
 
         // highlight message content
         //
-        let messageContentNS = NSString(string:" : " + messageContent + "\n")
+        let messageContentNS = NSString(string:" : " + messageContent + "\n") // has to be an NSString because we use rangeOfString below
 
         let highlightedMessage = NSMutableAttributedString(string: messageContentNS as String)
 
@@ -98,18 +85,40 @@ class MessageFormatter {
         
     }
 
-    func formatMessagePreamble(message:ChatMessage) -> NSMutableAttributedString
+    func formatMessagePreamble(message:ChatMessage, detailed:Bool) -> NSMutableAttributedString
     {
         let dateString = NSMutableAttributedString(string: dateFormatter.stringFromDate(message.date))
-        let range = NSRange(location: 0, length: dateString.length)
 
-        if message.isFromMe {
-            dateString.addAttribute(NSBackgroundColorAttributeName, value: meColor, range: range)
+        if detailed {
+
+            let chatContact = message.contact
+
+            let sender:NSMutableAttributedString
+
+            if message.isFromMe {
+                sender = NSMutableAttributedString(string: meString, attributes: [NSBackgroundColorAttributeName : meColor])
+            } else {
+                sender = NSMutableAttributedString(string: chatContact.name , attributes: [NSBackgroundColorAttributeName : contactColor])
+            }
+
+            let dateString = NSMutableAttributedString(string: dateFormatter.stringFromDate(message.date))
+            dateString.appendAttributedString(NSAttributedString(string: " - "))
+            dateString.appendAttributedString(sender)
+
+            return dateString
+
         } else {
-            dateString.addAttribute(NSBackgroundColorAttributeName, value: contactColor, range: range)
-        }
 
-        return dateString
+            let range = NSRange(location: 0, length: dateString.length)
+
+            if message.isFromMe {
+                dateString.addAttribute(NSBackgroundColorAttributeName, value: meColor, range: range)
+            } else {
+                dateString.addAttribute(NSBackgroundColorAttributeName, value: contactColor, range: range)
+            }
+            
+            return dateString
+        }
     }
 
     func formatMessageDate(messageDate:NSDate) -> NSAttributedString
