@@ -32,10 +32,11 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
     var messageFormatter = MessageFormatter()
 
     var showChatsFromUnknown = false
-    
+
     var searchTerm:String?
     var searchedContacts:[ChatContact]?
     var searchedMessages:[ChatMessage]?
+    var searchTermHasChanged = false
 
     dynamic var beforeDateEnabled = false
     dynamic var afterDateEnabled = false
@@ -85,6 +86,7 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
 
         })
 
+        ChatItemsFetcher.sharedInstance.completion = displayChats
     }
 
     func showUnknownContactsChanged(notification:NSNotification)
@@ -164,10 +166,11 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
 
         } else { // no contact selected, clean up
 
-            if let searchTerm = searchTerm, searchedMessages = searchedMessages {
+            if let searchTerm = searchTerm, searchedMessages = searchedMessages { // there is a search set, go back to full list of matching messages
                 messagesListViewController?.showMessages(searchedMessages, withHighlightTerm: searchTerm)
-            } else {
-                messagesListViewController?.showMessages([ChatMessage]())
+            } else { // no search, clear all
+                messagesListViewController?.clearAttachments()
+                messagesListViewController?.clearMessages()
             }
         }
     }
@@ -176,54 +179,9 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
     {
         chatsDatabase.collectMessagesForContact(contact)
 
-        // sort attachments by date
-        //
-        let allContactAttachmentsT = contact.attachments.allObjects.sort(ChatsDatabase.sharedInstance.messageDateSort)
+        ChatItemsFetcher.sharedInstance.contact = contact
 
-//                let allContactChatItems = selectedContact.messages.setByAddingObjectsFromSet(selectedContact.attachments as Set<NSObject>) // COMMENT THIS LINE TO FIX COMPILE ERROR IN AppDelegate
-//
-//                let allContactChatItemsSorted = allContactChatItems.sort(chatsDatabase.messageDateSort) as! [ChatItem]
-
-        let allContactChatItemsSorted = allChatItemsForContact(contact,
-            afterDate: afterDateEnabled ? afterDate : nil,
-            beforeDate: beforeDateEnabled ? beforeDate : nil)
-
-        messagesListViewController?.hideAttachmentDisplayWindow()
-        messagesListViewController?.attachmentsToDisplay = allContactAttachmentsT as? [ChatAttachment]
-        messagesListViewController?.attachmentsCollectionView.reloadData()
-        messagesListViewController?.showMessages(allContactChatItemsSorted)
-
-    }
-
-    func allChatItemsForContact(contact: ChatContact, afterDate:NSDate? = nil, beforeDate:NSDate? = nil) -> [ChatItem]
-    {
-        let allContactChatItems = contact.messages.setByAddingObjectsFromSet(contact.attachments as Set<NSObject>) // COMMENT THIS LINE TO FIX COMPILE ERROR IN AppDelegate
-
-
-        if afterDate != nil || beforeDate != nil {
-            let filteredContactChatItems = allContactChatItems.filter { (obj:NSObject) -> Bool in
-                guard let item = obj as? ChatItem else { return false }
-
-                var res = true
-                if let afterDate = afterDate {
-                    res = afterDate.compare(item.date) == .OrderedAscending
-
-                    if !res {
-                        return false
-                    }
-                }
-
-                if let beforeDate = beforeDate {
-                    res = beforeDate.compare(item.date) == .OrderedDescending
-                }
-
-                return res
-            }
-
-            return filteredContactChatItems.sort(chatsDatabase.messageDateSort) as! [ChatItem]
-        }
-
-        return allContactChatItems.sort(chatsDatabase.messageDateSort) as! [ChatItem]
+        ChatItemsFetcher.sharedInstance.searchWithCompletionBlock()
     }
 
     // MARK: actions
@@ -242,31 +200,41 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
 
         NSLog("search for '\(sender.stringValue)'")
 
+        searchTermHasChanged = true
+        ChatItemsFetcher.sharedInstance.contact = nil
+
         if sender.stringValue == "" {
             
             searchTerm = nil
             searchedContacts = nil
 
+            ChatItemsFetcher.sharedInstance.clearSearch()
+
             messagesListViewController?.clearMessages()
+            messagesListViewController?.clearAttachments()
             tableView.reloadData()
             
         } else if sender.stringValue.characters.count >= 3 {
 
             searchTerm = sender.stringValue
 
-            chatsDatabase.searchChatsForString(searchTerm!,
-                afterDate: afterDateEnabled ? afterDate : nil,
-                beforeDate: beforeDateEnabled ? beforeDate : nil,
-                completion: { (matchingMessages) -> (Void) in
-                    let matchingMessagesSorted = matchingMessages.sort(ChatsDatabase.sharedInstance.messageDateSort)
-                    
-                    self.messagesListViewController?.showMessages(matchingMessagesSorted, withHighlightTerm:self.searchTerm)
-                    
-                    self.searchedContacts = self.contactsFromMessages(matchingMessages)
-                    self.searchedMessages = matchingMessagesSorted
-                    self.tableView.reloadData()
-            })
-            
+            ChatItemsFetcher.sharedInstance.searchTerm = sender.stringValue
+
+            ChatItemsFetcher.sharedInstance.searchWithCompletionBlock()
+
+//            chatsDatabase.searchChatsForString(searchTerm!,
+//                afterDate: afterDateEnabled ? afterDate : nil,
+//                beforeDate: beforeDateEnabled ? beforeDate : nil,
+//                completion: { (matchingMessages) -> (Void) in
+//                    let matchingMessagesSorted = matchingMessages.sort(ChatsDatabase.sharedInstance.messageDateSort)
+//                    
+//                    self.messagesListViewController?.showMessages(matchingMessagesSorted, withHighlightTerm:self.searchTerm)
+//                    
+//                    self.searchedContacts = self.contactsFromMessages(matchingMessages)
+//                    self.searchedMessages = matchingMessagesSorted
+//                    self.tableView.reloadData()
+//            })
+
 //            let matchingMessages = ChatsDatabase.sharedInstance.searchChatsForString(searchTerm,
 //                afterDate: afterDateEnabled ? afterDate : nil,
 //                beforeDate: beforeDateEnabled ? beforeDate : nil)
@@ -285,46 +253,35 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
 
     // restart a search once one of the date pickers has been changed
     //
-    @IBAction func redoSearch(sender: NSObject) {
+    @IBAction func redoSearch(sender: NSObject)
+    {
         if sender == afterDatePicker {
             afterDateEnabled = true
-        }
-        if sender == beforeDatePicker {
+        } else if sender == beforeDatePicker {
             beforeDateEnabled = true
         }
 
-        if searchField.stringValue.characters.count > 3 {
-            search(searchField)
-        } else {
-            // refresh normal chatlist
-            let index = tableView.selectedRowIndexes.firstIndex // no multiple selection
+        ChatItemsFetcher.sharedInstance.afterDate = afterDateEnabled ? afterDatePicker.dateValue : nil
+        ChatItemsFetcher.sharedInstance.beforeDate = beforeDateEnabled ? beforeDatePicker.dateValue : nil
 
-            if let selectedContact = contactForRow(index) {
-                displayMessageListForContact(selectedContact)
-            }
-        }
+//        if searchField.stringValue.characters.count > 3 {
+//
+//            searchTerm = searchField.stringValue
+//            ChatItemsFetcher.sharedInstance.searchTerm = searchTerm
+//
+//        } else {
+//            // refresh normal chatlist
+//            let index = tableView.selectedRowIndexes.firstIndex // no multiple selection
+//
+//            if let selectedContact = contactForRow(index) {
+//                displayMessageListForContact(selectedContact)
+//            }
+//        }
+
+        ChatItemsFetcher.sharedInstance.searchWithCompletionBlock()
+
     }
     
-
-    func contactsFromMessages(messages: [ChatMessage]) -> [ChatContact]
-    {
-        let allContacts = messages.map { (message) -> ChatContact in
-            return message.contact
-        }
-        
-        var contactList = [String:ChatContact]()
-        
-        let uniqueContacts = allContacts.filter { (contact) -> Bool in
-            if contactList[contact.name] != nil {
-                return false
-            }
-            contactList[contact.name] = contact
-            return true
-        }
-        
-        return uniqueContacts
-    }
-
 
 //    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
 //        print("\(__FUNCTION__) : \(change)")
@@ -347,7 +304,7 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
 
             chatsDatabase.collectMessagesForContact(contact)
 
-            let messages = contact.messages.sort(chatsDatabase.messageDateSort) as! [ChatMessage]
+            let messages = contact.messages.sort(ChatItemsFetcher.sharedInstance.messageDateSort) as! [ChatMessage]
 
             let reducer = { (currentValue:String, message:ChatMessage) -> String in
                 return currentValue + "\n" + self.messageFormatter.formatMessageAsString(message)
@@ -386,6 +343,28 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
             guard let saveURL = savePanel.URL else { return }
 
             self.saveContactChats(selectedContact, atURL: saveURL)
+        }
+    }
+
+    // used as a completion block by ChatItemsFetcher
+    //
+    func displayChats(messages:[ChatItem], attachments:[ChatAttachment], matchedContacts:[ChatContact]?)
+    {
+        messagesListViewController?.hideAttachmentDisplayWindow()
+        messagesListViewController?.attachmentsToDisplay = attachments
+        messagesListViewController?.attachmentsCollectionView.reloadData()
+        if messages.count > 0 {
+            messagesListViewController?.showMessages(messages)
+        } else {
+            messagesListViewController?.clearMessages()
+            messagesListViewController?.clearAttachments()
+        }
+
+        searchedContacts = matchedContacts
+
+        if searchTermHasChanged {
+            searchTermHasChanged = false
+            tableView.reloadData()
         }
     }
 

@@ -144,6 +144,14 @@ class MessagesListViewController: NSViewController, NSCollectionViewDataSource, 
         return nil
     }
 
+    func clearAttachments()
+    {
+        attachmentsToDisplay = nil
+        attachmentsCollectionView.reloadData()
+    }
+
+    // MARK: messages
+
     func clearMessages()
     {
         messagesTextView.string = ""
