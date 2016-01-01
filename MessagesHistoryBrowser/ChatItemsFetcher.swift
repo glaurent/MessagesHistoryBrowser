@@ -22,6 +22,8 @@ class ChatItemsFetcher: NSObject {
     var matchingAttachments = [ChatAttachment]()
     var matchingContacts:[ChatContact]?
 
+    var currentSearchMatchingItems = [ChatItem]()
+
     typealias SearchCompletionBlock = (([ChatItem], [ChatAttachment], [ChatContact]?) -> (Void))
 
     var completion:SearchCompletionBlock?
@@ -56,20 +58,36 @@ class ChatItemsFetcher: NSObject {
     func clearSearch()
     {
         contact = nil
+        searchTerm = nil
         matchingContacts = nil
+    }
+
+    // use after a search has been restricted to one contact
+    // re-instate the search results to all matching contacts
+    //
+    func restoreSearchToAllContacts()
+    {
+        matchingItems = currentSearchMatchingItems
     }
 
     func search()
     {
         if let contact = contact {
 
-            matchingContacts = nil
+            if searchTerm != nil {
 
-            if let searchTerm = searchTerm {
+                matchingItems = currentSearchMatchingItems.filter({ (item:ChatItem) -> Bool in
+                    if let message = item as? ChatMessage {
+                        return message.contact == contact
+                    } else if let attachment = item as? ChatAttachment {
+                        return attachment.contact == contact
+                    }
+                    return false
+                })
 
-                // TODO - collect messages for a single contact, and apply search term
 
             } else {
+                matchingContacts = nil                
                 collectChatItemsForContact(contact, afterDate: afterDate, beforeDate: beforeDate)
             }
 
@@ -78,7 +96,8 @@ class ChatItemsFetcher: NSObject {
 
             matchingAttachments.removeAll()
             let messages = searchChatsForString(searchTerm, afterDate: afterDate, beforeDate: beforeDate)
-            matchingItems = messages.sort(messageDateSort)
+            currentSearchMatchingItems = messages.sort(messageDateSort)
+            matchingItems = currentSearchMatchingItems
             matchingContacts = contactsFromMessages(messages)
 
         } else { // nothing, clear all
@@ -88,7 +107,8 @@ class ChatItemsFetcher: NSObject {
         }
     }
 
-    // MARK: Array-based search, when no search term is specified
+    // MARK: Array-based search
+    // when no search term is specified
     //
     func collectChatItemsForContact(contact: ChatContact, afterDate:NSDate? = nil, beforeDate:NSDate? = nil)
     {

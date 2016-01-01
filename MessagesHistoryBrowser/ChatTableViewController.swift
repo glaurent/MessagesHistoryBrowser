@@ -152,22 +152,13 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
 
         if let selectedContact = contactForRow(index) {
 
-            if let searchTerm = searchTerm, searchedMessages = searchedMessages {
-
-                let allContactMessages = searchedMessages.filter({ (message) -> Bool in
-                    return message.contact == selectedContact
-                })
-
-                messagesListViewController?.showMessages(allContactMessages, withHighlightTerm:searchTerm)
-
-            } else { // no search term, display full chat history of contact, with attachments
-                displayMessageListForContact(selectedContact)
-            }
+            displayMessageListForContact(selectedContact)
 
         } else { // no contact selected, clean up
 
-            if let searchTerm = searchTerm, searchedMessages = searchedMessages { // there is a search set, go back to full list of matching messages
-                messagesListViewController?.showMessages(searchedMessages, withHighlightTerm: searchTerm)
+            if let searchTerm = searchTerm { // there is a search set, go back to full list of matching messages
+                ChatItemsFetcher.sharedInstance.restoreSearchToAllContacts()
+                messagesListViewController?.showMessages(ChatItemsFetcher.sharedInstance.matchingItems, withHighlightTerm: searchTerm)
             } else { // no search, clear all
                 messagesListViewController?.clearAttachments()
                 messagesListViewController?.clearMessages()
@@ -354,7 +345,7 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
         messagesListViewController?.attachmentsToDisplay = attachments
         messagesListViewController?.attachmentsCollectionView.reloadData()
         if messages.count > 0 {
-            messagesListViewController?.showMessages(messages)
+            messagesListViewController?.showMessages(messages, withHighlightTerm: searchTerm)
         } else {
             messagesListViewController?.clearMessages()
             messagesListViewController?.clearAttachments()
@@ -368,6 +359,8 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
         }
     }
 
+    // recreate CoreData DB from original chats history DB
+    //
     func refreshChatHistory() {
 
         // hide normal UI, show progress report
