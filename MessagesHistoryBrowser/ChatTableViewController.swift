@@ -201,6 +201,7 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
 
             ChatItemsFetcher.sharedInstance.clearSearch()
 
+            messagesListViewController?.detailedSender = false
             messagesListViewController?.clearMessages()
             messagesListViewController?.clearAttachments()
             tableView.reloadData()
@@ -344,6 +345,9 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
         messagesListViewController?.hideAttachmentDisplayWindow()
         messagesListViewController?.attachmentsToDisplay = attachments
         messagesListViewController?.attachmentsCollectionView.reloadData()
+
+        messagesListViewController?.detailedSender = searchTerm != nil
+
         if messages.count > 0 {
             messagesListViewController?.showMessages(messages, withHighlightTerm: searchTerm)
         } else {

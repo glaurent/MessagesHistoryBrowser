@@ -31,6 +31,12 @@ class MessagesListViewController: NSViewController, NSCollectionViewDataSource, 
         }
     }
 
+    var detailedSender = false {
+        didSet {
+            messageFormatter.detailedSender = detailedSender
+        }
+    }
+
     var currentImageAttachmentDisplayWindowController:NSWindowController?
 
     override func viewDidLoad() {
