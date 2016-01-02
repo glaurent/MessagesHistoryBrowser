@@ -676,11 +676,11 @@
             <objects>
                 <viewController id="c6g-xc-DOK" customClass="ChatTableViewController" customModule="MessagesHistoryBrowser" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="1Kq-np-puo">
-                        <rect key="frame" x="0.0" y="0.0" width="553" height="300"/>
+                        <rect key="frame" x="0.0" y="0.0" width="476" height="300"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <searchField wantsLayer="YES" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="cWC-s3-YlP">
-                                <rect key="frame" x="0.0" y="278" width="553" height="22"/>
+                                <rect key="frame" x="0.0" y="278" width="476" height="22"/>
                                 <searchFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" borderStyle="bezel" usesSingleLineMode="YES" bezelStyle="round" id="gBh-7T-Jv6">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -691,13 +691,13 @@
                                 </connections>
                             </searchField>
                             <scrollView autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7dD-SL-gUk">
-                                <rect key="frame" x="0.0" y="0.0" width="553" height="248"/>
+                                <rect key="frame" x="0.0" y="0.0" width="476" height="248"/>
                                 <clipView key="contentView" id="8Ke-ny-68A">
-                                    <rect key="frame" x="1" y="0.0" width="551" height="247"/>
+                                    <rect key="frame" x="1" y="0.0" width="474" height="247"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="firstColumnOnly" columnReordering="NO" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" headerView="nSq-37-0ca" viewBased="YES" id="yQc-Jz-Fx4">
-                                            <rect key="frame" x="0.0" y="0.0" width="551" height="224"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="474" height="224"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <size key="intercellSpacing" width="3" height="2"/>
                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -753,7 +753,7 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
                                 <tableHeaderView key="headerView" id="nSq-37-0ca">
-                                    <rect key="frame" x="0.0" y="0.0" width="551" height="23"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="474" height="23"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </tableHeaderView>
                             </scrollView>
@@ -839,10 +839,10 @@
                                 </customSpacing>
                             </stackView>
                             <customView hidden="YES" translatesAutoresizingMaskIntoConstraints="NO" id="PId-FV-l0o" userLabel="ProgressReportView">
-                                <rect key="frame" x="0.0" y="0.0" width="553" height="280"/>
+                                <rect key="frame" x="0.0" y="0.0" width="476" height="280"/>
                                 <subviews>
                                     <progressIndicator wantsLayer="YES" maxValue="1" style="bar" translatesAutoresizingMaskIntoConstraints="NO" id="LcQ-1Y-GBm">
-                                        <rect key="frame" x="116" y="130" width="322" height="20"/>
+                                        <rect key="frame" x="77" y="130" width="322" height="20"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="322" id="do5-qG-93O"/>
                                             <constraint firstAttribute="height" constant="18" id="tjQ-of-yef"/>
@@ -852,7 +852,7 @@
                                         </connections>
                                     </progressIndicator>
                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="G2L-Mo-7yd">
-                                        <rect key="frame" x="114" y="106" width="326" height="17"/>
+                                        <rect key="frame" x="75" y="106" width="326" height="17"/>
                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="progress report" id="jdD-9y-Tp5">
                                             <font key="font" metaFont="system"/>
                                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -882,6 +882,7 @@
                             <constraint firstAttribute="trailing" secondItem="PId-FV-l0o" secondAttribute="trailing" id="HCI-Z3-xLb"/>
                             <constraint firstItem="7dD-SL-gUk" firstAttribute="leading" secondItem="1Kq-np-puo" secondAttribute="leading" id="Ia5-k6-xzf"/>
                             <constraint firstItem="cWC-s3-YlP" firstAttribute="top" secondItem="1Kq-np-puo" secondAttribute="top" id="P5H-ug-tOF"/>
+                            <constraint firstAttribute="trailing" secondItem="77S-WJ-P3C" secondAttribute="trailing" constant="35" id="QXx-sk-BpQ"/>
                             <constraint firstAttribute="bottom" secondItem="PId-FV-l0o" secondAttribute="bottom" id="VMk-xU-UtB"/>
                             <constraint firstItem="PId-FV-l0o" firstAttribute="top" secondItem="1Kq-np-puo" secondAttribute="top" constant="20" id="XfH-Rx-5at"/>
                             <constraint firstAttribute="trailing" secondItem="cWC-s3-YlP" secondAttribute="trailing" id="cVS-jB-rD7"/>
@@ -1119,6 +1120,10 @@
                                         </constraints>
                                     </customView>
                                 </subviews>
+                                <constraints>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="450" id="YO1-IF-sL9"/>
+                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="300" id="mAJ-wk-LjD"/>
+                                </constraints>
                                 <holdingPriorities>
                                     <real value="250"/>
                                     <real value="250"/>
