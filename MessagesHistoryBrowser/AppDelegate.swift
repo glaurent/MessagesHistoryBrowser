@@ -191,5 +191,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         chatTableViewController?.refreshChatHistory()
     }
 
+    func applicationShouldTerminateAfterLastWindowClosed(sender: NSApplication) -> Bool {
+        return true
+    }
 }
 
