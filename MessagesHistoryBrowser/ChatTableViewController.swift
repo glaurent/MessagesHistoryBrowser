@@ -214,33 +214,8 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
 
             ChatItemsFetcher.sharedInstance.searchWithCompletionBlock()
 
-//            chatsDatabase.searchChatsForString(searchTerm!,
-//                afterDate: afterDateEnabled ? afterDate : nil,
-//                beforeDate: beforeDateEnabled ? beforeDate : nil,
-//                completion: { (matchingMessages) -> (Void) in
-//                    let matchingMessagesSorted = matchingMessages.sort(ChatsDatabase.sharedInstance.messageDateSort)
-//                    
-//                    self.messagesListViewController?.showMessages(matchingMessagesSorted, withHighlightTerm:self.searchTerm)
-//                    
-//                    self.searchedContacts = self.contactsFromMessages(matchingMessages)
-//                    self.searchedMessages = matchingMessagesSorted
-//                    self.tableView.reloadData()
-//            })
-
-//            let matchingMessages = ChatsDatabase.sharedInstance.searchChatsForString(searchTerm,
-//                afterDate: afterDateEnabled ? afterDate : nil,
-//                beforeDate: beforeDateEnabled ? beforeDate : nil)
-//
-//            let matchingMessagesSorted = matchingMessages.sort(ChatsDatabase.sharedInstance.messageDateSort)
-//
-//            messagesListViewController?.showMessages(matchingMessagesSorted, withHighlightTerm:searchTerm)
-//
-//            searchedContacts = contactsFromMessages(matchingMessages)
-//            searchMode = true
-            
         }
         
-//        tableView.reloadData()
     }
 
     // restart a search once one of the date pickers has been changed
@@ -255,20 +230,6 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
 
         ChatItemsFetcher.sharedInstance.afterDate = afterDateEnabled ? afterDatePicker.dateValue : nil
         ChatItemsFetcher.sharedInstance.beforeDate = beforeDateEnabled ? beforeDatePicker.dateValue : nil
-
-//        if searchField.stringValue.characters.count > 3 {
-//
-//            searchTerm = searchField.stringValue
-//            ChatItemsFetcher.sharedInstance.searchTerm = searchTerm
-//
-//        } else {
-//            // refresh normal chatlist
-//            let index = tableView.selectedRowIndexes.firstIndex // no multiple selection
-//
-//            if let selectedContact = contactForRow(index) {
-//                displayMessageListForContact(selectedContact)
-//            }
-//        }
 
         ChatItemsFetcher.sharedInstance.searchWithCompletionBlock()
 
