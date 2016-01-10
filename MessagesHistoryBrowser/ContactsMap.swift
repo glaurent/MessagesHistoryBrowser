@@ -78,20 +78,20 @@ class ContactsMap {
         return res
     }
 
-    func nameForPhoneNumber(phoneNumber:String) -> String? {
+    func nameForPhoneNumber(phoneNumber:String) -> (String, String)? {
 
         if let contact = phoneNumbersMap[phoneNumber] as CNContact? {
-            return contactName(contact)
+            return (contactName(contact), contact.identifier)
         }
 
         return nil
 
     }
 
-    func nameForInstantMessageAddress(imAddressToSearch:String) -> String?
+    func nameForInstantMessageAddress(imAddressToSearch:String) -> (String, String)?
     {
         
-        var res:String?
+        var res:(String, String)?
         
         do {
             
@@ -102,7 +102,7 @@ class ContactsMap {
                 for labeledValue in imAddresses {
                     let imAddress = labeledValue.value as! CNInstantMessageAddress
                     if imAddress.username == imAddressToSearch {
-                        res = self.contactName(contact)
+                        res = (self.contactName(contact), contact.identifier)
                         stop.memory = true
                     }
                 }
@@ -115,9 +115,9 @@ class ContactsMap {
         
     }
 
-    func nameForEmailAddress(emailAddressToSearch:String) -> String? {
+    func nameForEmailAddress(emailAddressToSearch:String) -> (String, String)? {
 
-        var res:String?
+        var res:(String, String)?
         
         do {
             
@@ -128,7 +128,7 @@ class ContactsMap {
                 for labeledValue in emailAddresses {
                     let emailAddress = labeledValue.value as! String
                     if emailAddress == emailAddressToSearch {
-                        res = self.contactName(contact)
+                        res = (self.contactName(contact), contact.identifier)
                         stop.memory = true
                     }
                 }

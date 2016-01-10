@@ -10,6 +10,7 @@ import Cocoa
 
 class ChatContact: NSManagedObject {
 
+    @NSManaged var identifier:String
     @NSManaged var name:String
     @NSManaged var known:Bool
 
@@ -21,12 +22,13 @@ class ChatContact: NSManagedObject {
     static let sortDescriptor = NSSortDescriptor(key: "name", ascending: true)
 
 
-    convenience init(managedObjectContext:NSManagedObjectContext, withName aName:String) {
+    convenience init(managedObjectContext:NSManagedObjectContext, withName aName:String, withIdentifier anIdentifier:String) {
 
         let entityDescription = NSEntityDescription.entityForName("Contact", inManagedObjectContext: managedObjectContext)
         self.init(entity: entityDescription!, insertIntoManagedObjectContext: managedObjectContext)
 
         name = aName
+        identifier = anIdentifier
     }
 
     class func setupFetchRequest() {
@@ -82,7 +84,7 @@ class ChatContact: NSManagedObject {
     }
 
 
-    class func contactIn(managedObjectContext:NSManagedObjectContext, named name:String) -> ChatContact {
+    class func contactIn(managedObjectContext:NSManagedObjectContext, named name:String, withIdentifier identifier:String) -> ChatContact {
         let contactNamedFetchRequest = NSFetchRequest(entityName: "Contact")
         let namePredicate = NSPredicate(format: "name == %@", name)
         contactNamedFetchRequest.predicate = namePredicate
@@ -95,12 +97,12 @@ class ChatContact: NSManagedObject {
                 return foundContacts[0]
             }
 
-            return ChatContact(managedObjectContext: managedObjectContext, withName: name)
+            return ChatContact(managedObjectContext: managedObjectContext, withName: name, withIdentifier: identifier)
 
         } catch let error as NSError {
             print("\(__FUNCTION__) : Could not fetch \(error), \(error.userInfo)")
 
-            return ChatContact(managedObjectContext: managedObjectContext, withName: name)
+            return ChatContact(managedObjectContext: managedObjectContext, withName: name, withIdentifier: identifier)
         }
 
     }

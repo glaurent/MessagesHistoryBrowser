@@ -138,6 +138,7 @@
 				AF424CD71BC963E4006EE8D2 /* ChatContact.swift */,
 				AF424CD51BC9609D006EE8D2 /* ChatAttachment.swift */,
 				AFBF11441BE77E6E00D3D596 /* ChatItem.swift */,
+				AFD9749A1BB816B5004CF8D7 /* MessagesHistoryBrowser.xcdatamodeld */,
 			);
 			name = CoreData;
 			sourceTree = "<group>";
@@ -208,7 +209,6 @@
 				AFD9749D1BB816B5004CF8D7 /* Assets.xcassets */,
 				AFD9749F1BB816B6004CF8D7 /* Main.storyboard */,
 				AFD974A21BB816B6004CF8D7 /* Info.plist */,
-				AFD9749A1BB816B5004CF8D7 /* MessagesHistoryBrowser.xcdatamodeld */,
 				AF8003BA1C2C806A008A1D64 /* unused */,
 				AF6F10EC1BB8222500A93152 /* Frameworks */,
 			);

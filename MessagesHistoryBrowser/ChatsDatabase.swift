@@ -136,11 +136,13 @@ class ChatsDatabase: NSObject {
     {
         var contactName = identifier
         var contactIsKnown = false
+        var contactCNIdentifier = ""
 
         if serviceName == "AIM" || serviceName == "Jabber" {
 
-            if let chatContactName = contactsPhoneNumber.nameForInstantMessageAddress(identifier) {
-                contactName = chatContactName
+            if let chatContactNameIdentifierPair = contactsPhoneNumber.nameForInstantMessageAddress(identifier) {
+                contactName = chatContactNameIdentifierPair.0
+                contactCNIdentifier = chatContactNameIdentifierPair.1
                 contactIsKnown = true
             } else {
                 contactIsKnown = false
@@ -151,12 +153,14 @@ class ChatsDatabase: NSObject {
 
             // check if identifier contains a '@'
             if identifier.characters.contains("@") {
-                if let chatContactName = contactsPhoneNumber.nameForEmailAddress(identifier) {
-                    contactName = chatContactName
+                if let chatContactNameIdentifierPair = contactsPhoneNumber.nameForEmailAddress(identifier) {
+                    contactName = chatContactNameIdentifierPair.0
+                    contactCNIdentifier = chatContactNameIdentifierPair.1
                     contactIsKnown = true
                 }
-            } else if let chatContactName = contactsPhoneNumber.nameForPhoneNumber(identifier) {
-                contactName = chatContactName
+            } else if let chatContactNameIdentifierPair = contactsPhoneNumber.nameForPhoneNumber(identifier) {
+                contactName = chatContactNameIdentifierPair.0
+                contactCNIdentifier = chatContactNameIdentifierPair.1
                 contactIsKnown = true
             } else {
                 contactName = identifier
@@ -167,7 +171,7 @@ class ChatsDatabase: NSObject {
             contactIsKnown = false
         }
 
-        let contact = ChatContact.contactIn(moc, named: contactName)
+        let contact = ChatContact.contactIn(moc, named: contactName, withIdentifier: contactCNIdentifier)
         contact.known = contactIsKnown
         return contact
     }
