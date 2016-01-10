@@ -29,4 +29,14 @@ class AttachmentsCollectionViewItem: NSCollectionViewItem {
         view.layer?.cornerRadius = 5.0
     }
 
+    @IBAction func showInFinder(sender:AnyObject)
+    {
+        if let delegate = collectionView.delegate as? AttachmentsCollectionViewDelegate {
+            NSLog("showInFinder")
+            if let thisItemIndexPath = collectionView.indexPathForItem(self) {
+                delegate.showAttachmentInFinderAtIndexPath(thisItemIndexPath)
+            }
+        }
+    }
+
 }

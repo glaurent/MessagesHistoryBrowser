@@ -31,6 +31,9 @@
                     </textFieldCell>
                 </textField>
             </subviews>
+            <connections>
+                <outlet property="menu" destination="eVd-HO-ZZa" id="DTv-SE-ubc"/>
+            </connections>
         </customView>
         <collectionViewItem id="WNr-Ag-1bL" customClass="AttachmentsCollectionViewItem" customModule="MessagesHistoryBrowser" customModuleProvider="target">
             <connections>
@@ -39,5 +42,16 @@
                 <outlet property="view" destination="Hz6-mo-xeY" id="iYn-Ok-9E5"/>
             </connections>
         </collectionViewItem>
+        <menu id="eVd-HO-ZZa">
+            <items>
+                <menuItem title="Show in Finder" id="VGb-XY-Q80">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="showInFinder:" target="WNr-Ag-1bL" id="GVl-eR-LtU"/>
+                    </connections>
+                </menuItem>
+            </items>
+            <point key="canvasLocation" x="705.5" y="346.5"/>
+        </menu>
     </objects>
 </document>

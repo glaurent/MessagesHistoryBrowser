@@ -138,6 +138,16 @@ class MessagesListViewController: NSViewController, NSCollectionViewDataSource, 
         currentImageAttachmentDisplayWindowController?.window?.orderOut(self)
     }
 
+    func showAttachmentInFinderAtIndexPath(indexPath:NSIndexPath) -> Void
+    {
+        if let attachment = attachmentsToDisplay?[indexPath.item], attachmentFileName = attachment.fileName {
+
+            let imagePath = NSString(string:attachmentFileName).stringByStandardizingPath
+            let imageURL = NSURL(fileURLWithPath: imagePath)
+            NSWorkspace.sharedWorkspace().activateFileViewerSelectingURLs([imageURL])
+        }
+    }
+
     func imageForAttachmentAtIndexPath(indexPath:NSIndexPath) -> NSImage?
     {
         if let attachment = attachmentsToDisplay?[indexPath.item], attachmentFileName = attachment.fileName {
