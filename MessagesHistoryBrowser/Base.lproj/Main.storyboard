@@ -690,20 +690,57 @@
                                     <action selector="search:" target="c6g-xc-DOK" id="uNK-d3-84w"/>
                                 </connections>
                             </searchField>
-                            <scrollView autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7dD-SL-gUk">
+                            <customView hidden="YES" translatesAutoresizingMaskIntoConstraints="NO" id="PId-FV-l0o" userLabel="ProgressReportView">
+                                <rect key="frame" x="0.0" y="0.0" width="476" height="280"/>
+                                <subviews>
+                                    <progressIndicator wantsLayer="YES" maxValue="1" style="bar" translatesAutoresizingMaskIntoConstraints="NO" id="LcQ-1Y-GBm">
+                                        <rect key="frame" x="77" y="130" width="322" height="20"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="322" id="do5-qG-93O"/>
+                                            <constraint firstAttribute="height" constant="18" id="tjQ-of-yef"/>
+                                        </constraints>
+                                        <connections>
+                                            <binding destination="c6g-xc-DOK" name="value" keyPath="self.progress.fractionCompleted" id="DWk-ip-DGD"/>
+                                        </connections>
+                                    </progressIndicator>
+                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="G2L-Mo-7yd">
+                                        <rect key="frame" x="75" y="106" width="326" height="17"/>
+                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="progress report" id="jdD-9y-Tp5">
+                                            <font key="font" metaFont="system"/>
+                                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                        <connections>
+                                            <binding destination="c6g-xc-DOK" name="value" keyPath="self.progress.localizedDescription" id="5EO-1E-YTe">
+                                                <dictionary key="options">
+                                                    <bool key="NSAllowsEditingMultipleValuesSelection" value="NO"/>
+                                                </dictionary>
+                                            </binding>
+                                        </connections>
+                                    </textField>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="G2L-Mo-7yd" firstAttribute="centerX" secondItem="LcQ-1Y-GBm" secondAttribute="centerX" id="8bM-PG-VdJ"/>
+                                    <constraint firstItem="LcQ-1Y-GBm" firstAttribute="centerY" secondItem="PId-FV-l0o" secondAttribute="centerY" id="Jn8-ZY-Ooe"/>
+                                    <constraint firstItem="LcQ-1Y-GBm" firstAttribute="centerX" secondItem="PId-FV-l0o" secondAttribute="centerX" id="LFB-lH-q2p"/>
+                                    <constraint firstItem="G2L-Mo-7yd" firstAttribute="width" secondItem="LcQ-1Y-GBm" secondAttribute="width" id="dbw-jw-Ys5"/>
+                                    <constraint firstItem="G2L-Mo-7yd" firstAttribute="top" secondItem="LcQ-1Y-GBm" secondAttribute="bottom" constant="8" id="h6I-Iy-34l"/>
+                                </constraints>
+                            </customView>
+                            <scrollView autohidesScrollers="YES" horizontalLineScroll="52" horizontalPageScroll="10" verticalLineScroll="52" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7dD-SL-gUk">
                                 <rect key="frame" x="0.0" y="0.0" width="476" height="248"/>
                                 <clipView key="contentView" id="8Ke-ny-68A">
                                     <rect key="frame" x="1" y="0.0" width="474" height="247"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
-                                        <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="firstColumnOnly" columnReordering="NO" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" headerView="nSq-37-0ca" viewBased="YES" id="yQc-Jz-Fx4">
+                                        <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="firstColumnOnly" columnReordering="NO" multipleSelection="NO" autosaveColumns="NO" rowHeight="50" headerView="nSq-37-0ca" viewBased="YES" id="yQc-Jz-Fx4">
                                             <rect key="frame" x="0.0" y="0.0" width="474" height="224"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <size key="intercellSpacing" width="3" height="2"/>
                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                             <tableColumns>
-                                                <tableColumn identifier="ContactsCellView" width="343" minWidth="40" maxWidth="1000" id="84V-3h-jFY">
+                                                <tableColumn identifier="ContactsCellView" editable="NO" width="343" minWidth="40" maxWidth="1000" id="84V-3h-jFY">
                                                     <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" title="Contacts">
                                                         <font key="font" metaFont="smallSystem"/>
                                                         <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -717,19 +754,24 @@
                                                     <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                     <prototypeCellViews>
                                                         <tableCellView id="IBY-Xa-2nC">
-                                                            <rect key="frame" x="1" y="1" width="343" height="17"/>
+                                                            <rect key="frame" x="1" y="1" width="343" height="50"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
                                                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bAS-Yf-TNr">
-                                                                    <rect key="frame" x="0.0" y="0.0" width="239" height="17"/>
+                                                                    <rect key="frame" x="52" y="17" width="239" height="17"/>
                                                                     <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="Pm0-Bb-anq">
                                                                         <font key="font" metaFont="system"/>
                                                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                                     </textFieldCell>
                                                                 </textField>
+                                                                <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="uDv-UJ-jSA">
+                                                                    <rect key="frame" x="3" y="1" width="48" height="48"/>
+                                                                    <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" id="UcY-r6-rww"/>
+                                                                </imageView>
                                                             </subviews>
                                                             <connections>
+                                                                <outlet property="imageView" destination="uDv-UJ-jSA" id="aPv-J9-xGW"/>
                                                                 <outlet property="textField" destination="bAS-Yf-TNr" id="d4a-nc-tBP"/>
                                                             </connections>
                                                         </tableCellView>
@@ -838,43 +880,6 @@
                                     <real value="3.4028234663852886e+38"/>
                                 </customSpacing>
                             </stackView>
-                            <customView hidden="YES" translatesAutoresizingMaskIntoConstraints="NO" id="PId-FV-l0o" userLabel="ProgressReportView">
-                                <rect key="frame" x="0.0" y="0.0" width="476" height="280"/>
-                                <subviews>
-                                    <progressIndicator wantsLayer="YES" maxValue="1" style="bar" translatesAutoresizingMaskIntoConstraints="NO" id="LcQ-1Y-GBm">
-                                        <rect key="frame" x="77" y="130" width="322" height="20"/>
-                                        <constraints>
-                                            <constraint firstAttribute="width" constant="322" id="do5-qG-93O"/>
-                                            <constraint firstAttribute="height" constant="18" id="tjQ-of-yef"/>
-                                        </constraints>
-                                        <connections>
-                                            <binding destination="c6g-xc-DOK" name="value" keyPath="self.progress.fractionCompleted" id="DWk-ip-DGD"/>
-                                        </connections>
-                                    </progressIndicator>
-                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="G2L-Mo-7yd">
-                                        <rect key="frame" x="75" y="106" width="326" height="17"/>
-                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="progress report" id="jdD-9y-Tp5">
-                                            <font key="font" metaFont="system"/>
-                                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                        </textFieldCell>
-                                        <connections>
-                                            <binding destination="c6g-xc-DOK" name="value" keyPath="self.progress.localizedDescription" id="5EO-1E-YTe">
-                                                <dictionary key="options">
-                                                    <bool key="NSAllowsEditingMultipleValuesSelection" value="NO"/>
-                                                </dictionary>
-                                            </binding>
-                                        </connections>
-                                    </textField>
-                                </subviews>
-                                <constraints>
-                                    <constraint firstItem="G2L-Mo-7yd" firstAttribute="centerX" secondItem="LcQ-1Y-GBm" secondAttribute="centerX" id="8bM-PG-VdJ"/>
-                                    <constraint firstItem="LcQ-1Y-GBm" firstAttribute="centerY" secondItem="PId-FV-l0o" secondAttribute="centerY" id="Jn8-ZY-Ooe"/>
-                                    <constraint firstItem="LcQ-1Y-GBm" firstAttribute="centerX" secondItem="PId-FV-l0o" secondAttribute="centerX" id="LFB-lH-q2p"/>
-                                    <constraint firstItem="G2L-Mo-7yd" firstAttribute="width" secondItem="LcQ-1Y-GBm" secondAttribute="width" id="dbw-jw-Ys5"/>
-                                    <constraint firstItem="G2L-Mo-7yd" firstAttribute="top" secondItem="LcQ-1Y-GBm" secondAttribute="bottom" constant="8" id="h6I-Iy-34l"/>
-                                </constraints>
-                            </customView>
                         </subviews>
                         <constraints>
                             <constraint firstItem="77S-WJ-P3C" firstAttribute="top" secondItem="cWC-s3-YlP" secondAttribute="bottom" constant="-2" id="6ET-Ft-SUK"/>

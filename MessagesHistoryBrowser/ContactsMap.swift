@@ -150,4 +150,15 @@ class ContactsMap {
         let lastName = contact.familyName
         return "\(firstName) \(lastName)"
     }
+
+    func contactImage(contactIdentifier:String) -> NSData? {
+        do {
+            let contact = try contactStore.unifiedContactWithIdentifier(contactIdentifier, keysToFetch:[CNContactImageDataKey, CNContactThumbnailImageDataKey])
+            return contact.imageData // thumbnailImageData is nil, why ?
+        } catch {
+            NSLog("Couldn't get contact \(contactIdentifier)")
+        }
+
+        return nil
+    }
 }

@@ -141,6 +141,9 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
 
         if let contact = contactForRow(row) {
             cellView.textField?.stringValue = contact.name
+            if let thumbnailImageData = ContactsMap.sharedInstance.contactImage(contact.identifier) {
+                cellView.imageView?.image = NSImage(data: thumbnailImageData)
+            }
         }
         
         return cellView
