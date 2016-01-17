@@ -9,9 +9,10 @@
 import Cocoa
 import Contacts
 
-class ContactsMap {
+class ContactsMap : NSObject {
 
-    let countryPhonePrefix = "+33" // TODO : make this user-settable
+//    let countryPhonePrefix = "+33"
+    var countryPhonePrefix:String
 
     static let sharedInstance = ContactsMap()
 
@@ -23,8 +24,17 @@ class ContactsMap {
 
     let contactEmailFetchRequest = CNContactFetchRequest(keysToFetch: [CNContactFamilyNameKey, CNContactGivenNameKey, CNContactNicknameKey, CNContactEmailAddressesKey])
 
-    init() {
+    override init()
+    {
+        if let val = NSUserDefaults.standardUserDefaults().valueForKey("CountryPhonePrefix") as? String {
+            countryPhonePrefix = "+" + val
+        } else {
+            countryPhonePrefix = "+33"
+        }
         
+        super.init()
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "phonePrefixChanged:", name: NSUserDefaultsDidChangeNotification, object: nil)
     }
 
     func populate(completion : () -> Void)
@@ -160,5 +170,9 @@ class ContactsMap {
         }
 
         return nil
+    }
+    
+    func phonePrefixChanged(userInfo:NSDictionary) {
+        print("phone prefix changed")
     }
 }
