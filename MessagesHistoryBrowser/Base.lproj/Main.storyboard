@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="10089" systemVersion="15C50" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="15C50" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="10089"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="9531"/>
         <capability name="stacking Non-gravity area distributions on NSStackView" minToolsVersion="7.0" minSystemVersion="10.11"/>
     </dependencies>
     <scenes>
@@ -676,25 +676,14 @@
             <objects>
                 <viewController id="c6g-xc-DOK" customClass="ChatTableViewController" customModule="MessagesHistoryBrowser" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="1Kq-np-puo">
-                        <rect key="frame" x="0.0" y="0.0" width="476" height="300"/>
+                        <rect key="frame" x="0.0" y="0.0" width="505" height="300"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
-                            <searchField wantsLayer="YES" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="cWC-s3-YlP">
-                                <rect key="frame" x="0.0" y="278" width="476" height="22"/>
-                                <searchFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" borderStyle="bezel" usesSingleLineMode="YES" bezelStyle="round" id="gBh-7T-Jv6">
-                                    <font key="font" metaFont="system"/>
-                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                </searchFieldCell>
-                                <connections>
-                                    <action selector="search:" target="c6g-xc-DOK" id="uNK-d3-84w"/>
-                                </connections>
-                            </searchField>
                             <customView hidden="YES" translatesAutoresizingMaskIntoConstraints="NO" id="PId-FV-l0o" userLabel="ProgressReportView">
-                                <rect key="frame" x="0.0" y="0.0" width="476" height="280"/>
+                                <rect key="frame" x="0.0" y="0.0" width="505" height="280"/>
                                 <subviews>
                                     <progressIndicator wantsLayer="YES" maxValue="1" style="bar" translatesAutoresizingMaskIntoConstraints="NO" id="LcQ-1Y-GBm">
-                                        <rect key="frame" x="77" y="130" width="322" height="20"/>
+                                        <rect key="frame" x="91" y="130" width="322" height="20"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="322" id="do5-qG-93O"/>
                                             <constraint firstAttribute="height" constant="18" id="tjQ-of-yef"/>
@@ -704,7 +693,7 @@
                                         </connections>
                                     </progressIndicator>
                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="G2L-Mo-7yd">
-                                        <rect key="frame" x="75" y="106" width="326" height="17"/>
+                                        <rect key="frame" x="89" y="106" width="326" height="17"/>
                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="progress report" id="jdD-9y-Tp5">
                                             <font key="font" metaFont="system"/>
                                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -727,14 +716,124 @@
                                     <constraint firstItem="G2L-Mo-7yd" firstAttribute="top" secondItem="LcQ-1Y-GBm" secondAttribute="bottom" constant="8" id="h6I-Iy-34l"/>
                                 </constraints>
                             </customView>
+                            <stackView distribution="fill" orientation="vertical" alignment="leading" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ELG-c5-gJh" userLabel="Stack View - Search and Filter">
+                                <rect key="frame" x="0.0" y="210" width="505" height="90"/>
+                                <subviews>
+                                    <searchField wantsLayer="YES" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="cWC-s3-YlP">
+                                        <rect key="frame" x="2" y="68" width="501" height="22"/>
+                                        <searchFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" borderStyle="bezel" usesSingleLineMode="YES" bezelStyle="round" id="gBh-7T-Jv6">
+                                            <font key="font" metaFont="system"/>
+                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                        </searchFieldCell>
+                                        <connections>
+                                            <action selector="search:" target="c6g-xc-DOK" id="uNK-d3-84w"/>
+                                        </connections>
+                                    </searchField>
+                                    <stackView distribution="fillProportionally" orientation="horizontal" alignment="firstBaseline" spacing="11" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="77S-WJ-P3C" userLabel="Stack View - after date">
+                                        <rect key="frame" x="2" y="33" width="160" height="27"/>
+                                        <subviews>
+                                            <button translatesAutoresizingMaskIntoConstraints="NO" id="CXs-ND-wjJ">
+                                                <rect key="frame" x="-2" y="2" width="53.5" height="18"/>
+                                                <buttonCell key="cell" type="check" title="after" bezelStyle="regularSquare" imagePosition="left" inset="2" id="bux-MY-WHX">
+                                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                    <font key="font" metaFont="system"/>
+                                                </buttonCell>
+                                                <connections>
+                                                    <action selector="redoSearch:" target="c6g-xc-DOK" id="DhB-j8-ffX"/>
+                                                    <binding destination="c6g-xc-DOK" name="value" keyPath="self.afterDateEnabled" id="JGp-En-gM6"/>
+                                                </connections>
+                                            </button>
+                                            <datePicker verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="lou-wM-eNy">
+                                                <rect key="frame" x="60" y="0.0" width="102.5" height="27"/>
+                                                <datePickerCell key="cell" borderStyle="bezel" alignment="left" id="kXc-qA-xvl">
+                                                    <font key="font" metaFont="system"/>
+                                                    <calendarDate key="date" timeIntervalSinceReferenceDate="-595929600" calendarFormat="%Y-%m-%d %H:%M:%S %z">
+                                                        <!--1982-02-12 08:00:00 -0800-->
+                                                        <timeZone key="timeZone" name="US/Pacific"/>
+                                                    </calendarDate>
+                                                    <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                </datePickerCell>
+                                                <connections>
+                                                    <action selector="redoSearch:" target="c6g-xc-DOK" id="Ex0-W1-MKl"/>
+                                                    <binding destination="c6g-xc-DOK" name="value" keyPath="self.afterDate" id="MR4-aK-cAi"/>
+                                                </connections>
+                                            </datePicker>
+                                        </subviews>
+                                        <visibilityPriorities>
+                                            <integer value="1000"/>
+                                            <integer value="1000"/>
+                                        </visibilityPriorities>
+                                        <customSpacing>
+                                            <real value="3.4028234663852886e+38"/>
+                                            <real value="3.4028234663852886e+38"/>
+                                        </customSpacing>
+                                    </stackView>
+                                    <stackView distribution="fill" orientation="horizontal" alignment="centerY" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Umz-Up-FVZ" userLabel="Stack View - before date">
+                                        <rect key="frame" x="2" y="2" width="160" height="23"/>
+                                        <subviews>
+                                            <button translatesAutoresizingMaskIntoConstraints="NO" id="3cB-ks-e81">
+                                                <rect key="frame" x="-2" y="2" width="62" height="18"/>
+                                                <buttonCell key="cell" type="check" title="before" bezelStyle="regularSquare" imagePosition="left" inset="2" id="FC4-rx-l4p">
+                                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                    <font key="font" metaFont="system"/>
+                                                </buttonCell>
+                                                <connections>
+                                                    <action selector="redoSearch:" target="c6g-xc-DOK" id="wWy-rb-sre"/>
+                                                    <binding destination="c6g-xc-DOK" name="value" keyPath="self.beforeDateEnabled" id="0TO-sm-Dmg"/>
+                                                </connections>
+                                            </button>
+                                            <datePicker verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="JJY-fj-bdz">
+                                                <rect key="frame" x="66" y="0.0" width="97" height="27"/>
+                                                <datePickerCell key="cell" borderStyle="bezel" alignment="left" id="5UX-CT-Hnh">
+                                                    <font key="font" metaFont="system"/>
+                                                    <calendarDate key="date" timeIntervalSinceReferenceDate="-595929600" calendarFormat="%Y-%m-%d %H:%M:%S %z">
+                                                        <!--1982-02-12 08:00:00 -0800-->
+                                                        <timeZone key="timeZone" name="US/Pacific"/>
+                                                    </calendarDate>
+                                                    <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                </datePickerCell>
+                                                <connections>
+                                                    <action selector="redoSearch:" target="c6g-xc-DOK" id="k6T-hO-faZ"/>
+                                                    <binding destination="c6g-xc-DOK" name="value" keyPath="self.beforeDate" id="rND-Po-tff"/>
+                                                </connections>
+                                            </datePicker>
+                                        </subviews>
+                                        <visibilityPriorities>
+                                            <integer value="1000"/>
+                                            <integer value="1000"/>
+                                        </visibilityPriorities>
+                                        <customSpacing>
+                                            <real value="3.4028234663852886e+38"/>
+                                            <real value="3.4028234663852886e+38"/>
+                                        </customSpacing>
+                                    </stackView>
+                                </subviews>
+                                <edgeInsets key="edgeInsets" left="2" right="2" top="0.0" bottom="2"/>
+                                <constraints>
+                                    <constraint firstItem="77S-WJ-P3C" firstAttribute="width" secondItem="Umz-Up-FVZ" secondAttribute="width" id="2IU-pO-C5R"/>
+                                </constraints>
+                                <visibilityPriorities>
+                                    <integer value="1000"/>
+                                    <integer value="1000"/>
+                                    <integer value="1000"/>
+                                </visibilityPriorities>
+                                <customSpacing>
+                                    <real value="3.4028234663852886e+38"/>
+                                    <real value="3.4028234663852886e+38"/>
+                                    <real value="3.4028234663852886e+38"/>
+                                </customSpacing>
+                            </stackView>
                             <scrollView autohidesScrollers="YES" horizontalLineScroll="52" horizontalPageScroll="10" verticalLineScroll="52" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7dD-SL-gUk">
-                                <rect key="frame" x="0.0" y="0.0" width="476" height="248"/>
+                                <rect key="frame" x="0.0" y="0.0" width="505" height="205"/>
                                 <clipView key="contentView" id="8Ke-ny-68A">
-                                    <rect key="frame" x="1" y="0.0" width="474" height="247"/>
+                                    <rect key="frame" x="1" y="0.0" width="503" height="204"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="firstColumnOnly" columnReordering="NO" multipleSelection="NO" autosaveColumns="NO" rowHeight="50" headerView="nSq-37-0ca" viewBased="YES" id="yQc-Jz-Fx4">
-                                            <rect key="frame" x="0.0" y="0.0" width="474" height="224"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="503" height="181"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <size key="intercellSpacing" width="3" height="2"/>
                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -757,7 +856,7 @@
                                                             <rect key="frame" x="1" y="1" width="343" height="50"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
-                                                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bAS-Yf-TNr">
+                                                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="bAS-Yf-TNr">
                                                                     <rect key="frame" x="52" y="17" width="239" height="17"/>
                                                                     <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="Pm0-Bb-anq">
                                                                         <font key="font" metaFont="system"/>
@@ -765,11 +864,20 @@
                                                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                                     </textFieldCell>
                                                                 </textField>
-                                                                <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="uDv-UJ-jSA">
+                                                                <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="uDv-UJ-jSA">
                                                                     <rect key="frame" x="3" y="1" width="48" height="48"/>
                                                                     <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" id="UcY-r6-rww"/>
                                                                 </imageView>
                                                             </subviews>
+                                                            <constraints>
+                                                                <constraint firstItem="bAS-Yf-TNr" firstAttribute="centerX" secondItem="IBY-Xa-2nC" secondAttribute="centerX" id="82G-Fj-Xhp"/>
+                                                                <constraint firstItem="uDv-UJ-jSA" firstAttribute="leading" secondItem="IBY-Xa-2nC" secondAttribute="leading" constant="3" id="Iy5-Dm-ZVa"/>
+                                                                <constraint firstItem="uDv-UJ-jSA" firstAttribute="top" secondItem="IBY-Xa-2nC" secondAttribute="top" constant="1" id="PWc-Vk-TrS"/>
+                                                                <constraint firstItem="uDv-UJ-jSA" firstAttribute="centerY" secondItem="IBY-Xa-2nC" secondAttribute="centerY" id="SvG-5l-Cko"/>
+                                                                <constraint firstAttribute="trailing" secondItem="bAS-Yf-TNr" secondAttribute="trailing" constant="54" id="i6A-eY-Xba"/>
+                                                                <constraint firstItem="uDv-UJ-jSA" firstAttribute="centerY" secondItem="bAS-Yf-TNr" secondAttribute="centerY" id="s3j-NU-2rv"/>
+                                                                <constraint firstItem="bAS-Yf-TNr" firstAttribute="leading" secondItem="uDv-UJ-jSA" secondAttribute="trailing" constant="3" id="yGy-fm-kf3"/>
+                                                            </constraints>
                                                             <connections>
                                                                 <outlet property="imageView" destination="uDv-UJ-jSA" id="aPv-J9-xGW"/>
                                                                 <outlet property="textField" destination="bAS-Yf-TNr" id="d4a-nc-tBP"/>
@@ -795,106 +903,22 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
                                 <tableHeaderView key="headerView" id="nSq-37-0ca">
-                                    <rect key="frame" x="0.0" y="0.0" width="474" height="23"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="503" height="23"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </tableHeaderView>
                             </scrollView>
-                            <stackView distribution="fillProportionally" orientation="horizontal" alignment="firstBaseline" spacing="11" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="77S-WJ-P3C">
-                                <rect key="frame" x="9" y="253" width="432" height="27"/>
-                                <subviews>
-                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="QDg-Ou-2tA">
-                                        <rect key="frame" x="-2" y="3" width="99" height="17"/>
-                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Filter messages" id="UjA-YL-n5o">
-                                            <font key="font" metaFont="system"/>
-                                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                        </textFieldCell>
-                                    </textField>
-                                    <button translatesAutoresizingMaskIntoConstraints="NO" id="CXs-ND-wjJ">
-                                        <rect key="frame" x="104" y="2" width="51" height="18"/>
-                                        <buttonCell key="cell" type="check" title="after" bezelStyle="regularSquare" imagePosition="left" inset="2" id="bux-MY-WHX">
-                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                            <font key="font" metaFont="system"/>
-                                        </buttonCell>
-                                        <connections>
-                                            <action selector="redoSearch:" target="c6g-xc-DOK" id="DhB-j8-ffX"/>
-                                            <binding destination="c6g-xc-DOK" name="value" keyPath="self.afterDateEnabled" id="JGp-En-gM6"/>
-                                        </connections>
-                                    </button>
-                                    <datePicker verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="lou-wM-eNy">
-                                        <rect key="frame" x="164" y="0.0" width="97" height="27"/>
-                                        <datePickerCell key="cell" borderStyle="bezel" alignment="left" id="kXc-qA-xvl">
-                                            <font key="font" metaFont="system"/>
-                                            <calendarDate key="date" timeIntervalSinceReferenceDate="-595929600" calendarFormat="%Y-%m-%d %H:%M:%S %z">
-                                                <!--1982-02-12 08:00:00 -0800-->
-                                                <timeZone key="timeZone" name="US/Pacific"/>
-                                            </calendarDate>
-                                            <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                        </datePickerCell>
-                                        <connections>
-                                            <action selector="redoSearch:" target="c6g-xc-DOK" id="Ex0-W1-MKl"/>
-                                            <binding destination="c6g-xc-DOK" name="value" keyPath="self.afterDate" id="MR4-aK-cAi"/>
-                                        </connections>
-                                    </datePicker>
-                                    <button translatesAutoresizingMaskIntoConstraints="NO" id="3cB-ks-e81">
-                                        <rect key="frame" x="267" y="2" width="62" height="18"/>
-                                        <buttonCell key="cell" type="check" title="before" bezelStyle="regularSquare" imagePosition="left" inset="2" id="FC4-rx-l4p">
-                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                            <font key="font" metaFont="system"/>
-                                        </buttonCell>
-                                        <connections>
-                                            <action selector="redoSearch:" target="c6g-xc-DOK" id="wWy-rb-sre"/>
-                                            <binding destination="c6g-xc-DOK" name="value" keyPath="self.beforeDateEnabled" id="0TO-sm-Dmg"/>
-                                        </connections>
-                                    </button>
-                                    <datePicker verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="JJY-fj-bdz">
-                                        <rect key="frame" x="338" y="0.0" width="97" height="27"/>
-                                        <datePickerCell key="cell" borderStyle="bezel" alignment="left" id="5UX-CT-Hnh">
-                                            <font key="font" metaFont="system"/>
-                                            <calendarDate key="date" timeIntervalSinceReferenceDate="-595929600" calendarFormat="%Y-%m-%d %H:%M:%S %z">
-                                                <!--1982-02-12 08:00:00 -0800-->
-                                                <timeZone key="timeZone" name="US/Pacific"/>
-                                            </calendarDate>
-                                            <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                        </datePickerCell>
-                                        <connections>
-                                            <action selector="redoSearch:" target="c6g-xc-DOK" id="k6T-hO-faZ"/>
-                                            <binding destination="c6g-xc-DOK" name="value" keyPath="self.beforeDate" id="rND-Po-tff"/>
-                                        </connections>
-                                    </datePicker>
-                                </subviews>
-                                <visibilityPriorities>
-                                    <integer value="1000"/>
-                                    <integer value="1000"/>
-                                    <integer value="1000"/>
-                                    <integer value="1000"/>
-                                    <integer value="1000"/>
-                                </visibilityPriorities>
-                                <customSpacing>
-                                    <real value="3.4028234663852886e+38"/>
-                                    <real value="3.4028234663852886e+38"/>
-                                    <real value="3.4028234663852886e+38"/>
-                                    <real value="3.4028234663852886e+38"/>
-                                    <real value="3.4028234663852886e+38"/>
-                                </customSpacing>
-                            </stackView>
                         </subviews>
                         <constraints>
-                            <constraint firstItem="77S-WJ-P3C" firstAttribute="top" secondItem="cWC-s3-YlP" secondAttribute="bottom" constant="-2" id="6ET-Ft-SUK"/>
-                            <constraint firstItem="cWC-s3-YlP" firstAttribute="leading" secondItem="1Kq-np-puo" secondAttribute="leading" id="E7t-pR-Gnq"/>
+                            <constraint firstItem="ELG-c5-gJh" firstAttribute="top" secondItem="1Kq-np-puo" secondAttribute="top" id="61d-23-41L"/>
+                            <constraint firstAttribute="trailing" secondItem="ELG-c5-gJh" secondAttribute="trailing" id="7It-il-sBu"/>
+                            <constraint firstItem="7dD-SL-gUk" firstAttribute="top" secondItem="ELG-c5-gJh" secondAttribute="bottom" constant="5" id="ER1-zY-ebG"/>
                             <constraint firstAttribute="trailing" secondItem="PId-FV-l0o" secondAttribute="trailing" id="HCI-Z3-xLb"/>
                             <constraint firstItem="7dD-SL-gUk" firstAttribute="leading" secondItem="1Kq-np-puo" secondAttribute="leading" id="Ia5-k6-xzf"/>
-                            <constraint firstItem="cWC-s3-YlP" firstAttribute="top" secondItem="1Kq-np-puo" secondAttribute="top" id="P5H-ug-tOF"/>
-                            <constraint firstAttribute="trailing" secondItem="77S-WJ-P3C" secondAttribute="trailing" constant="35" id="QXx-sk-BpQ"/>
+                            <constraint firstItem="ELG-c5-gJh" firstAttribute="leading" secondItem="1Kq-np-puo" secondAttribute="leading" id="RIy-8B-2Bk"/>
                             <constraint firstAttribute="bottom" secondItem="PId-FV-l0o" secondAttribute="bottom" id="VMk-xU-UtB"/>
                             <constraint firstItem="PId-FV-l0o" firstAttribute="top" secondItem="1Kq-np-puo" secondAttribute="top" constant="20" id="XfH-Rx-5at"/>
-                            <constraint firstAttribute="trailing" secondItem="cWC-s3-YlP" secondAttribute="trailing" id="cVS-jB-rD7"/>
                             <constraint firstAttribute="trailing" secondItem="7dD-SL-gUk" secondAttribute="trailing" id="eSR-Mt-1Xl"/>
                             <constraint firstAttribute="bottom" secondItem="7dD-SL-gUk" secondAttribute="bottom" id="eoS-po-Axz"/>
-                            <constraint firstItem="77S-WJ-P3C" firstAttribute="leading" secondItem="1Kq-np-puo" secondAttribute="leading" constant="9" id="fPO-Xx-bQh"/>
-                            <constraint firstItem="7dD-SL-gUk" firstAttribute="top" secondItem="77S-WJ-P3C" secondAttribute="bottom" constant="5" id="qBZ-2j-fgo"/>
                             <constraint firstItem="PId-FV-l0o" firstAttribute="leading" secondItem="1Kq-np-puo" secondAttribute="leading" id="vvD-m2-JR3"/>
                         </constraints>
                     </view>
@@ -910,7 +934,7 @@
                 <customObject id="3Ou-aK-krf" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
                 <userDefaultsController representsSharedInstance="YES" id="0Bu-Sd-3Ld"/>
             </objects>
-            <point key="canvasLocation" x="1288" y="323"/>
+            <point key="canvasLocation" x="1302.5" y="323"/>
         </scene>
         <!--Chat List View Controller-->
         <scene sceneID="PTC-yc-z6U">
@@ -1098,10 +1122,10 @@
                                                             <rect key="frame" x="0.0" y="0.0" width="448" height="146"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                            <size key="minSize" width="448" height="146"/>
+                                                            <size key="minSize" width="433" height="146"/>
                                                             <size key="maxSize" width="463" height="10000000"/>
                                                             <color key="insertionPointColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                            <size key="minSize" width="448" height="146"/>
+                                                            <size key="minSize" width="433" height="146"/>
                                                             <size key="maxSize" width="463" height="10000000"/>
                                                         </textView>
                                                     </subviews>
@@ -1112,7 +1136,7 @@
                                                     <autoresizingMask key="autoresizingMask"/>
                                                 </scroller>
                                                 <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="Icy-xM-cH8">
-                                                    <rect key="frame" x="433" y="1" width="16" height="146"/>
+                                                    <rect key="frame" x="434" y="1" width="15" height="146"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                 </scroller>
                                             </scrollView>
