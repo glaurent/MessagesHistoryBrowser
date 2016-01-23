@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AF029C441C4D746100B1A950 /* phone country codes.json in Resources */ = {isa = PBXBuildFile; fileRef = AF029C431C4D746100B1A950 /* phone country codes.json */; };
 		AF2B2DEF1BC18BE1000B8293 /* ChatsDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF2B2DEE1BC18BE1000B8293 /* ChatsDatabase.swift */; };
 		AF2B2DF11BC19BAE000B8293 /* ChatMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF2B2DF01BC19BAE000B8293 /* ChatMessage.swift */; };
 		AF2B2DF31BC19E81000B8293 /* MessagesListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF2B2DF21BC19E81000B8293 /* MessagesListViewController.swift */; };
@@ -69,6 +70,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		AF029C431C4D746100B1A950 /* phone country codes.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "phone country codes.json"; sourceTree = "<group>"; };
 		AF2B2DEE1BC18BE1000B8293 /* ChatsDatabase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatsDatabase.swift; sourceTree = "<group>"; };
 		AF2B2DF01BC19BAE000B8293 /* ChatMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatMessage.swift; sourceTree = "<group>"; };
 		AF2B2DF21BC19E81000B8293 /* MessagesListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessagesListViewController.swift; sourceTree = "<group>"; };
@@ -212,6 +214,7 @@
 				AFD9749D1BB816B5004CF8D7 /* Assets.xcassets */,
 				AFD9749F1BB816B6004CF8D7 /* Main.storyboard */,
 				AFD974A21BB816B6004CF8D7 /* Info.plist */,
+				AF029C431C4D746100B1A950 /* phone country codes.json */,
 				AF8003BA1C2C806A008A1D64 /* unused */,
 				AF6F10EC1BB8222500A93152 /* Frameworks */,
 			);
@@ -341,6 +344,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AF029C441C4D746100B1A950 /* phone country codes.json in Resources */,
 				AFD9749E1BB816B5004CF8D7 /* Assets.xcassets in Resources */,
 				AFE9B8041BCB088A007FC376 /* AttachmentsCollectionViewItem.xib in Resources */,
 				AFD974A11BB816B6004CF8D7 /* Main.storyboard in Resources */,

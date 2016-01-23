@@ -64,6 +64,7 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
         }
 
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "showUnknownContactsChanged:", name: AppDelegate.ShowChatsFromUnknownNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "phonePrefixChanged:", name: NSUserDefaultsDidChangeNotification, object: nil)
 
 //        progress.addObserver(self, forKeyPath: "localizedDescription", options: NSKeyValueObservingOptions.New, context: nil)
 
@@ -367,6 +368,11 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
                 MOCController.sharedInstance.save()
         })
     }
-    
+
+    func phonePrefixChanged(userInfo:NSDictionary) {
+        print("phone prefix changed")
+        refreshChatHistory()
+    }
+
 
 }

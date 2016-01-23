@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="15C50" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="10089" systemVersion="15D21" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="9531"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="10089"/>
         <capability name="stacking Non-gravity area distributions on NSStackView" minToolsVersion="7.0" minSystemVersion="10.11"/>
     </dependencies>
     <scenes>
@@ -712,10 +712,6 @@
                             <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="RCV-lh-Ol4">
                                 <rect key="frame" x="128" y="60" width="96" height="22"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" placeholderString="01" drawsBackground="YES" id="nfM-8N-ott">
-                                    <numberFormatter key="formatter" formatterBehavior="default10_4" localizesFormat="NO" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="42" id="CTq-Dv-V4c">
-                                        <real key="minimum" value="1"/>
-                                        <real key="maximum" value="999"/>
-                                    </numberFormatter>
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -762,7 +758,7 @@
                                         <rect key="frame" x="2" y="33" width="160" height="27"/>
                                         <subviews>
                                             <button translatesAutoresizingMaskIntoConstraints="NO" id="CXs-ND-wjJ">
-                                                <rect key="frame" x="-2" y="2" width="53.5" height="18"/>
+                                                <rect key="frame" x="-2" y="2" width="54" height="18"/>
                                                 <buttonCell key="cell" type="check" title="after" bezelStyle="regularSquare" imagePosition="left" inset="2" id="bux-MY-WHX">
                                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                     <font key="font" metaFont="system"/>
@@ -773,7 +769,7 @@
                                                 </connections>
                                             </button>
                                             <datePicker verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="lou-wM-eNy">
-                                                <rect key="frame" x="60" y="0.0" width="102.5" height="27"/>
+                                                <rect key="frame" x="61" y="0.0" width="102" height="27"/>
                                                 <datePickerCell key="cell" borderStyle="bezel" alignment="left" id="kXc-qA-xvl">
                                                     <font key="font" metaFont="system"/>
                                                     <calendarDate key="date" timeIntervalSinceReferenceDate="-595929600" calendarFormat="%Y-%m-%d %H:%M:%S %z">
@@ -802,7 +798,7 @@
                                         <rect key="frame" x="2" y="2" width="160" height="23"/>
                                         <subviews>
                                             <button translatesAutoresizingMaskIntoConstraints="NO" id="3cB-ks-e81">
-                                                <rect key="frame" x="-2" y="2" width="62" height="18"/>
+                                                <rect key="frame" x="-2" y="3" width="62" height="18"/>
                                                 <buttonCell key="cell" type="check" title="before" bezelStyle="regularSquare" imagePosition="left" inset="2" id="FC4-rx-l4p">
                                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                     <font key="font" metaFont="system"/>
@@ -1180,17 +1176,17 @@
                                             <scrollView horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lTo-HJ-H2q">
                                                 <rect key="frame" x="0.0" y="0.0" width="450" height="148"/>
                                                 <clipView key="contentView" id="Ku1-yh-KWT">
-                                                    <rect key="frame" x="1" y="1" width="433" height="146"/>
+                                                    <rect key="frame" x="1" y="1" width="448" height="146"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     <subviews>
                                                         <textView editable="NO" importsGraphics="NO" findStyle="panel" continuousSpellChecking="YES" verticallyResizable="YES" allowsNonContiguousLayout="YES" quoteSubstitution="YES" dashSubstitution="YES" smartInsertDelete="YES" id="cOK-Z4-ECw">
-                                                            <rect key="frame" x="0.0" y="0.0" width="433" height="146"/>
+                                                            <rect key="frame" x="0.0" y="0.0" width="448" height="146"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                            <size key="minSize" width="433" height="146"/>
+                                                            <size key="minSize" width="448" height="146"/>
                                                             <size key="maxSize" width="463" height="10000000"/>
                                                             <color key="insertionPointColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                            <size key="minSize" width="433" height="146"/>
+                                                            <size key="minSize" width="448" height="146"/>
                                                             <size key="maxSize" width="463" height="10000000"/>
                                                         </textView>
                                                     </subviews>
@@ -1201,7 +1197,7 @@
                                                     <autoresizingMask key="autoresizingMask"/>
                                                 </scroller>
                                                 <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="Icy-xM-cH8">
-                                                    <rect key="frame" x="434" y="1" width="15" height="146"/>
+                                                    <rect key="frame" x="433" y="1" width="16" height="146"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                 </scroller>
                                             </scrollView>

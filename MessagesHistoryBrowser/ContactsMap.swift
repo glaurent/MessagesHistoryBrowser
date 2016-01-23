@@ -26,15 +26,44 @@ class ContactsMap : NSObject {
 
     override init()
     {
-        if let val = NSUserDefaults.standardUserDefaults().valueForKey("CountryPhonePrefix") as? String {
-            countryPhonePrefix = "+" + val
-        } else {
-            countryPhonePrefix = "+33"
+        countryPhonePrefix = "+1" // default to US prefix
+
+        if let val = NSUserDefaults.standardUserDefaults().valueForKey("CountryPhonePrefix") {
+
+            if let valNum = val as? NSNumber {
+                countryPhonePrefix = "+" + valNum.stringValue
+            } else if let valString = val as? String {
+                countryPhonePrefix = "+" + valString
+            }
+
+            print("Found default value for CountryPhonePrefix : \(val)")
+            
+        } else if let jsonCountryPhoneCodeFileURL = NSBundle.mainBundle().URLForResource("phone country codes", withExtension: "json"),
+            jsonData = NSData(contentsOfURL: jsonCountryPhoneCodeFileURL) {
+
+                do {
+                    var countryPhonePrefixDict:[String:String]
+
+                    try countryPhonePrefixDict = NSJSONSerialization.JSONObjectWithData(jsonData, options: NSJSONReadingOptions(rawValue:0)) as! [String : String]
+
+                    if let countryCode = NSLocale.currentLocale().objectForKey(NSLocaleCountryCode) as? String,
+                    phonePrefix = countryPhonePrefixDict[countryCode] {
+
+                        if phonePrefix.characters.first == "+" {
+                            countryPhonePrefix = phonePrefix
+                        } else {
+                            countryPhonePrefix = "+" + phonePrefix
+                        }
+                        NSUserDefaults.standardUserDefaults().setValue(phonePrefix, forKey: "CountryPhonePrefix")
+                    }
+
+                } catch {
+                    print("Couldn't parse JSON phone code data")
+                }
         }
-        
+
         super.init()
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "phonePrefixChanged:", name: NSUserDefaultsDidChangeNotification, object: nil)
     }
 
     func populate(completion : () -> Void)
@@ -172,7 +201,4 @@ class ContactsMap : NSObject {
         return nil
     }
     
-    func phonePrefixChanged(userInfo:NSDictionary) {
-        print("phone prefix changed")
-    }
 }
