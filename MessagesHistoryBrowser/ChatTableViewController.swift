@@ -72,6 +72,8 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
 
 //        progressReportView.hidden = false
 
+        progress.completedUnitCount = 0
+
         chatsDatabase.populate(progress, start: {
             () -> Void in
             self.progressReportView.hidden = false
@@ -341,6 +343,7 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
         dispatch_async(dispatch_get_main_queue()) { () -> Void in
             self.tableView.hidden = true
             self.messagesListViewController?.view.hidden = true
+            self.progress.completedUnitCount = 0
             self.progressReportView.hidden = false
         }
 
@@ -370,8 +373,8 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
     }
 
     func phonePrefixChanged(userInfo:NSDictionary) {
-        print("phone prefix changed")
-        refreshChatHistory()
+        print("phone prefix changed - TODO") // TODO
+//        refreshChatHistory()
     }
 
 

@@ -38,7 +38,8 @@ class MOCController: NSObject {
         }
     }
 
-    func clearAllCoreData() {
+    func clearAllCoreData()
+    {
 
         let allContacts = ChatContact.allContactsInContext(managedObjectContext)
 
@@ -46,6 +47,14 @@ class MOCController: NSObject {
             managedObjectContext.deleteObject(contact)
         }
 
+    }
+
+    func workerContext() -> NSManagedObjectContext
+    {
+        let worker = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
+        worker.parentContext = managedObjectContext
+
+        return worker
     }
 
 }

@@ -42,7 +42,9 @@ class Chat : NSManagedObject {
 
         var err:NSError?
 
-        res = managedObjectContext.countForFetchRequest(fetchRequest, error: &err)
+        managedObjectContext.performBlockAndWait { () -> Void in
+            res = managedObjectContext.countForFetchRequest(fetchRequest, error: &err)
+        }
 
         return res
 
@@ -53,11 +55,13 @@ class Chat : NSManagedObject {
 
         var allChats = [Chat]()
 
-        do {
-            let results = try managedObjectContext.executeFetchRequest(fetchRequest)
-            allChats = results as! [Chat]
-        } catch let error as NSError {
-            print("\(__FUNCTION__) : Could not fetch \(error), \(error.userInfo)")
+        managedObjectContext.performBlockAndWait { () -> Void in
+            do {
+                let results = try managedObjectContext.executeFetchRequest(fetchRequest)
+                allChats = results as! [Chat]
+            } catch let error as NSError {
+                print("\(__FUNCTION__) : Could not fetch \(error), \(error.userInfo)")
+            }
         }
 
         return allChats

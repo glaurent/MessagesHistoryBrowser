@@ -21,13 +21,13 @@ class ChatsDatabase: NSObject {
 
     var allChats:[Chat] {
         get {
-            return Chat.allChatsInContext(moc)
+            return Chat.allChatsInContext(MOCController.sharedInstance.managedObjectContext)
         }
     }
 
     var db:Connection!
 
-    lazy var moc = MOCController.sharedInstance.managedObjectContext
+//    lazy var moc = MOCController.sharedInstance.managedObjectContext
 
     override init() {
 
@@ -51,16 +51,25 @@ class ChatsDatabase: NSObject {
     {
         contactsPhoneNumber.populate({ () -> Void in
 
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), { () -> Void in
+            let workerContext = MOCController.sharedInstance.workerContext()
 
-                if Chat.numberOfChatsInContext(self.moc) == 0 {
+            workerContext.performBlock({ () -> Void in
+
+                if Chat.numberOfChatsInContext(workerContext) == 0 {
 
                     dispatch_async(dispatch_get_main_queue(), { () -> Void in
                         start()
                     })
 
-                    self.importAllChatsFromDB(progress)
-                    self.collectAllMessagesFromAllChats(progress)
+                    self.importAllChatsFromDB(workerContext, progress: progress)
+                    self.collectAllMessagesFromAllChats(workerContext, progress: progress)
+                }
+
+                do {
+                    try workerContext.save()
+                    MOCController.sharedInstance.save()
+                } catch let error as NSError {
+                    print("ChatsDatabase.populate : worker context save fail : \(error)")
                 }
 
                 // run completion block on main queue
@@ -68,15 +77,16 @@ class ChatsDatabase: NSObject {
                 dispatch_async(dispatch_get_main_queue(), { () -> Void in
 
                     completion()
-
+                    
                 })
 
             })
+
         })
 
     }
 
-    func importAllChatsFromDB(progress:NSProgress)
+    func importAllChatsFromDB(localContext:NSManagedObjectContext, progress:NSProgress)
     {
         NSOperationQueue .mainQueue().addOperationWithBlock({ () -> Void in
             progress.localizedDescription = NSLocalizedString("Importing chats...", comment: "")
@@ -108,9 +118,9 @@ class ChatsDatabase: NSObject {
             let identifier = chatData[chatIdentifierColumn]
             let serviceName = chatData[serviceNameColumn]
             
-            let chatContact = contactForIdentifier(identifier, service:serviceName)
+            let chatContact = contactForIdentifier(identifier, service:serviceName, inContext: localContext)
             
-            let _ = Chat(managedObjectContext:moc, withContact:chatContact, withServiceName:serviceName,  withGUID: guid, andRowID: rowID)
+            let _ = Chat(managedObjectContext:localContext, withContact:chatContact, withServiceName:serviceName,  withGUID: guid, andRowID: rowID)
             
             NSLog("chat : %@ \tcontact : %@\trowId: %d", guid, chatContact.name, rowID)
 
@@ -132,7 +142,7 @@ class ChatsDatabase: NSObject {
     }
 
 
-    func contactForIdentifier(identifier:String, service serviceName:String) -> ChatContact
+    func contactForIdentifier(identifier:String, service serviceName:String, inContext context:NSManagedObjectContext) -> ChatContact
     {
         var contactName = identifier
         var contactIsKnown = false
@@ -171,7 +181,7 @@ class ChatsDatabase: NSObject {
             contactIsKnown = false
         }
 
-        let contact = ChatContact.contactIn(moc, named: contactName, withIdentifier: contactCNIdentifier)
+        let contact = ChatContact.contactIn(context, named: contactName, withIdentifier: contactCNIdentifier)
         contact.known = contactIsKnown
         return contact
     }
@@ -223,8 +233,6 @@ class ChatsDatabase: NSObject {
 
         let query = db.prepare(messagesTable.select(isFromMeColumn, textColumn, dateColumn).filter(allHandleIDs.contains(handleIdColumn)))
 
-        let chatInMoc = moc.objectWithID(chat.objectID) as! Chat
-        
         for messageData in query {
             let messageContent = messageData[textColumn] ?? ""
             let dateInt = messageData[dateColumn]
@@ -232,7 +240,7 @@ class ChatsDatabase: NSObject {
             let messageDate = NSDate(timeIntervalSinceReferenceDate: dateTimeInterval)
 //            NSLog("message : \(messageContent)")
 
-            let chatMessage = ChatMessage(managedObjectContext: moc, withMessage: messageContent, withDate: messageDate, inChat: chatInMoc)
+            let chatMessage = ChatMessage(managedObjectContext: chat.managedObjectContext!, withMessage: messageContent, withDate: messageDate, inChat: chat)
             chatMessage.isFromMe = messageData[isFromMeColumn]
         }
 
@@ -271,14 +279,14 @@ class ChatsDatabase: NSObject {
             let attachmentTimeInterval = NSTimeInterval(attachmentDateInt)
             let attachmentDate = NSDate(timeIntervalSinceReferenceDate: attachmentTimeInterval)
 
-            let _ = ChatAttachment(managedObjectContext: moc, withFileName: attachmentFileName, withDate: attachmentDate, inChat:chatInMoc)
+            let _ = ChatAttachment(managedObjectContext: chat.managedObjectContext!, withFileName: attachmentFileName, withDate: attachmentDate, inChat:chat)
         }
 
     }
 
-    func collectAllMessagesFromAllChats(progress:NSProgress)
+    func collectAllMessagesFromAllChats(localContext:NSManagedObjectContext, progress:NSProgress)
     {
-        let allContacts = ChatContact.allContactsInContext(moc)
+        let allContacts = ChatContact.allContactsInContext(localContext)
         let allContactsCount = Int64(allContacts.count)
 
         progress.becomeCurrentWithPendingUnitCount(allContactsCount)

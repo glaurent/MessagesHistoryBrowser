@@ -67,17 +67,20 @@ class ChatContact: NSManagedObject {
 
         var allContacts = [ChatContact]()
 
-        do {
-            if let predicate = predicate {
-                fetchRequest.predicate = predicate
-            } else {
-                fetchRequest.predicate = nil
-            }
+        managedObjectContext.performBlockAndWait { () -> Void in
 
-            let results = try managedObjectContext.executeFetchRequest(fetchRequest)
-            allContacts = results as! [ChatContact]
-        } catch let error as NSError {
-            print("\(__FUNCTION__) : Could not fetch \(error), \(error.userInfo)")
+            do {
+                if let predicate = predicate {
+                    fetchRequest.predicate = predicate
+                } else {
+                    fetchRequest.predicate = nil
+                }
+
+                let results = try managedObjectContext.executeFetchRequest(fetchRequest)
+                allContacts = results as! [ChatContact]
+            } catch let error as NSError {
+                print("\(__FUNCTION__) : Could not fetch \(error), \(error.userInfo)")
+            }
         }
 
         return allContacts
@@ -89,22 +92,27 @@ class ChatContact: NSManagedObject {
         let namePredicate = NSPredicate(format: "name == %@", name)
         contactNamedFetchRequest.predicate = namePredicate
 
-        do {
-            let r = try managedObjectContext.executeFetchRequest(contactNamedFetchRequest)
-            let foundContacts = r as! [ChatContact]
+        var res:ChatContact?
 
-            if foundContacts.count > 0 {
-                return foundContacts[0]
+        managedObjectContext.performBlockAndWait { () -> Void in
+
+            do {
+                let r = try managedObjectContext.executeFetchRequest(contactNamedFetchRequest)
+                let foundContacts = r as! [ChatContact]
+
+                if foundContacts.count > 0 {
+                    res = foundContacts[0]
+                } else {
+                    res = ChatContact(managedObjectContext: managedObjectContext, withName: name, withIdentifier: identifier)
+                }
+            } catch let error as NSError {
+                print("\(__FUNCTION__) : Could not fetch \(error), \(error.userInfo)")
+
+                res = ChatContact(managedObjectContext: managedObjectContext, withName: name, withIdentifier: identifier)
             }
-
-            return ChatContact(managedObjectContext: managedObjectContext, withName: name, withIdentifier: identifier)
-
-        } catch let error as NSError {
-            print("\(__FUNCTION__) : Could not fetch \(error), \(error.userInfo)")
-
-            return ChatContact(managedObjectContext: managedObjectContext, withName: name, withIdentifier: identifier)
         }
 
+        return res!
     }
 
 }
