@@ -190,10 +190,28 @@ class ContactsMap : NSObject {
         return "\(firstName) \(lastName)"
     }
 
-    func contactImage(contactIdentifier:String) -> NSData? {
+    func contactImage(contactIdentifier:String) -> NSImage? {
         do {
-            let contact = try contactStore.unifiedContactWithIdentifier(contactIdentifier, keysToFetch:[CNContactImageDataKey, CNContactThumbnailImageDataKey])
-            return contact.imageData // thumbnailImageData is nil, why ?
+            let contact = try contactStore.unifiedContactWithIdentifier(contactIdentifier, keysToFetch:[CNContactImageDataKey, CNContactThumbnailImageDataKey, CNContactGivenNameKey, CNContactFamilyNameKey])
+            if let imageData = contact.imageData {
+                return NSImage(data: imageData) // thumbnailImageData is nil, why ?
+            } else { // get a bitmap of the contact's initials (like in Contacts.app)
+                let firstName = contact.givenName
+                let lastName = contact.familyName
+
+                var initials = ""
+
+                if firstName.characters.count > 0 {
+                    initials = initials + "\(firstName.characters.first!)"
+                }
+                if lastName.characters.count > 0 {
+                    initials = initials + "\(lastName.characters.first!)"
+                }
+
+                if let imageLabel = LabelToImage.stringToImage(initials) {
+                    return imageLabel
+                }
+            }
         } catch {
             NSLog("Couldn't get contact \(contactIdentifier)")
         }
