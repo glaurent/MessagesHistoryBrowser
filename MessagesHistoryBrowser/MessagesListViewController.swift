@@ -178,6 +178,7 @@ class MessagesListViewController: NSViewController, NSCollectionViewDataSource, 
         let allMatchingMessages = NSMutableAttributedString()
 
         var lastShownDate:NSDate?
+        var lastShownContact:ChatContact?
         
         for chatItem in chatItems {
 
@@ -189,11 +190,22 @@ class MessagesListViewController: NSViewController, NSCollectionViewDataSource, 
                 
                 lastShownDate = chatItem.date
             }
-            
+
+            // chatItem can be message or attachment
+            // process accordingly
+            //
             if let message = chatItem as? ChatMessage {
+
                 guard let highlightedMessage = messageFormatter.formatMessage(message, withHighlightTerm: highlightTerm) else { continue }
 
+                if lastShownContact == nil || lastShownContact!.name != message.contact.name {
+                    let highlightedContact = messageFormatter.formatMessageContact(message.contact)
+                    allMatchingMessages.appendAttributedString(highlightedContact)
+                    lastShownContact = message.contact
+                }
+
                 allMatchingMessages.appendAttributedString(highlightedMessage)
+
             } else {
                 let attachment = chatItem as! ChatAttachment
 

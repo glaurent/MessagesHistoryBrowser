@@ -26,6 +26,7 @@ class MessageFormatter {
     var detailedSender = false
 
     let dateParagraphStyle = NSMutableParagraphStyle()
+    let contactNameParagraphStyle = NSMutableParagraphStyle()
 
     let meColor = NSColor.clearColor()
     let contactColor = NSColor(red: 0x66 / 255.0, green: 0x66 / 255.0, blue: 0xff / 255.0, alpha: 1.0)
@@ -44,6 +45,11 @@ class MessageFormatter {
 //        dateParagraphStyle.lineSpacing = 15
         dateParagraphStyle.paragraphSpacing = 15
         dateParagraphStyle.paragraphSpacingBefore = 15
+
+        contactNameParagraphStyle.alignment = .Center
+//        contactNameParagraphStyle.lineSpacing = 15
+        contactNameParagraphStyle.paragraphSpacing = 25
+        contactNameParagraphStyle.paragraphSpacingBefore = 25
 
     }
 
@@ -137,7 +143,22 @@ class MessageFormatter {
 
         return res
     }
-    
+
+    func formatMessageContact(messageContact:ChatContact) -> NSAttributedString
+    {
+        let res = NSMutableAttributedString(string: messageContact.name + "\n")
+
+        let range = NSRange(location: 0, length: res.length)
+
+        res.addAttributes([
+            NSParagraphStyleAttributeName  : contactNameParagraphStyle,
+            NSForegroundColorAttributeName : NSColor.darkGrayColor()],
+            range: range)
+        
+        return res
+    }
+
+
     func colorForMessageService(serviceName:String) -> NSColor?
     {
         var color:NSColor?
