@@ -151,6 +151,7 @@ class MessageFormatter {
         let range = NSRange(location: 0, length: res.length)
 
         res.addAttributes([
+            NSFontAttributeName : NSFont.boldSystemFontOfSize(13.0),
             NSParagraphStyleAttributeName  : contactNameParagraphStyle,
             NSForegroundColorAttributeName : NSColor.darkGrayColor()],
             range: range)
