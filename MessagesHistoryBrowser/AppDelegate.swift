@@ -13,6 +13,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     static let ShowChatsFromUnknownNotification = "ShowChatsFromUnknownNotification"
 
+    var needDBReload = false
+
     var showChatsFromUnknown = false {
         didSet {
             NSLog("showChatsFromUnknown set")
@@ -87,9 +89,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             coordinator = NSPersistentStoreCoordinator(managedObjectModel: self.managedObjectModel)
             let url = self.applicationDocumentsDirectory.URLByAppendingPathComponent("CocoaAppCD.storedata")
             do {
-                try coordinator!.addPersistentStoreWithType(NSSQLiteStoreType, configuration: nil, URL: url, options: nil)
+                let persistentStoreOptions = [
+                    NSMigratePersistentStoresAutomaticallyOption : true,
+                    NSInferMappingModelAutomaticallyOption : true
+                ]
+                try coordinator!.addPersistentStoreWithType(NSSQLiteStoreType, configuration: nil, URL: url, options: persistentStoreOptions)
             } catch {
-                failError = error as! NSError
+//                failError = error as! NSError
+                self.needDBReload = true
             }
         }
         

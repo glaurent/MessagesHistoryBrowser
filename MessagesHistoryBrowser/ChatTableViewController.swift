@@ -90,6 +90,10 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
         })
 
         ChatItemsFetcher.sharedInstance.completion = displayChats
+
+        if appDelegate.needDBReload {
+            refreshChatHistory()
+        }
     }
 
     func showUnknownContactsChanged(notification:NSNotification)
