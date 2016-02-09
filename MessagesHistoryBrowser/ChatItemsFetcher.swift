@@ -28,25 +28,35 @@ class ChatItemsFetcher: NSObject {
 
     var completion:SearchCompletionBlock?
 
-    lazy var moc = MOCController.sharedInstance.managedObjectContext
-
     let messageDateSort = { (a:AnyObject, b:AnyObject) -> Bool in
         let aItem = a as! ChatItem
         let bItem = b as! ChatItem
 
         return aItem.date.isLessThan(bItem.date)
     }
-    
+
+    let messageIndexSort = { (a:AnyObject, b:AnyObject) -> Bool in
+        let aItem = a as! ChatItem
+        let bItem = b as! ChatItem
+//        print("a.index : \(aItem.index) - b.index : \(bItem.index)")
+
+        return aItem.index < bItem.index
+    }
 
     // MARK: Entry point - search
     //
     func searchWithCompletionBlock()
     {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0)) { () -> Void in
+        let localMOC = MOCController.sharedInstance.workerContext()
 
-            self.search()
+        localMOC.performBlock { () -> Void in
+            // call search, collect NSManagedObjectIDs of messages, then use those to display result from main moc in main thread
+
+            self.search(localMOC)
 
             if let completion = self.completion {
+                // run completion block on main queue, passing it the search results
+                //
                 dispatch_async(dispatch_get_main_queue(), { () -> Void in
                     completion(self.matchingItems, self.matchingAttachments, self.matchingContacts)
                 })
@@ -70,7 +80,7 @@ class ChatItemsFetcher: NSObject {
         matchingItems = currentSearchMatchingItems
     }
 
-    func search()
+    func search(moc:NSManagedObjectContext)
     {
         if let contact = contact {
 
@@ -95,8 +105,15 @@ class ChatItemsFetcher: NSObject {
         } else if let searchTerm = searchTerm { // no contact, only search term
 
             matchingAttachments.removeAll()
-            let messages = searchChatsForString(searchTerm, afterDate: afterDate, beforeDate: beforeDate)
-            currentSearchMatchingItems = messages.sort(messageDateSort)
+            let messagesObjectIDs = searchChatsForString(searchTerm, inManagedObjectContext: moc, afterDate: afterDate, beforeDate: beforeDate)
+
+            let mainMOC = MOCController.sharedInstance.managedObjectContext
+
+            // turn those objectIDs into managedObjects from the main MOC which we can then use on the main queue
+            //
+            let messages = messagesObjectIDs.map { mainMOC.objectWithID($0) as! ChatMessage }
+
+            currentSearchMatchingItems = messages
             matchingItems = currentSearchMatchingItems
             matchingContacts = contactsFromMessages(messages)
 
@@ -164,9 +181,12 @@ class ChatItemsFetcher: NSObject {
 
     // MARK: FetchRequest-based search
     //
-    func searchChatsForString(string:String, afterDate:NSDate? = nil, beforeDate:NSDate? = nil) -> [ChatMessage]
+
+    // return an array of NSManagedObjectIDs of ChatItems sorted by index
+    //
+    func searchChatsForString(string:String, inManagedObjectContext moc:NSManagedObjectContext, afterDate:NSDate? = nil, beforeDate:NSDate? = nil) -> [NSManagedObjectID]
     {
-        var result = [ChatMessage]()
+        var result = [NSManagedObjectID]()
 
         let fetchRequest = NSFetchRequest(entityName: ChatMessage.EntityName)
         let argArray:[AnyObject] = [ChatMessage.Attributes.content.rawValue, string]
@@ -195,9 +215,11 @@ class ChatItemsFetcher: NSObject {
 
         do {
             let matchingMessages = try moc.executeFetchRequest(fetchRequest)
-            result = (matchingMessages as! [ChatMessage]).sort(messageDateSort)
+            let matchingMessagesSorted = (matchingMessages as! [ChatMessage]).sort(messageDateSort) // messages here are from multiple contacts, so use date for global sort
 
-            result = addSurroundingMessages(result)
+            let matchingMessagesWithSurroundingMessages = addSurroundingMessages(matchingMessagesSorted)
+
+            result = matchingMessagesWithSurroundingMessages.map {$0.objectID}
 
         } catch let error as NSError {
             print("\(__FUNCTION__) : Could not fetch \(error), \(error.userInfo)")
@@ -208,7 +230,7 @@ class ChatItemsFetcher: NSObject {
         return result
     }
 
-    func sortMessagesPerContact(messages:[ChatMessage]) -> [ChatContact:[ChatMessage]]
+    func splitMessagesPerContact(messages:[ChatMessage]) -> [ChatContact:[ChatMessage]]
     {
         var result = [ChatContact:[ChatMessage]]()
 
@@ -231,7 +253,7 @@ class ChatItemsFetcher: NSObject {
 
         var result = [ChatMessage]()
 
-        let messagesSortedPerContact = sortMessagesPerContact(messages)
+        let messagesSortedPerContact = splitMessagesPerContact(messages)
 
         for (contact, contactMessages) in messagesSortedPerContact {
             let allContactMessages = contact.messages.sort(messageDateSort) as! [ChatMessage]

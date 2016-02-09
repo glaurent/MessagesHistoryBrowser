@@ -301,7 +301,8 @@ class ChatsDatabase: NSObject {
             for obj in contact.chats {
                 let chat = obj as! Chat
                 if chat.messages.count == 0 {
-                    messagesForChat(chat)
+                    collectMessagesForChat(chat)
+                    indexMessagesForChat(chat)
                 }
             }
 
@@ -319,8 +320,21 @@ class ChatsDatabase: NSObject {
             let chat = c as! Chat
             if chat.messages.count == 0 {
                 collectMessagesForChat(chat)
+                indexMessagesForChat(chat)
             }
         }
+    }
+
+    func indexMessagesForChat(chat:Chat)
+    {
+        let allMessages = chat.messages.allObjects as! [ChatMessage]
+
+        let allMessagesDateSorted = allMessages.sort { $0.date.compare($1.date) == .OrderedAscending }
+
+        var index:Int64 = 0
+
+        _ = allMessagesDateSorted.map { $0.index = index; index += 1 }
+
     }
 
     // MARK: String Search

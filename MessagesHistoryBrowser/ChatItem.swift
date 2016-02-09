@@ -11,7 +11,7 @@ import CoreData
 class ChatItem: NSManagedObject {
 
     @NSManaged var date:NSDate
-
+    @NSManaged var index:Int64
     
     convenience init(entityDescription:NSEntityDescription, managedObjectContext:NSManagedObjectContext, withDate aDate:NSDate) {
         
