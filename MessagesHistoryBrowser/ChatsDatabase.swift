@@ -302,9 +302,10 @@ class ChatsDatabase: NSObject {
                 let chat = obj as! Chat
                 if chat.messages.count == 0 {
                     collectMessagesForChat(chat)
-                    indexMessagesForChat(chat)
                 }
             }
+
+            indexMessagesForContact(contact)
 
             NSOperationQueue .mainQueue().addOperationWithBlock({ () -> Void in
                 messagesImportProgress.completedUnitCount++
@@ -314,20 +315,28 @@ class ChatsDatabase: NSObject {
         progress.resignCurrent()
     }
 
+    // TODO : this method is probably no longer useful as the whole messages DB is imported at startup anyway
+    //
     func collectMessagesForContact(contact:ChatContact)
     {
+        var newMessagesCollected = false
+
         for c in contact.chats {
             let chat = c as! Chat
             if chat.messages.count == 0 {
                 collectMessagesForChat(chat)
-                indexMessagesForChat(chat)
+                newMessagesCollected = true
             }
+        }
+
+        if newMessagesCollected {
+            indexMessagesForContact(contact)
         }
     }
 
-    func indexMessagesForChat(chat:Chat)
+    func indexMessagesForContact(contact:ChatContact)
     {
-        let allMessages = chat.messages.allObjects as! [ChatMessage]
+        let allMessages = contact.messages.allObjects as! [ChatMessage]
 
         let allMessagesDateSorted = allMessages.sort { $0.date.compare($1.date) == .OrderedAscending }
 

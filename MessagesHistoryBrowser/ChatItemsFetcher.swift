@@ -256,7 +256,7 @@ class ChatItemsFetcher: NSObject {
         let messagesSortedPerContact = splitMessagesPerContact(messages)
 
         for (contact, contactMessages) in messagesSortedPerContact {
-            let allContactMessages = contact.messages.sort(messageDateSort) as! [ChatMessage]
+            let allContactMessages = contact.messages.sort(messageIndexSort) as! [ChatMessage]
 
             var initialMessagesPlusSurroundingMessages = [ChatMessage]()
 
@@ -279,9 +279,11 @@ class ChatItemsFetcher: NSObject {
         return result
     }
 
+    
     func surroundingMessagesForMessage(message:ChatMessage, inMessages allMessages:[ChatMessage], numberBeforeAndAfter:Int, previousSliceRange:Range<Int>) -> (Range<Int>, Bool)
     {
-        let messageIndex = messageIndexInDateSortedMessages(message, inMessages: allMessages)
+//        let messageIndex = messageIndexInDateSortedMessages(message, inMessages: allMessages)
+        let messageIndex = Int(message.index)
 
         let startIndex = max(messageIndex - numberBeforeAndAfter, 0)
         let endIndex = min(messageIndex + numberBeforeAndAfter, allMessages.count - 1)
