@@ -245,6 +245,8 @@ class ChatItemsFetcher: NSObject {
         return result
     }
 
+    // nb of messages added before and after a message matching a search term in search results
+    //
     let nbOfMessagesBeforeAfter = 2 // TODO: make this user configurable
 
     func addSurroundingMessages(messages:[ChatMessage]) -> [ChatMessage]
@@ -286,7 +288,7 @@ class ChatItemsFetcher: NSObject {
         let messageIndex = Int(message.index)
 
         let startIndex = max(messageIndex - numberBeforeAndAfter, 0)
-        let endIndex = min(messageIndex + numberBeforeAndAfter, allMessages.count - 1)
+        let endIndex = min(messageIndex + numberBeforeAndAfter + 1, allMessages.count - 1) // +1 because range does not include endIndex item ( startIndex..<endIndex )
 
         var slice = Range<Int>(start: startIndex, end: endIndex)
         var disjointSlice = true
