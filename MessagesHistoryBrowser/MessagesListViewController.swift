@@ -211,7 +211,7 @@ class MessagesListViewController: NSViewController, NSCollectionViewDataSource, 
                 // insert seperator for non-consecutive messages
                 //
                 if lastShownMessageIndex != nil && message.index != (lastShownMessageIndex! + 1) {
-                    allMatchingMessages.appendAttributedString(NSAttributedString(string: "\n"))
+                    allMatchingMessages.appendAttributedString(messageFormatter.separatorString)
                 }
 
                 lastShownMessageIndex = message.index

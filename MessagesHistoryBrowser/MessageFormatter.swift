@@ -27,6 +27,7 @@ class MessageFormatter {
 
     let dateParagraphStyle = NSMutableParagraphStyle()
     let contactNameParagraphStyle = NSMutableParagraphStyle()
+    let separatorParagraphStyle = NSMutableParagraphStyle()
 
     let meColor = NSColor.clearColor()
     let contactColor = NSColor(red: 0x66 / 255.0, green: 0x66 / 255.0, blue: 0xff / 255.0, alpha: 1.0)
@@ -162,6 +163,25 @@ class MessageFormatter {
         return res
     }
 
+    let separatorString:NSAttributedString = {
+        let separatorParagraphStyle = NSMutableParagraphStyle()
+        separatorParagraphStyle.alignment = .Center
+        separatorParagraphStyle.paragraphSpacing = 10
+        separatorParagraphStyle.paragraphSpacingBefore = 5
+
+        let res = NSMutableAttributedString(string: "_____\n")
+
+        let range = NSRange(location: 0, length: res.length)
+
+        res.addAttributes([
+            NSFontAttributeName : NSFont.systemFontOfSize(15.0),
+            NSParagraphStyleAttributeName  : separatorParagraphStyle,
+            NSForegroundColorAttributeName : NSColor.lightGrayColor()],
+            range: range)
+
+        return res
+
+    }()
 
     func colorForMessageService(serviceName:String) -> NSColor?
     {
