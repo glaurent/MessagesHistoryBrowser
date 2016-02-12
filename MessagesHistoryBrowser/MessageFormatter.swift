@@ -76,7 +76,8 @@ class MessageFormatter {
 
         // highlight message content
         //
-        let messageContentNS = NSString(string:" - \(message.index) : " + messageContent + "\n") // has to be an NSString because we use rangeOfString below
+//        let messageContentNS = NSString(string:" - \(message.index) : " + messageContent + "\n") // has to be an NSString because we use rangeOfString below
+        let messageContentNS = NSString(string:" : " + messageContent + "\n") // has to be an NSString because we use rangeOfString below
 
         let highlightedMessage = NSMutableAttributedString(string: messageContentNS as String)
 
