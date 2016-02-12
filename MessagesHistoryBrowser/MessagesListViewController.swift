@@ -179,13 +179,16 @@ class MessagesListViewController: NSViewController, NSCollectionViewDataSource, 
 
         var lastShownDate:NSDate?
         var lastShownContact:ChatContact?
-        
+        var lastShownMessageIndex:Int64?
+
+
         for chatItem in chatItems {
 
             if terseTimeMode {
                 if lastShownDate == nil || chatItem.date.timeIntervalSinceDate(lastShownDate!) > delayBetweenChatsInSeconds {
                     let highlightedDate = messageFormatter.formatMessageDate(chatItem.date)
                     allMatchingMessages.appendAttributedString(highlightedDate)
+                    lastShownMessageIndex = nil
                 }
                 
                 lastShownDate = chatItem.date
@@ -202,7 +205,16 @@ class MessagesListViewController: NSViewController, NSCollectionViewDataSource, 
                     let highlightedContact = messageFormatter.formatMessageContact(message.contact)
                     allMatchingMessages.appendAttributedString(highlightedContact)
                     lastShownContact = message.contact
+                    lastShownMessageIndex = nil
                 }
+
+                // insert seperator for non-consecutive messages
+                //
+                if lastShownMessageIndex != nil && message.index != (lastShownMessageIndex! + 1) {
+                    allMatchingMessages.appendAttributedString(NSAttributedString(string: "\n"))
+                }
+
+                lastShownMessageIndex = message.index
 
                 allMatchingMessages.appendAttributedString(highlightedMessage)
 

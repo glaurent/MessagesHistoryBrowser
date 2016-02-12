@@ -180,7 +180,7 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
 
     func displayMessageListForContact(contact:ChatContact)
     {
-        chatsDatabase.collectMessagesForContact(contact)
+//        chatsDatabase.collectMessagesForContact(contact)
 
         ChatItemsFetcher.sharedInstance.contact = contact
 
@@ -218,7 +218,7 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
             messagesListViewController?.clearAttachments()
             tableView.reloadData()
             
-        } else if sender.stringValue.characters.count >= 3 {
+        } else if sender.stringValue.characters.count >= 3 && sender.stringValue != searchTerm {
 
             searchTerm = sender.stringValue
 
@@ -315,6 +315,7 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
     //
     func displayChats(messages:[ChatItem], attachments:[ChatAttachment], matchedContacts:[ChatContact]?)
     {
+//        print(__FUNCTION__)
         messagesListViewController?.hideAttachmentDisplayWindow()
         messagesListViewController?.attachmentsToDisplay = attachments
         messagesListViewController?.attachmentsCollectionView.reloadData()
@@ -328,7 +329,7 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
             messagesListViewController?.clearAttachments()
         }
 
-        searchedContacts = matchedContacts
+        searchedContacts = matchedContacts?.sort{ $0.name < $1.name }
 
         if searchTermHasChanged {
             searchTermHasChanged = false

@@ -58,6 +58,7 @@ class ChatItemsFetcher: NSObject {
                 // run completion block on main queue, passing it the search results
                 //
                 dispatch_async(dispatch_get_main_queue(), { () -> Void in
+//                    print("searchWithCompletionBlock : calling completion block")
                     completion(self.matchingItems, self.matchingAttachments, self.matchingContacts)
                 })
             }
