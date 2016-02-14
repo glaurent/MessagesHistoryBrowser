@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="15D21" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="10109" systemVersion="15D21" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="9531"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="10109"/>
         <capability name="stacking Non-gravity area distributions on NSStackView" minToolsVersion="7.0" minSystemVersion="10.11"/>
     </dependencies>
     <scenes>
@@ -741,10 +741,10 @@
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <stackView distribution="fill" orientation="vertical" alignment="leading" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ELG-c5-gJh" userLabel="Stack View - Search and Filter">
-                                <rect key="frame" x="0.0" y="210" width="505" height="90"/>
+                                <rect key="frame" x="0.0" y="190" width="505" height="90"/>
                                 <subviews>
                                     <searchField wantsLayer="YES" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="cWC-s3-YlP">
-                                        <rect key="frame" x="2" y="68" width="501" height="22"/>
+                                        <rect key="frame" x="20" y="68" width="465" height="22"/>
                                         <searchFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" borderStyle="bezel" usesSingleLineMode="YES" bezelStyle="round" id="gBh-7T-Jv6">
                                             <font key="font" metaFont="system"/>
                                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -754,11 +754,11 @@
                                             <action selector="search:" target="c6g-xc-DOK" id="uNK-d3-84w"/>
                                         </connections>
                                     </searchField>
-                                    <stackView distribution="fillProportionally" orientation="horizontal" alignment="firstBaseline" spacing="11" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="77S-WJ-P3C" userLabel="Stack View - after date">
-                                        <rect key="frame" x="2" y="33" width="160" height="27"/>
+                                    <stackView distribution="fillProportionally" orientation="horizontal" alignment="firstBaseline" spacing="25" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="77S-WJ-P3C" userLabel="Stack View - after date">
+                                        <rect key="frame" x="20" y="33" width="177" height="27"/>
                                         <subviews>
                                             <button translatesAutoresizingMaskIntoConstraints="NO" id="CXs-ND-wjJ">
-                                                <rect key="frame" x="-2" y="2" width="54" height="18"/>
+                                                <rect key="frame" x="-2" y="2" width="55" height="18"/>
                                                 <buttonCell key="cell" type="check" title="after" bezelStyle="regularSquare" imagePosition="left" inset="2" id="bux-MY-WHX">
                                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                     <font key="font" metaFont="system"/>
@@ -769,7 +769,7 @@
                                                 </connections>
                                             </button>
                                             <datePicker verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="lou-wM-eNy">
-                                                <rect key="frame" x="61" y="0.0" width="102" height="27"/>
+                                                <rect key="frame" x="76" y="0.0" width="104" height="27"/>
                                                 <datePickerCell key="cell" borderStyle="bezel" alignment="left" id="kXc-qA-xvl">
                                                     <font key="font" metaFont="system"/>
                                                     <calendarDate key="date" timeIntervalSinceReferenceDate="-595929600" calendarFormat="%Y-%m-%d %H:%M:%S %z">
@@ -794,8 +794,8 @@
                                             <real value="3.4028234663852886e+38"/>
                                         </customSpacing>
                                     </stackView>
-                                    <stackView distribution="fill" orientation="horizontal" alignment="centerY" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Umz-Up-FVZ" userLabel="Stack View - before date">
-                                        <rect key="frame" x="2" y="2" width="160" height="23"/>
+                                    <stackView distribution="fill" orientation="horizontal" alignment="centerY" spacing="25" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Umz-Up-FVZ" userLabel="Stack View - before date">
+                                        <rect key="frame" x="20" y="2" width="177" height="23"/>
                                         <subviews>
                                             <button translatesAutoresizingMaskIntoConstraints="NO" id="3cB-ks-e81">
                                                 <rect key="frame" x="-2" y="3" width="62" height="18"/>
@@ -809,7 +809,7 @@
                                                 </connections>
                                             </button>
                                             <datePicker verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="JJY-fj-bdz">
-                                                <rect key="frame" x="66" y="0.0" width="97" height="27"/>
+                                                <rect key="frame" x="83" y="0.0" width="97" height="27"/>
                                                 <datePickerCell key="cell" borderStyle="bezel" alignment="left" id="5UX-CT-Hnh">
                                                     <font key="font" metaFont="system"/>
                                                     <calendarDate key="date" timeIntervalSinceReferenceDate="-595929600" calendarFormat="%Y-%m-%d %H:%M:%S %z">
@@ -835,7 +835,7 @@
                                         </customSpacing>
                                     </stackView>
                                 </subviews>
-                                <edgeInsets key="edgeInsets" left="2" right="2" top="0.0" bottom="2"/>
+                                <edgeInsets key="edgeInsets" left="20" right="20" top="0.0" bottom="2"/>
                                 <constraints>
                                     <constraint firstItem="77S-WJ-P3C" firstAttribute="width" secondItem="Umz-Up-FVZ" secondAttribute="width" id="2IU-pO-C5R"/>
                                 </constraints>
@@ -851,13 +851,13 @@
                                 </customSpacing>
                             </stackView>
                             <scrollView autohidesScrollers="YES" horizontalLineScroll="52" horizontalPageScroll="10" verticalLineScroll="52" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7dD-SL-gUk">
-                                <rect key="frame" x="0.0" y="0.0" width="505" height="205"/>
+                                <rect key="frame" x="0.0" y="0.0" width="505" height="185"/>
                                 <clipView key="contentView" id="8Ke-ny-68A">
-                                    <rect key="frame" x="1" y="0.0" width="503" height="204"/>
+                                    <rect key="frame" x="1" y="0.0" width="503" height="184"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="firstColumnOnly" columnReordering="NO" multipleSelection="NO" autosaveColumns="NO" rowHeight="50" headerView="nSq-37-0ca" viewBased="YES" id="yQc-Jz-Fx4">
-                                            <rect key="frame" x="0.0" y="0.0" width="503" height="181"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="503" height="161"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <size key="intercellSpacing" width="3" height="2"/>
                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -970,7 +970,7 @@
                             </customView>
                         </subviews>
                         <constraints>
-                            <constraint firstItem="ELG-c5-gJh" firstAttribute="top" secondItem="1Kq-np-puo" secondAttribute="top" id="61d-23-41L"/>
+                            <constraint firstItem="ELG-c5-gJh" firstAttribute="top" secondItem="1Kq-np-puo" secondAttribute="top" constant="20" id="61d-23-41L"/>
                             <constraint firstAttribute="trailing" secondItem="ELG-c5-gJh" secondAttribute="trailing" id="7It-il-sBu"/>
                             <constraint firstItem="7dD-SL-gUk" firstAttribute="top" secondItem="ELG-c5-gJh" secondAttribute="bottom" constant="5" id="ER1-zY-ebG"/>
                             <constraint firstAttribute="trailing" secondItem="PId-FV-l0o" secondAttribute="trailing" id="HCI-Z3-xLb"/>
