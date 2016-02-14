@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="10109" systemVersion="15D21" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="9532" systemVersion="15D21" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="10109"/>
-        <capability name="stacking Non-gravity area distributions on NSStackView" minToolsVersion="7.0" minSystemVersion="10.11"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="9532"/>
     </dependencies>
     <scenes>
         <!--Application-->
@@ -740,11 +739,11 @@
                         <rect key="frame" x="0.0" y="0.0" width="505" height="300"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
-                            <stackView distribution="fill" orientation="vertical" alignment="leading" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ELG-c5-gJh" userLabel="Stack View - Search and Filter">
-                                <rect key="frame" x="0.0" y="190" width="505" height="90"/>
+                            <customView translatesAutoresizingMaskIntoConstraints="NO" id="hWC-Hd-nlg" userLabel="Search and Date Filters">
+                                <rect key="frame" x="0.0" y="180" width="505" height="120"/>
                                 <subviews>
                                     <searchField wantsLayer="YES" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="cWC-s3-YlP">
-                                        <rect key="frame" x="20" y="68" width="465" height="22"/>
+                                        <rect key="frame" x="20" y="78" width="465" height="22"/>
                                         <searchFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" borderStyle="bezel" usesSingleLineMode="YES" bezelStyle="round" id="gBh-7T-Jv6">
                                             <font key="font" metaFont="system"/>
                                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -754,110 +753,84 @@
                                             <action selector="search:" target="c6g-xc-DOK" id="uNK-d3-84w"/>
                                         </connections>
                                     </searchField>
-                                    <stackView distribution="fillProportionally" orientation="horizontal" alignment="firstBaseline" spacing="25" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="77S-WJ-P3C" userLabel="Stack View - after date">
-                                        <rect key="frame" x="20" y="33" width="177" height="27"/>
-                                        <subviews>
-                                            <button translatesAutoresizingMaskIntoConstraints="NO" id="CXs-ND-wjJ">
-                                                <rect key="frame" x="-2" y="2" width="55" height="18"/>
-                                                <buttonCell key="cell" type="check" title="after" bezelStyle="regularSquare" imagePosition="left" inset="2" id="bux-MY-WHX">
-                                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                    <font key="font" metaFont="system"/>
-                                                </buttonCell>
-                                                <connections>
-                                                    <action selector="redoSearch:" target="c6g-xc-DOK" id="DhB-j8-ffX"/>
-                                                    <binding destination="c6g-xc-DOK" name="value" keyPath="self.afterDateEnabled" id="JGp-En-gM6"/>
-                                                </connections>
-                                            </button>
-                                            <datePicker verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="lou-wM-eNy">
-                                                <rect key="frame" x="76" y="0.0" width="104" height="27"/>
-                                                <datePickerCell key="cell" borderStyle="bezel" alignment="left" id="kXc-qA-xvl">
-                                                    <font key="font" metaFont="system"/>
-                                                    <calendarDate key="date" timeIntervalSinceReferenceDate="-595929600" calendarFormat="%Y-%m-%d %H:%M:%S %z">
-                                                        <!--1982-02-12 08:00:00 -0800-->
-                                                        <timeZone key="timeZone" name="US/Pacific"/>
-                                                    </calendarDate>
-                                                    <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                </datePickerCell>
-                                                <connections>
-                                                    <action selector="redoSearch:" target="c6g-xc-DOK" id="Ex0-W1-MKl"/>
-                                                    <binding destination="c6g-xc-DOK" name="value" keyPath="self.afterDate" id="MR4-aK-cAi"/>
-                                                </connections>
-                                            </datePicker>
-                                        </subviews>
-                                        <visibilityPriorities>
-                                            <integer value="1000"/>
-                                            <integer value="1000"/>
-                                        </visibilityPriorities>
-                                        <customSpacing>
-                                            <real value="3.4028234663852886e+38"/>
-                                            <real value="3.4028234663852886e+38"/>
-                                        </customSpacing>
-                                    </stackView>
-                                    <stackView distribution="fill" orientation="horizontal" alignment="centerY" spacing="25" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Umz-Up-FVZ" userLabel="Stack View - before date">
-                                        <rect key="frame" x="20" y="2" width="177" height="23"/>
-                                        <subviews>
-                                            <button translatesAutoresizingMaskIntoConstraints="NO" id="3cB-ks-e81">
-                                                <rect key="frame" x="-2" y="3" width="62" height="18"/>
-                                                <buttonCell key="cell" type="check" title="before" bezelStyle="regularSquare" imagePosition="left" inset="2" id="FC4-rx-l4p">
-                                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                    <font key="font" metaFont="system"/>
-                                                </buttonCell>
-                                                <connections>
-                                                    <action selector="redoSearch:" target="c6g-xc-DOK" id="wWy-rb-sre"/>
-                                                    <binding destination="c6g-xc-DOK" name="value" keyPath="self.beforeDateEnabled" id="0TO-sm-Dmg"/>
-                                                </connections>
-                                            </button>
-                                            <datePicker verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="JJY-fj-bdz">
-                                                <rect key="frame" x="83" y="0.0" width="97" height="27"/>
-                                                <datePickerCell key="cell" borderStyle="bezel" alignment="left" id="5UX-CT-Hnh">
-                                                    <font key="font" metaFont="system"/>
-                                                    <calendarDate key="date" timeIntervalSinceReferenceDate="-595929600" calendarFormat="%Y-%m-%d %H:%M:%S %z">
-                                                        <!--1982-02-12 08:00:00 -0800-->
-                                                        <timeZone key="timeZone" name="US/Pacific"/>
-                                                    </calendarDate>
-                                                    <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                </datePickerCell>
-                                                <connections>
-                                                    <action selector="redoSearch:" target="c6g-xc-DOK" id="k6T-hO-faZ"/>
-                                                    <binding destination="c6g-xc-DOK" name="value" keyPath="self.beforeDate" id="rND-Po-tff"/>
-                                                </connections>
-                                            </datePicker>
-                                        </subviews>
-                                        <visibilityPriorities>
-                                            <integer value="1000"/>
-                                            <integer value="1000"/>
-                                        </visibilityPriorities>
-                                        <customSpacing>
-                                            <real value="3.4028234663852886e+38"/>
-                                            <real value="3.4028234663852886e+38"/>
-                                        </customSpacing>
-                                    </stackView>
+                                    <button translatesAutoresizingMaskIntoConstraints="NO" id="CXs-ND-wjJ">
+                                        <rect key="frame" x="18" y="49" width="51" height="18"/>
+                                        <buttonCell key="cell" type="check" title="after" bezelStyle="regularSquare" imagePosition="left" inset="2" id="bux-MY-WHX">
+                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                            <font key="font" metaFont="system"/>
+                                        </buttonCell>
+                                        <connections>
+                                            <action selector="redoSearch:" target="c6g-xc-DOK" id="DhB-j8-ffX"/>
+                                            <binding destination="c6g-xc-DOK" name="value" keyPath="self.afterDateEnabled" id="JGp-En-gM6"/>
+                                        </connections>
+                                    </button>
+                                    <datePicker verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="lou-wM-eNy">
+                                        <rect key="frame" x="87" y="47" width="97" height="27"/>
+                                        <datePickerCell key="cell" borderStyle="bezel" alignment="left" id="kXc-qA-xvl">
+                                            <font key="font" metaFont="system"/>
+                                            <calendarDate key="date" timeIntervalSinceReferenceDate="-595929600" calendarFormat="%Y-%m-%d %H:%M:%S %z">
+                                                <!--1982-02-12 08:00:00 -0800-->
+                                                <timeZone key="timeZone" name="US/Pacific"/>
+                                            </calendarDate>
+                                            <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                        </datePickerCell>
+                                        <connections>
+                                            <action selector="redoSearch:" target="c6g-xc-DOK" id="Ex0-W1-MKl"/>
+                                            <binding destination="c6g-xc-DOK" name="value" keyPath="self.afterDate" id="MR4-aK-cAi"/>
+                                        </connections>
+                                    </datePicker>
+                                    <button translatesAutoresizingMaskIntoConstraints="NO" id="3cB-ks-e81">
+                                        <rect key="frame" x="18" y="18" width="62" height="18"/>
+                                        <buttonCell key="cell" type="check" title="before" bezelStyle="regularSquare" imagePosition="left" inset="2" id="FC4-rx-l4p">
+                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                            <font key="font" metaFont="system"/>
+                                        </buttonCell>
+                                        <connections>
+                                            <action selector="redoSearch:" target="c6g-xc-DOK" id="wWy-rb-sre"/>
+                                            <binding destination="c6g-xc-DOK" name="value" keyPath="self.beforeDateEnabled" id="0TO-sm-Dmg"/>
+                                        </connections>
+                                    </button>
+                                    <datePicker verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="JJY-fj-bdz">
+                                        <rect key="frame" x="87" y="16" width="97" height="27"/>
+                                        <datePickerCell key="cell" borderStyle="bezel" alignment="left" id="5UX-CT-Hnh">
+                                            <font key="font" metaFont="system"/>
+                                            <calendarDate key="date" timeIntervalSinceReferenceDate="-595929600" calendarFormat="%Y-%m-%d %H:%M:%S %z">
+                                                <!--1982-02-12 08:00:00 -0800-->
+                                                <timeZone key="timeZone" name="US/Pacific"/>
+                                            </calendarDate>
+                                            <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                        </datePickerCell>
+                                        <connections>
+                                            <action selector="redoSearch:" target="c6g-xc-DOK" id="k6T-hO-faZ"/>
+                                            <binding destination="c6g-xc-DOK" name="value" keyPath="self.beforeDate" id="rND-Po-tff"/>
+                                        </connections>
+                                    </datePicker>
                                 </subviews>
-                                <edgeInsets key="edgeInsets" left="20" right="20" top="0.0" bottom="2"/>
                                 <constraints>
-                                    <constraint firstItem="77S-WJ-P3C" firstAttribute="width" secondItem="Umz-Up-FVZ" secondAttribute="width" id="2IU-pO-C5R"/>
+                                    <constraint firstItem="lou-wM-eNy" firstAttribute="leading" secondItem="CXs-ND-wjJ" secondAttribute="trailing" constant="20" id="7cg-Le-gU6"/>
+                                    <constraint firstItem="3cB-ks-e81" firstAttribute="top" secondItem="CXs-ND-wjJ" secondAttribute="bottom" constant="17" id="FwV-y1-hrK"/>
+                                    <constraint firstItem="JJY-fj-bdz" firstAttribute="leading" secondItem="lou-wM-eNy" secondAttribute="leading" id="G5C-Qu-Vco"/>
+                                    <constraint firstItem="lou-wM-eNy" firstAttribute="baseline" secondItem="CXs-ND-wjJ" secondAttribute="baseline" id="GUU-at-xb3"/>
+                                    <constraint firstAttribute="trailing" secondItem="cWC-s3-YlP" secondAttribute="trailing" constant="20" id="ONg-C4-F12"/>
+                                    <constraint firstItem="CXs-ND-wjJ" firstAttribute="top" secondItem="cWC-s3-YlP" secondAttribute="bottom" constant="13" id="dr1-9w-RMX"/>
+                                    <constraint firstItem="CXs-ND-wjJ" firstAttribute="leading" secondItem="cWC-s3-YlP" secondAttribute="leading" id="r66-Go-WMT"/>
+                                    <constraint firstItem="3cB-ks-e81" firstAttribute="leading" secondItem="CXs-ND-wjJ" secondAttribute="leading" id="snX-dN-PyZ"/>
+                                    <constraint firstItem="JJY-fj-bdz" firstAttribute="baseline" secondItem="3cB-ks-e81" secondAttribute="baseline" id="uSk-Fp-ybr"/>
+                                    <constraint firstAttribute="height" constant="120" id="vzY-8m-EMK"/>
+                                    <constraint firstItem="cWC-s3-YlP" firstAttribute="top" secondItem="hWC-Hd-nlg" secondAttribute="top" constant="20" id="zAt-bs-4nD"/>
+                                    <constraint firstItem="cWC-s3-YlP" firstAttribute="leading" secondItem="hWC-Hd-nlg" secondAttribute="leading" constant="20" id="zHh-8d-RRx"/>
                                 </constraints>
-                                <visibilityPriorities>
-                                    <integer value="1000"/>
-                                    <integer value="1000"/>
-                                    <integer value="1000"/>
-                                </visibilityPriorities>
-                                <customSpacing>
-                                    <real value="3.4028234663852886e+38"/>
-                                    <real value="3.4028234663852886e+38"/>
-                                    <real value="3.4028234663852886e+38"/>
-                                </customSpacing>
-                            </stackView>
+                            </customView>
                             <scrollView autohidesScrollers="YES" horizontalLineScroll="52" horizontalPageScroll="10" verticalLineScroll="52" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7dD-SL-gUk">
-                                <rect key="frame" x="0.0" y="0.0" width="505" height="185"/>
+                                <rect key="frame" x="0.0" y="0.0" width="505" height="180"/>
                                 <clipView key="contentView" id="8Ke-ny-68A">
-                                    <rect key="frame" x="1" y="0.0" width="503" height="184"/>
+                                    <rect key="frame" x="1" y="0.0" width="503" height="179"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="firstColumnOnly" columnReordering="NO" multipleSelection="NO" autosaveColumns="NO" rowHeight="50" headerView="nSq-37-0ca" viewBased="YES" id="yQc-Jz-Fx4">
-                                            <rect key="frame" x="0.0" y="0.0" width="503" height="161"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="503" height="156"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <size key="intercellSpacing" width="3" height="2"/>
                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -970,16 +943,16 @@
                             </customView>
                         </subviews>
                         <constraints>
-                            <constraint firstItem="ELG-c5-gJh" firstAttribute="top" secondItem="1Kq-np-puo" secondAttribute="top" constant="20" id="61d-23-41L"/>
-                            <constraint firstAttribute="trailing" secondItem="ELG-c5-gJh" secondAttribute="trailing" id="7It-il-sBu"/>
-                            <constraint firstItem="7dD-SL-gUk" firstAttribute="top" secondItem="ELG-c5-gJh" secondAttribute="bottom" constant="5" id="ER1-zY-ebG"/>
+                            <constraint firstItem="hWC-Hd-nlg" firstAttribute="leading" secondItem="1Kq-np-puo" secondAttribute="leading" id="3kW-c6-sQj"/>
                             <constraint firstAttribute="trailing" secondItem="PId-FV-l0o" secondAttribute="trailing" id="HCI-Z3-xLb"/>
                             <constraint firstItem="7dD-SL-gUk" firstAttribute="leading" secondItem="1Kq-np-puo" secondAttribute="leading" id="Ia5-k6-xzf"/>
-                            <constraint firstItem="ELG-c5-gJh" firstAttribute="leading" secondItem="1Kq-np-puo" secondAttribute="leading" id="RIy-8B-2Bk"/>
+                            <constraint firstAttribute="trailing" secondItem="hWC-Hd-nlg" secondAttribute="trailing" id="UrE-3l-w7n"/>
                             <constraint firstAttribute="bottom" secondItem="PId-FV-l0o" secondAttribute="bottom" id="VMk-xU-UtB"/>
                             <constraint firstItem="PId-FV-l0o" firstAttribute="top" secondItem="1Kq-np-puo" secondAttribute="top" constant="20" id="XfH-Rx-5at"/>
                             <constraint firstAttribute="trailing" secondItem="7dD-SL-gUk" secondAttribute="trailing" id="eSR-Mt-1Xl"/>
                             <constraint firstAttribute="bottom" secondItem="7dD-SL-gUk" secondAttribute="bottom" id="eoS-po-Axz"/>
+                            <constraint firstItem="7dD-SL-gUk" firstAttribute="top" secondItem="hWC-Hd-nlg" secondAttribute="bottom" id="lkB-4N-dRw"/>
+                            <constraint firstItem="hWC-Hd-nlg" firstAttribute="top" secondItem="1Kq-np-puo" secondAttribute="top" id="phb-T7-eEi"/>
                             <constraint firstItem="PId-FV-l0o" firstAttribute="leading" secondItem="1Kq-np-puo" secondAttribute="leading" id="vvD-m2-JR3"/>
                         </constraints>
                     </view>
