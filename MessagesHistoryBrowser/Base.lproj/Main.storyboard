@@ -809,6 +809,7 @@
                                     </datePicker>
                                 </subviews>
                                 <constraints>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="300" id="5zP-rv-uxi"/>
                                     <constraint firstItem="lou-wM-eNy" firstAttribute="leading" secondItem="CXs-ND-wjJ" secondAttribute="trailing" constant="20" id="7cg-Le-gU6"/>
                                     <constraint firstItem="3cB-ks-e81" firstAttribute="top" secondItem="CXs-ND-wjJ" secondAttribute="bottom" constant="17" id="FwV-y1-hrK"/>
                                     <constraint firstItem="JJY-fj-bdz" firstAttribute="leading" secondItem="lou-wM-eNy" secondAttribute="leading" id="G5C-Qu-Vco"/>
