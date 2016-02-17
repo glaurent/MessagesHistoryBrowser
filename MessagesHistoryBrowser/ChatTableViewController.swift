@@ -64,13 +64,9 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
         }
 
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "showUnknownContactsChanged:", name: AppDelegate.ShowChatsFromUnknownNotification, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "phonePrefixChanged:", name: NSUserDefaultsDidChangeNotification, object: nil)
+//        NSNotificationCenter.defaultCenter().addObserver(self, selector: "phonePrefixChanged:", name: NSUserDefaultsDidChangeNotification, object: nil)
 
-//        progress.addObserver(self, forKeyPath: "localizedDescription", options: NSKeyValueObservingOptions.New, context: nil)
-
-//        progress.addObserver(self, forKeyPath: "fractionCompleted", options: NSKeyValueObservingOptions.New, context: nil)
-
-//        progressReportView.hidden = false
+        NSUserDefaults.standardUserDefaults().addObserver(self, forKeyPath: "CountryPhonePrefix", options: .New, context: nil)
 
         progress.completedUnitCount = 0
 
@@ -375,10 +371,14 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
         })
     }
 
-    func phonePrefixChanged(userInfo:NSDictionary) {
-        print("phone prefix changed - TODO") // TODO
-//        refreshChatHistory()
-    }
+    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
+//        if let newValue = change?["new"] {
+//            print("keyPath : \(keyPath) - new value : \(newValue)")
+//        } else {
+//            print("observeValueForKeyPath on NSUserDefaults : no new value found")
+//        }
 
+        refreshChatHistory()
+    }
 
 }

@@ -678,11 +678,13 @@
         <scene sceneID="ZrA-Yq-GBj">
             <objects>
                 <windowController id="gm6-k5-ZEv" userLabel="Preferences" sceneMemberID="viewController">
-                    <window key="window" title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" id="fCU-aS-7xX">
-                        <windowStyleMask key="styleMask" titled="YES" closable="YES" resizable="YES"/>
+                    <window key="window" title="Preferences" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" id="fCU-aS-7xX">
+                        <windowStyleMask key="styleMask" titled="YES" closable="YES"/>
                         <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
                         <rect key="contentRect" x="163" y="199" width="294" height="118"/>
                         <rect key="screenRect" x="0.0" y="0.0" width="1280" height="777"/>
+                        <value key="minSize" type="size" width="294" height="118"/>
+                        <value key="maxSize" type="size" width="294" height="118"/>
                     </window>
                     <connections>
                         <segue destination="Ovh-cv-Aue" kind="relationship" relationship="window.shadowedContentViewController" id="5nr-lf-Tav"/>
@@ -692,10 +694,10 @@
             </objects>
             <point key="canvasLocation" x="1015" y="-99"/>
         </scene>
-        <!--View Controller-->
+        <!--Preferences View Controller-->
         <scene sceneID="sPk-D9-xZ1">
             <objects>
-                <viewController id="Ovh-cv-Aue" sceneMemberID="viewController">
+                <viewController id="Ovh-cv-Aue" userLabel="Preferences View Controller" sceneMemberID="viewController">
                     <view key="view" id="b4s-UB-tje">
                         <rect key="frame" x="0.0" y="0.0" width="305" height="133"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -1115,7 +1117,7 @@
                                                         <collectionView selectable="YES" id="Tmj-AG-K2d" customClass="AttachmentsCollectionView" customModule="MessagesHistoryBrowser" customModuleProvider="target">
                                                             <rect key="frame" x="0.0" y="0.0" width="448" height="140"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                                            <collectionViewFlowLayout key="collectionViewLayout" minimumInteritemSpacing="10" minimumLineSpacing="10" id="fGR-We-cEX">
+                                                            <collectionViewFlowLayout key="collectionViewLayout" minimumInteritemSpacing="15" minimumLineSpacing="15" id="fGR-We-cEX">
                                                                 <size key="itemSize" width="100" height="100"/>
                                                             </collectionViewFlowLayout>
                                                             <color key="primaryBackgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
