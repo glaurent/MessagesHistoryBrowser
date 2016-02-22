@@ -43,8 +43,13 @@ class MOCController: NSObject {
 
         let allContacts = ChatContact.allContactsInContext(managedObjectContext)
 
+        let progress = NSProgress(totalUnitCount: Int64(allContacts.count))
+
+        var progressCount:Int64 = 0
         for contact in allContacts {
             managedObjectContext.deleteObject(contact)
+            progressCount += 1
+            progress.completedUnitCount = progressCount
         }
 
     }

@@ -917,7 +917,7 @@
                                             <constraint firstAttribute="height" constant="18" id="tjQ-of-yef"/>
                                         </constraints>
                                         <connections>
-                                            <binding destination="c6g-xc-DOK" name="value" keyPath="self.progress.fractionCompleted" id="DWk-ip-DGD"/>
+                                            <binding destination="c6g-xc-DOK" name="value" keyPath="progress.fractionCompleted" id="hfg-hD-fMW"/>
                                         </connections>
                                     </progressIndicator>
                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="G2L-Mo-7yd">

@@ -24,6 +24,8 @@ class ContactsMap : NSObject {
 
     let contactEmailFetchRequest = CNContactFetchRequest(keysToFetch: [CNContactFamilyNameKey, CNContactGivenNameKey, CNContactNicknameKey, CNContactEmailAddressesKey])
 
+    var progress:NSProgress?
+
     override init()
     {
         countryPhonePrefix = "+1" // default to US prefix
@@ -66,9 +68,17 @@ class ContactsMap : NSObject {
         
     }
 
-    func populate(completion : () -> Void)
+    func populate()
     {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0)) { () -> Void in
+
+        // get number of contacts so we can set the totalUnitCount of this NSProgress
+        //
+        let predicate = CNContact.predicateForContactsInContainerWithIdentifier(contactStore.defaultContainerIdentifier())
+        if let allContactsForCount = try? contactStore.unifiedContactsMatchingPredicate(predicate, keysToFetch: [CNContactGivenNameKey]) {
+            progress = NSProgress(totalUnitCount: Int64(allContactsForCount.count))
+        }
+
+        dispatch_sync(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0)) { () -> Void in
 
             let contactFetchRequest = CNContactFetchRequest(keysToFetch: [CNContactPhoneNumbersKey, CNContactFamilyNameKey, CNContactGivenNameKey, CNContactNicknameKey])
 
@@ -82,16 +92,17 @@ class ContactsMap : NSObject {
                             let canonPhoneNb = self.canonicalizePhoneNumber(phoneNb.stringValue)
                             // NSLog("\(__FUNCTION__) phoneNb : %@", canonPhoneNb)
                             self.phoneNumbersMap[canonPhoneNb] = contact
+                            self.progress?.completedUnitCount = Int64(index)
                         }
-
+                        
                     }
                 }
             } catch {
                 
             }
-
-            dispatch_sync(dispatch_get_main_queue(), completion)
         }
+
+        self.progress = nil
 
     }
 

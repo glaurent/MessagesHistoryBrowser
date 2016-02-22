@@ -27,13 +27,15 @@ class ChatsDatabase: NSObject {
 
     var db:Connection!
 
+//    let progress:NSProgress
+
 //    lazy var moc = MOCController.sharedInstance.managedObjectContext
 
     override init() {
 
-        do {
+        contactsPhoneNumber = ContactsMap.sharedInstance
 
-            contactsPhoneNumber = ContactsMap.sharedInstance
+        do {
 
             db = try Connection(chatsDBPath, readonly:true)
 
@@ -47,38 +49,42 @@ class ChatsDatabase: NSObject {
     }
 
 
-    func populate(progress:NSProgress, start:() -> Void, completion:() -> Void)
+    func populate(completion:() -> Void)
     {
-        contactsPhoneNumber.populate({ () -> Void in
+        let progress = NSProgress(totalUnitCount: 10)
+        progress.becomeCurrentWithPendingUnitCount(2)
 
-            let workerContext = MOCController.sharedInstance.workerContext()
+        self.contactsPhoneNumber.populate()
 
-            workerContext.performBlock({ () -> Void in
+        progress.resignCurrent()
 
-                if Chat.numberOfChatsInContext(workerContext) == 0 {
+        let workerContext = MOCController.sharedInstance.workerContext()
 
-                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                        start()
-                    })
+        workerContext.performBlock({ () -> Void in
 
-                    self.importAllChatsFromDB(workerContext, progress: progress)
-                    self.collectAllMessagesFromAllChats(workerContext, progress: progress)
-                }
+            if Chat.numberOfChatsInContext(workerContext) == 0 {
 
-                do {
-                    try workerContext.save()
-                    MOCController.sharedInstance.save()
-                } catch let error as NSError {
-                    print("ChatsDatabase.populate : worker context save fail : \(error)")
-                }
+                progress.becomeCurrentWithPendingUnitCount(2)
+                self.importAllChatsFromDB(workerContext) // has its own NSProgress
+                progress.resignCurrent()
 
-                // run completion block on main queue
-                //
-                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                progress.becomeCurrentWithPendingUnitCount(6)
+                self.collectAllMessagesFromAllChats(workerContext) // same
+                progress.resignCurrent()
+            }
 
-                    completion()
-                    
-                })
+            do {
+                try workerContext.save()
+                MOCController.sharedInstance.save()
+            } catch let error as NSError {
+                print("ChatsDatabase.populate : worker context save fail : \(error)")
+            }
+
+            // run completion block on main queue
+            //
+            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+
+                completion()
 
             })
 
@@ -86,11 +92,11 @@ class ChatsDatabase: NSObject {
 
     }
 
-    func importAllChatsFromDB(localContext:NSManagedObjectContext, progress:NSProgress)
+    func importAllChatsFromDB(localContext:NSManagedObjectContext)
     {
-        NSOperationQueue .mainQueue().addOperationWithBlock({ () -> Void in
-            progress.localizedDescription = NSLocalizedString("Importing chats...", comment: "")
-        })
+        let taskProgress = NSProgress(totalUnitCount: -1)
+
+        taskProgress.localizedDescription = NSLocalizedString("Importing chats...", comment: "")
 
         let chats = Table("chat")
         
@@ -103,10 +109,8 @@ class ChatsDatabase: NSObject {
         //
 
         let nbRows = Int64(db.scalar(chats.count))
-        progress.becomeCurrentWithPendingUnitCount(nbRows)
+        taskProgress.totalUnitCount = nbRows
 
-
-        let chatImportProgress = NSProgress(totalUnitCount: nbRows)
         var rowIndex:Int64 = 0
 
         let dbRows = db.prepare(chats.select(chatRowIDColumn, chatGUIDColumn, serviceNameColumn, chatIdentifierColumn))
@@ -124,18 +128,10 @@ class ChatsDatabase: NSObject {
             
             NSLog("chat : %@ \tcontact : %@\trowId: %d", guid, chatContact.name, rowID)
 
-            NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
-                chatImportProgress.completedUnitCount = rowIndex
-            })
+            taskProgress.completedUnitCount = rowIndex
 
-//            dispatch_async(dispatch_get_main_queue(), { (Void) -> Void in
-//                progress(rowIndex: rowIndex, totalNbRows: nbRows)
-//            })
-
-            ++rowIndex
+            rowIndex += 1
         }
-
-        progress.resignCurrent()
 
         MOCController.sharedInstance.save()
 
@@ -284,18 +280,13 @@ class ChatsDatabase: NSObject {
 
     }
 
-    func collectAllMessagesFromAllChats(localContext:NSManagedObjectContext, progress:NSProgress)
+    func collectAllMessagesFromAllChats(localContext:NSManagedObjectContext)
     {
         let allContacts = ChatContact.allContactsInContext(localContext)
         let allContactsCount = Int64(allContacts.count)
 
-        progress.becomeCurrentWithPendingUnitCount(allContactsCount)
-
-        let messagesImportProgress = NSProgress(totalUnitCount: allContactsCount)
-
-        NSOperationQueue .mainQueue().addOperationWithBlock({ () -> Void in
-            progress.localizedDescription = NSLocalizedString("Importing chat messages...", comment: "")
-        })
+        let taskProgress = NSProgress(totalUnitCount: allContactsCount)
+        taskProgress.localizedDescription = NSLocalizedString("Importing chat messages...", comment: "")
 
         for contact in allContacts {
             for obj in contact.chats {
@@ -307,12 +298,8 @@ class ChatsDatabase: NSObject {
 
             indexMessagesForContact(contact)
 
-            NSOperationQueue .mainQueue().addOperationWithBlock({ () -> Void in
-                messagesImportProgress.completedUnitCount++
-            })
+            taskProgress.completedUnitCount++
         }
-
-        progress.resignCurrent()
     }
 
     // TODO : this method is probably no longer useful as the whole messages DB is imported at startup anyway

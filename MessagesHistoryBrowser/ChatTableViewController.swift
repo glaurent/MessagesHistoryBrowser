@@ -18,7 +18,7 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
     @IBOutlet weak var dbPopulateProgressIndicator: NSProgressIndicator!
     @IBOutlet weak var progressReportView: NSView!
 
-    dynamic var progress:NSProgress = NSProgress(totalUnitCount: 700)
+    dynamic var progress:NSProgress!
 
     var chatsDatabase:ChatsDatabase!
 
@@ -68,28 +68,36 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
 
         NSUserDefaults.standardUserDefaults().addObserver(self, forKeyPath: "CountryPhonePrefix", options: .New, context: nil)
 
-        progress.completedUnitCount = 0
+        if Chat.numberOfChatsInContext(moc) == 0 {
 
-        chatsDatabase.populate(progress, start: {
-            () -> Void in
-            self.progressReportView.hidden = false
-            },
-            completion: { () -> Void in
+            setupProgressBeforeImport()
 
-            MOCController.sharedInstance.save()
+            chatsDatabase.populate({ () -> Void in
 
-            self.progressReportView.hidden = true
-            self.allKnownContacts = ChatContact.allKnownContactsInContext(self.moc)
-            self.allUnknownContacts = ChatContact.allUnknownContactsInContext(self.moc)
-            self.tableView.reloadData()
+                self.completeImport()
+                MOCController.sharedInstance.save()
 
-        })
+            })
+
+        } else if appDelegate.needDBReload { // CoreData DB load failed, rebuild the whole thing
+
+            refreshChatHistory()
+
+        } else {
+
+            progressReportView.hidden = true
+            tableView.hidden = false
+            messagesListViewController?.view.hidden = false
+
+            allKnownContacts = ChatContact.allKnownContactsInContext(self.moc)
+            allUnknownContacts = ChatContact.allUnknownContactsInContext(self.moc)
+            tableView.reloadData()
+
+        }
+
 
         ChatItemsFetcher.sharedInstance.completion = displayChats
 
-        if appDelegate.needDBReload {
-            refreshChatHistory()
-        }
     }
 
     func showUnknownContactsChanged(notification:NSNotification)
@@ -337,38 +345,46 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
     //
     func refreshChatHistory() {
 
-        // hide normal UI, show progress report
-        //
-        dispatch_async(dispatch_get_main_queue()) { () -> Void in
-            self.tableView.hidden = true
-            self.messagesListViewController?.view.hidden = true
-            self.progress.completedUnitCount = 0
-            self.progressReportView.hidden = false
-        }
+        setupProgressBeforeImport()
 
         let appDelegate = NSApp.delegate as! AppDelegate
 
         MOCController.sharedInstance.clearAllCoreData()
 
-        ChatsDatabase.sharedInstance.populate(progress, start: {
-            () -> Void in
-            self.progressReportView.hidden = false
-            }, completion:  { () -> Void in
+        chatsDatabase.populate({ () -> Void in
 
-                // hide progress report, restore normal UI
-                //
-                self.progressReportView.hidden = true
-                self.tableView.hidden = false
-                self.messagesListViewController?.view.hidden = false
+            self.completeImport()
+            appDelegate.isRefreshingHistory = false
 
-                self.allKnownContacts = ChatContact.allKnownContactsInContext(self.moc)
-                self.allUnknownContacts = ChatContact.allUnknownContactsInContext(self.moc)
-                self.tableView.reloadData()
-
-                appDelegate.isRefreshingHistory = false
-                
-                MOCController.sharedInstance.save()
+            MOCController.sharedInstance.save()
         })
+    }
+
+    // MARK: - progress view
+
+    // hide normal UI, show progress report
+    //
+    func setupProgressBeforeImport()
+    {
+        tableView.hidden = true
+        messagesListViewController?.view.hidden = true
+        progress = NSProgress(totalUnitCount: 10)
+        progress.becomeCurrentWithPendingUnitCount(10) // may not be necessary ?
+        progressReportView.hidden = false
+    }
+
+    // hide progress report, restore normal UI
+    //
+    func completeImport()
+    {
+        progress.resignCurrent()
+        progressReportView.hidden = true
+        tableView.hidden = false
+        messagesListViewController?.view.hidden = false
+
+        allKnownContacts = ChatContact.allKnownContactsInContext(self.moc)
+        allUnknownContacts = ChatContact.allUnknownContactsInContext(self.moc)
+        tableView.reloadData()
     }
 
     override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
