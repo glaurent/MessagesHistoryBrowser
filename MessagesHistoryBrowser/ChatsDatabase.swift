@@ -95,7 +95,7 @@ class ChatsDatabase: NSObject {
     {
         let taskProgress = NSProgress(totalUnitCount: -1)
 
-        taskProgress.localizedDescription = NSLocalizedString("Importing chats...", comment: "")
+        dispatch_async(dispatch_get_main_queue()) { taskProgress.localizedDescription = NSLocalizedString("Importing chats...", comment: "") }
 
         let chats = Table("chat")
         
@@ -127,7 +127,8 @@ class ChatsDatabase: NSObject {
             
             NSLog("chat : %@ \tcontact : %@\trowId: %d", guid, chatContact.name, rowID)
 
-            taskProgress.completedUnitCount = rowIndex
+            dispatch_async(dispatch_get_main_queue()) { taskProgress.completedUnitCount = rowIndex }
+            
 
             rowIndex += 1
         }
@@ -285,7 +286,7 @@ class ChatsDatabase: NSObject {
         let allContactsCount = Int64(allContacts.count)
 
         let taskProgress = NSProgress(totalUnitCount: allContactsCount)
-        taskProgress.localizedDescription = NSLocalizedString("Importing chat messages...", comment: "")
+        dispatch_async(dispatch_get_main_queue()) { taskProgress.localizedDescription = NSLocalizedString("Importing chat messages...", comment: "") }
 
         for contact in allContacts {
             for obj in contact.chats {
@@ -297,7 +298,8 @@ class ChatsDatabase: NSObject {
 
             indexMessagesForContact(contact)
 
-            taskProgress.completedUnitCount++
+            dispatch_async(dispatch_get_main_queue()) { taskProgress.completedUnitCount += 1 }
+            
         }
     }
 
