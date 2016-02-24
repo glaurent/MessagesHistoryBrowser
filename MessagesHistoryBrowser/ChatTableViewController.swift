@@ -70,14 +70,7 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
 
         if Chat.numberOfChatsInContext(moc) == 0 {
 
-            setupProgressBeforeImport()
-
-            chatsDatabase.populate({ () -> Void in
-
-                self.completeImport()
-                MOCController.sharedInstance.save()
-
-            })
+            importMessagesFromOSXApp()
 
         } else if appDelegate.needDBReload { // CoreData DB load failed, rebuild the whole thing
 
@@ -351,7 +344,7 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
 
         MOCController.sharedInstance.clearAllCoreData()
 
-        chatsDatabase.populate({ () -> Void in
+        chatsDatabase.populate(progress, completion:{ () -> Void in
 
             self.completeImport()
             appDelegate.isRefreshingHistory = false
@@ -369,7 +362,6 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
         tableView.hidden = true
         messagesListViewController?.view.hidden = true
         progress = NSProgress(totalUnitCount: 10)
-        progress.becomeCurrentWithPendingUnitCount(10) // may not be necessary ?
         progressReportView.hidden = false
     }
 
@@ -377,7 +369,9 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
     //
     func completeImport()
     {
-        progress.resignCurrent()
+        if let currentProgress = NSProgress.currentProgress() {
+            currentProgress.resignCurrent()
+        }
         progressReportView.hidden = true
         tableView.hidden = false
         messagesListViewController?.view.hidden = false
@@ -387,6 +381,19 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
         tableView.reloadData()
     }
 
+    func importMessagesFromOSXApp()
+    {
+        setupProgressBeforeImport()
+        
+        chatsDatabase.populate(progress, completion:{ () -> Void in
+            
+            self.completeImport()
+            MOCController.sharedInstance.save()
+            
+        })
+
+    }
+    
     override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
 //        if let newValue = change?["new"] {
 //            print("keyPath : \(keyPath) - new value : \(newValue)")

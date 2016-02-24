@@ -910,14 +910,18 @@
                             <customView hidden="YES" translatesAutoresizingMaskIntoConstraints="NO" id="PId-FV-l0o" userLabel="ProgressReportView">
                                 <rect key="frame" x="0.0" y="0.0" width="505" height="280"/>
                                 <subviews>
-                                    <progressIndicator wantsLayer="YES" maxValue="1" style="bar" translatesAutoresizingMaskIntoConstraints="NO" id="LcQ-1Y-GBm">
+                                    <progressIndicator wantsLayer="YES" canDrawConcurrently="YES" maxValue="1" style="bar" translatesAutoresizingMaskIntoConstraints="NO" id="LcQ-1Y-GBm">
                                         <rect key="frame" x="91" y="130" width="322" height="20"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="322" id="do5-qG-93O"/>
                                             <constraint firstAttribute="height" constant="18" id="tjQ-of-yef"/>
                                         </constraints>
                                         <connections>
-                                            <binding destination="c6g-xc-DOK" name="value" keyPath="progress.fractionCompleted" id="hfg-hD-fMW"/>
+                                            <binding destination="c6g-xc-DOK" name="value" keyPath="self.progress.fractionCompleted" id="KPi-e8-1WZ">
+                                                <dictionary key="options">
+                                                    <bool key="NSAllowsEditingMultipleValuesSelection" value="NO"/>
+                                                </dictionary>
+                                            </binding>
                                         </connections>
                                     </progressIndicator>
                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="G2L-Mo-7yd">
@@ -934,6 +938,17 @@
                                                 </dictionary>
                                             </binding>
                                         </connections>
+                                    </textField>
+                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="p0C-Ls-ZWc">
+                                        <rect key="frame" x="50" y="66" width="85" height="17"/>
+                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="prog" id="bZs-ZO-6GJ">
+                                            <font key="font" metaFont="system"/>
+                                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                            <connections>
+                                                <binding destination="c6g-xc-DOK" name="value" keyPath="self.progress.fractionCompleted" id="fA3-JM-kTk"/>
+                                            </connections>
+                                        </textFieldCell>
                                     </textField>
                                 </subviews>
                                 <constraints>
@@ -1152,17 +1167,17 @@
                                             <scrollView horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lTo-HJ-H2q">
                                                 <rect key="frame" x="0.0" y="0.0" width="450" height="148"/>
                                                 <clipView key="contentView" id="Ku1-yh-KWT">
-                                                    <rect key="frame" x="1" y="1" width="448" height="146"/>
+                                                    <rect key="frame" x="1" y="1" width="433" height="146"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     <subviews>
                                                         <textView editable="NO" importsGraphics="NO" findStyle="panel" continuousSpellChecking="YES" verticallyResizable="YES" allowsNonContiguousLayout="YES" quoteSubstitution="YES" dashSubstitution="YES" smartInsertDelete="YES" id="cOK-Z4-ECw">
-                                                            <rect key="frame" x="0.0" y="0.0" width="448" height="146"/>
+                                                            <rect key="frame" x="0.0" y="0.0" width="433" height="146"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                            <size key="minSize" width="448" height="146"/>
+                                                            <size key="minSize" width="433" height="146"/>
                                                             <size key="maxSize" width="463" height="10000000"/>
                                                             <color key="insertionPointColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                            <size key="minSize" width="448" height="146"/>
+                                                            <size key="minSize" width="433" height="146"/>
                                                             <size key="maxSize" width="463" height="10000000"/>
                                                         </textView>
                                                     </subviews>
@@ -1173,7 +1188,7 @@
                                                     <autoresizingMask key="autoresizingMask"/>
                                                 </scroller>
                                                 <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="Icy-xM-cH8">
-                                                    <rect key="frame" x="433" y="1" width="16" height="146"/>
+                                                    <rect key="frame" x="434" y="1" width="15" height="146"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                 </scroller>
                                             </scrollView>

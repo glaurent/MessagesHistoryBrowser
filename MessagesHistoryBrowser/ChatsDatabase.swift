@@ -49,10 +49,9 @@ class ChatsDatabase: NSObject {
     }
 
 
-    func populate(completion:() -> Void)
+    func populate(progress:NSProgress, completion:() -> Void)
     {
-        let progress = NSProgress(totalUnitCount: 10)
-        progress.becomeCurrentWithPendingUnitCount(2)
+        progress.becomeCurrentWithPendingUnitCount(1) // ContactsMap populate take little time
 
         self.contactsPhoneNumber.populate()
 
@@ -64,7 +63,7 @@ class ChatsDatabase: NSObject {
 
             if Chat.numberOfChatsInContext(workerContext) == 0 {
 
-                progress.becomeCurrentWithPendingUnitCount(2)
+                progress.becomeCurrentWithPendingUnitCount(3)
                 self.importAllChatsFromDB(workerContext) // has its own NSProgress
                 progress.resignCurrent()
 
