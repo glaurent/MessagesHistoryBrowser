@@ -63,10 +63,12 @@ class ChatsDatabase: NSObject {
 
             if Chat.numberOfChatsInContext(workerContext) == 0 {
 
+                progress.localizedDescription = NSLocalizedString("Importing chats...", comment: "")
                 progress.becomeCurrentWithPendingUnitCount(3)
                 self.importAllChatsFromDB(workerContext) // has its own NSProgress
                 progress.resignCurrent()
 
+                progress.localizedDescription = NSLocalizedString("Importing chat messages...", comment: "")
                 progress.becomeCurrentWithPendingUnitCount(6)
                 self.collectAllMessagesFromAllChats(workerContext) // same
                 progress.resignCurrent()
@@ -94,8 +96,6 @@ class ChatsDatabase: NSObject {
     func importAllChatsFromDB(localContext:NSManagedObjectContext)
     {
         let taskProgress = NSProgress(totalUnitCount: -1)
-
-        dispatch_async(dispatch_get_main_queue()) { taskProgress.localizedDescription = NSLocalizedString("Importing chats...", comment: "") }
 
         let chats = Table("chat")
         
@@ -286,7 +286,6 @@ class ChatsDatabase: NSObject {
         let allContactsCount = Int64(allContacts.count)
 
         let taskProgress = NSProgress(totalUnitCount: allContactsCount)
-        dispatch_async(dispatch_get_main_queue()) { taskProgress.localizedDescription = NSLocalizedString("Importing chat messages...", comment: "") }
 
         for contact in allContacts {
             for obj in contact.chats {
