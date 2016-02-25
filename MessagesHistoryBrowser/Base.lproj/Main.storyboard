@@ -19,6 +19,7 @@
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
                                                 <action selector="orderFrontStandardAboutPanel:" target="Ady-hI-5gd" id="Exp-CZ-Vem"/>
+                                                <segue destination="Ou8-pI-cNp" kind="show" id="qc8-wJ-AK8"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="VOq-y0-SEH"/>
@@ -694,10 +695,68 @@
             </objects>
             <point key="canvasLocation" x="1015" y="-99"/>
         </scene>
+        <!--Window Controller-->
+        <scene sceneID="ZMx-gO-QrC">
+            <objects>
+                <windowController id="Ou8-pI-cNp" sceneMemberID="viewController">
+                    <window key="window" title="About" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" id="n8J-GQ-SCG">
+                        <windowStyleMask key="styleMask" titled="YES" closable="YES"/>
+                        <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
+                        <rect key="contentRect" x="294" y="362" width="392" height="346"/>
+                        <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1177"/>
+                        <value key="minSize" type="size" width="392" height="346"/>
+                        <value key="maxSize" type="size" width="392" height="346"/>
+                    </window>
+                    <connections>
+                        <segue destination="Pg1-nl-2zF" kind="relationship" relationship="window.shadowedContentViewController" id="0Nh-9a-hOt"/>
+                    </connections>
+                </windowController>
+                <customObject id="Whd-KQ-Mfm" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1329" y="-441"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="JML-Vt-3EC">
+            <objects>
+                <viewController id="Pg1-nl-2zF" sceneMemberID="viewController">
+                    <view key="view" id="4oX-WU-Ovy">
+                        <rect key="frame" x="0.0" y="0.0" width="392" height="346"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Il7-ZV-4Ou">
+                                <rect key="frame" x="18" y="20" width="356" height="306"/>
+                                <textFieldCell key="cell" controlSize="mini" sendsActionOnEndEditing="YES" placeholderString="" id="X3D-Rv-nBJ">
+                                    <font key="font" metaFont="system"/>
+                                    <string key="title">Messages History Browser
+
+(c) Guillaume Laurent 2015-2016
+
+Initial Messages DB info from 
+Matthieu Riegler https://github.com/kyro38/MiscStuff/blob/master/OSXStuff/iMessageBackup.sh
+
+and Noah Slater : https://gist.github.com/nslater/b3cbc894ad2c2516dd02
+
+Uses SQLite Swift https://github.com/stephencelis/SQLite.swift by Stephen Celis
+
+Special thanks :
+
+Florent Pillet : https://github.com/fpillet
+Jean-Marie Lafon : http://www.lafon.mobi</string>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                        </subviews>
+                    </view>
+                </viewController>
+                <customObject id="Gyd-LI-bDZ" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1991" y="-441"/>
+        </scene>
         <!--Preferences View Controller-->
         <scene sceneID="sPk-D9-xZ1">
             <objects>
-                <viewController id="Ovh-cv-Aue" userLabel="Preferences View Controller" sceneMemberID="viewController">
+                <viewController title="Preferences" id="Ovh-cv-Aue" userLabel="Preferences View Controller" sceneMemberID="viewController">
                     <view key="view" id="b4s-UB-tje">
                         <rect key="frame" x="0.0" y="0.0" width="305" height="133"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -731,7 +790,7 @@
                 <customObject id="EdF-NP-dkF" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
                 <userDefaultsController id="zxD-yx-eig"/>
             </objects>
-            <point key="canvasLocation" x="1727.5" y="-116.5"/>
+            <point key="canvasLocation" x="1635.5" y="-106.5"/>
         </scene>
         <!--Chat Table View Controller-->
         <scene sceneID="c9m-QU-7Of">
@@ -1095,7 +1154,7 @@
                 </viewController>
                 <customObject id="Ncb-TZ-hjk" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2161" y="323"/>
+            <point key="canvasLocation" x="2206" y="434"/>
         </scene>
         <!--Messages List View Controller-->
         <scene sceneID="ELx-7x-MUW">
@@ -1156,17 +1215,17 @@
                                             <scrollView horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lTo-HJ-H2q">
                                                 <rect key="frame" x="0.0" y="0.0" width="450" height="148"/>
                                                 <clipView key="contentView" id="Ku1-yh-KWT">
-                                                    <rect key="frame" x="1" y="1" width="433" height="146"/>
+                                                    <rect key="frame" x="1" y="1" width="448" height="146"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     <subviews>
                                                         <textView editable="NO" importsGraphics="NO" findStyle="panel" continuousSpellChecking="YES" verticallyResizable="YES" allowsNonContiguousLayout="YES" quoteSubstitution="YES" dashSubstitution="YES" smartInsertDelete="YES" id="cOK-Z4-ECw">
-                                                            <rect key="frame" x="0.0" y="0.0" width="433" height="146"/>
+                                                            <rect key="frame" x="0.0" y="0.0" width="448" height="146"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                            <size key="minSize" width="433" height="146"/>
+                                                            <size key="minSize" width="448" height="146"/>
                                                             <size key="maxSize" width="463" height="10000000"/>
                                                             <color key="insertionPointColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                            <size key="minSize" width="433" height="146"/>
+                                                            <size key="minSize" width="448" height="146"/>
                                                             <size key="maxSize" width="463" height="10000000"/>
                                                         </textView>
                                                     </subviews>
@@ -1177,7 +1236,7 @@
                                                     <autoresizingMask key="autoresizingMask"/>
                                                 </scroller>
                                                 <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="Icy-xM-cH8">
-                                                    <rect key="frame" x="434" y="1" width="15" height="146"/>
+                                                    <rect key="frame" x="433" y="1" width="16" height="146"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                 </scroller>
                                             </scrollView>
