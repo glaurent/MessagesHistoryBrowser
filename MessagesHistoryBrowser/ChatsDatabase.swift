@@ -51,11 +51,7 @@ class ChatsDatabase: NSObject {
 
     func populate(progress:NSProgress, completion:() -> Void)
     {
-        progress.becomeCurrentWithPendingUnitCount(1) // ContactsMap populate take little time
-
         self.contactsPhoneNumber.populate()
-
-        progress.resignCurrent()
 
         let workerContext = MOCController.sharedInstance.workerContext()
 
@@ -64,13 +60,13 @@ class ChatsDatabase: NSObject {
             if Chat.numberOfChatsInContext(workerContext) == 0 {
 
                 progress.localizedDescription = NSLocalizedString("Importing chats...", comment: "")
-                progress.becomeCurrentWithPendingUnitCount(3)
-                self.importAllChatsFromDB(workerContext) // has its own NSProgress
+                progress.becomeCurrentWithPendingUnitCount(4)
+                self.importAllChatsFromDB(workerContext)
                 progress.resignCurrent()
 
                 progress.localizedDescription = NSLocalizedString("Importing chat messages...", comment: "")
                 progress.becomeCurrentWithPendingUnitCount(6)
-                self.collectAllMessagesFromAllChats(workerContext) // same
+                self.collectAllMessagesFromAllChats(workerContext)
                 progress.resignCurrent()
             }
 
@@ -125,7 +121,7 @@ class ChatsDatabase: NSObject {
             
             let _ = Chat(managedObjectContext:localContext, withContact:chatContact, withServiceName:serviceName,  withGUID: guid, andRowID: rowID)
             
-            NSLog("chat : %@ \tcontact : %@\trowId: %d", guid, chatContact.name, rowID)
+//            NSLog("chat : %@ \tcontact : %@\trowId: %d", guid, chatContact.name, rowID)
 
             dispatch_async(dispatch_get_main_queue()) { taskProgress.completedUnitCount = rowIndex }
             
