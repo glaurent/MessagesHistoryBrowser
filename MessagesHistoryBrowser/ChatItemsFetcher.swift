@@ -118,7 +118,7 @@ class ChatItemsFetcher: NSObject {
             matchingItems = currentSearchMatchingItems
             matchingContacts = contactsFromMessages(messages)
 
-        } else { // nothing, clear all
+        } else { // nothing specified - no contact or search term, clear all, all chats will be listed
             matchingContacts = nil
             matchingAttachments.removeAll()
             matchingItems.removeAll()

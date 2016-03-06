@@ -118,6 +118,9 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
                 contact = allKnownContacts[row]
             }
         }
+
+//        print("\(__FUNCTION__) : row \(row) - contact \(contact.name)")
+
         return contact
     }
 
@@ -149,9 +152,14 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
                 let roundedThumbnailImage = roundCorners(thumbnailImage)
                 cellImageView.image = roundedThumbnailImage
 //              cellImageView.image = thumbnailImage
+            } else {
+                // contact unknown for this cell
+                cellView.imageView?.image = nil
             }
+        } else { // shouldn't happen
+            cellView.textField?.stringValue = "unknown"
+            cellView.imageView?.image = nil
         }
-        
         return cellView
     }
 
@@ -326,9 +334,9 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
             messagesListViewController?.clearAttachments()
         }
 
-        searchedContacts = matchedContacts?.sort{ $0.name < $1.name }
 
         if searchTermHasChanged {
+            searchedContacts = matchedContacts?.sort{ $0.name < $1.name }
             searchTermHasChanged = false
             tableView.reloadData()
         }

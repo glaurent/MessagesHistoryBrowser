@@ -227,7 +227,8 @@ class ContactsMap : NSObject {
                 }
             }
         } catch {
-            NSLog("Couldn't get contact \(contactIdentifier)")
+            NSLog("\(__FUNCTION__) : Couldn't get contact with identifier \"\(contactIdentifier)\"")
+            return LabelToImage.stringToImage("?")
         }
 
         return nil
