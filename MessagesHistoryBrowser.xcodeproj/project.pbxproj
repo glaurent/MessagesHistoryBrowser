@@ -25,6 +25,10 @@
 		AF82EDB71C23723F00F8132D /* AttachmentsCollectionViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF82EDB61C23723F00F8132D /* AttachmentsCollectionViewDelegate.swift */; };
 		AFAF8B141BF3B91E009D92F6 /* ImageAttachmentCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFAF8B131BF3B91E009D92F6 /* ImageAttachmentCell.swift */; };
 		AFBF11451BE77E6E00D3D596 /* ChatItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFBF11441BE77E6E00D3D596 /* ChatItem.swift */; };
+		AFC38AB41C81F35E008910A1 /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AFC38AB11C8120C7008910A1 /* Sparkle.framework */; };
+		AFC38AB51C81F35E008910A1 /* Sparkle.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = AFC38AB11C8120C7008910A1 /* Sparkle.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		AFC38AB71C9A1391008910A1 /* Sparkle.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = AFC38AB11C8120C7008910A1 /* Sparkle.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		AFC38AB91C9A1913008910A1 /* dsa_pub.pem in Resources */ = {isa = PBXBuildFile; fileRef = AFC38AB81C9A1913008910A1 /* dsa_pub.pem */; };
 		AFD974971BB816B5004CF8D7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFD974961BB816B5004CF8D7 /* AppDelegate.swift */; };
 		AFD974991BB816B5004CF8D7 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFD974981BB816B5004CF8D7 /* ViewController.swift */; };
 		AFD9749C1BB816B5004CF8D7 /* MessagesHistoryBrowser.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = AFD9749A1BB816B5004CF8D7 /* MessagesHistoryBrowser.xcdatamodeld */; };
@@ -64,8 +68,19 @@
 			dstSubfolderSpec = 10;
 			files = (
 				AF6F10EA1BB81D5900A93152 /* SQLite.framework in Embed Frameworks */,
+				AFC38AB51C81F35E008910A1 /* Sparkle.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AFC38AB61C9A136E008910A1 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				AFC38AB71C9A1391008910A1 /* Sparkle.framework in CopyFiles */,
+			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -88,6 +103,8 @@
 		AF82EDB61C23723F00F8132D /* AttachmentsCollectionViewDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttachmentsCollectionViewDelegate.swift; sourceTree = "<group>"; };
 		AFAF8B131BF3B91E009D92F6 /* ImageAttachmentCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageAttachmentCell.swift; sourceTree = "<group>"; };
 		AFBF11441BE77E6E00D3D596 /* ChatItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatItem.swift; sourceTree = "<group>"; };
+		AFC38AB11C8120C7008910A1 /* Sparkle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Sparkle.framework; sourceTree = "<group>"; };
+		AFC38AB81C9A1913008910A1 /* dsa_pub.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = dsa_pub.pem; sourceTree = "<group>"; };
 		AFD974931BB816B5004CF8D7 /* MessagesHistoryBrowser.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MessagesHistoryBrowser.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AFD974961BB816B5004CF8D7 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		AFD974981BB816B5004CF8D7 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -115,6 +132,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AF6F10E91BB81D5900A93152 /* SQLite.framework in Frameworks */,
+				AFC38AB41C81F35E008910A1 /* Sparkle.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -152,6 +170,7 @@
 		AF6F10EC1BB8222500A93152 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				AFC38AB11C8120C7008910A1 /* Sparkle.framework */,
 				AF6F10E81BB81D5900A93152 /* SQLite.framework */,
 			);
 			name = Frameworks;
@@ -176,6 +195,15 @@
 				AFD974CC1BB81ACB004CF8D7 /* ChatListViewController.swift */,
 			);
 			name = unused;
+			sourceTree = "<group>";
+		};
+		AFC38ABA1C9A191D008910A1 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				AF029C431C4D746100B1A950 /* phone country codes.json */,
+				AFC38AB81C9A1913008910A1 /* dsa_pub.pem */,
+			);
+			name = Resources;
 			sourceTree = "<group>";
 		};
 		AFD9748A1BB816B5004CF8D7 = {
@@ -217,7 +245,7 @@
 				AFD9749D1BB816B5004CF8D7 /* Assets.xcassets */,
 				AFD9749F1BB816B6004CF8D7 /* Main.storyboard */,
 				AFD974A21BB816B6004CF8D7 /* Info.plist */,
-				AF029C431C4D746100B1A950 /* phone country codes.json */,
+				AFC38ABA1C9A191D008910A1 /* Resources */,
 				AF8003BA1C2C806A008A1D64 /* unused */,
 				AF6F10EC1BB8222500A93152 /* Frameworks */,
 			);
@@ -253,6 +281,7 @@
 				AFD974901BB816B5004CF8D7 /* Frameworks */,
 				AFD974911BB816B5004CF8D7 /* Resources */,
 				AF6F10EB1BB81D5A00A93152 /* Embed Frameworks */,
+				AFC38AB61C9A136E008910A1 /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -347,6 +376,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AFC38AB91C9A1913008910A1 /* dsa_pub.pem in Resources */,
 				AF029C441C4D746100B1A950 /* phone country codes.json in Resources */,
 				AFD9749E1BB816B5004CF8D7 /* Assets.xcassets in Resources */,
 				AFE9B8041BCB088A007FC376 /* AttachmentsCollectionViewItem.xib in Resources */,
@@ -527,13 +557,15 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "Developer ID Application";
 				COMBINE_HIDPI_IMAGES = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/Mac",
+					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = MessagesHistoryBrowser/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.telegraph-road.MessagesHistoryBrowser";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -543,13 +575,15 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "Developer ID Application";
 				COMBINE_HIDPI_IMAGES = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/Mac",
+					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = MessagesHistoryBrowser/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.telegraph-road.MessagesHistoryBrowser";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};

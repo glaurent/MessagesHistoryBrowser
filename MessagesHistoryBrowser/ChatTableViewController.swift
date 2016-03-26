@@ -63,7 +63,7 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
             messagesListViewController = secondSplitViewItem.viewController as? MessagesListViewController
         }
 
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "showUnknownContactsChanged:", name: AppDelegate.ShowChatsFromUnknownNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ChatTableViewController.showUnknownContactsChanged(_:)), name: AppDelegate.ShowChatsFromUnknownNotification, object: nil)
 //        NSNotificationCenter.defaultCenter().addObserver(self, selector: "phonePrefixChanged:", name: NSUserDefaultsDidChangeNotification, object: nil)
 
         NSUserDefaults.standardUserDefaults().addObserver(self, forKeyPath: "CountryPhonePrefix", options: .New, context: nil)

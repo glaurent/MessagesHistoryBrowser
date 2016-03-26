@@ -22,6 +22,12 @@
                                                 <segue destination="Ou8-pI-cNp" kind="show" id="qc8-wJ-AK8"/>
                                             </connections>
                                         </menuItem>
+                                        <menuItem title="Check for Updates..." id="Y4L-al-oda">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="checkForUpdates:" target="3FU-uH-YNH" id="GX1-5B-3ji"/>
+                                            </connections>
+                                        </menuItem>
                                         <menuItem isSeparatorItem="YES" id="VOq-y0-SEH"/>
                                         <menuItem title="Preferences…" keyEquivalent="," id="BOF-NM-1cW">
                                             <connections>
@@ -632,6 +638,7 @@
                 </application>
                 <customObject id="Voe-Tx-rLC" customClass="AppDelegate" customModule="MessagesHistoryBrowser" customModuleProvider="target"/>
                 <customObject id="Ady-hI-5gd" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+                <customObject id="3FU-uH-YNH" customClass="SUUpdater"/>
             </objects>
             <point key="canvasLocation" x="75" y="-236"/>
         </scene>

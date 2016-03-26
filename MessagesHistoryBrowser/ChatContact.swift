@@ -79,7 +79,7 @@ class ChatContact: NSManagedObject {
                 let results = try managedObjectContext.executeFetchRequest(fetchRequest)
                 allContacts = results as! [ChatContact]
             } catch let error as NSError {
-                print("\(__FUNCTION__) : Could not fetch \(error), \(error.userInfo)")
+                print("\(#function) : Could not fetch \(error), \(error.userInfo)")
             }
         }
 
@@ -106,7 +106,7 @@ class ChatContact: NSManagedObject {
                     res = ChatContact(managedObjectContext: managedObjectContext, withName: name, withIdentifier: identifier)
                 }
             } catch let error as NSError {
-                print("\(__FUNCTION__) : Could not fetch \(error), \(error.userInfo)")
+                print("\(#function) : Could not fetch \(error), \(error.userInfo)")
 
                 res = ChatContact(managedObjectContext: managedObjectContext, withName: name, withIdentifier: identifier)
             }

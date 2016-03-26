@@ -223,7 +223,7 @@ class ChatItemsFetcher: NSObject {
             result = matchingMessagesWithSurroundingMessages.map {$0.objectID}
 
         } catch let error as NSError {
-            print("\(__FUNCTION__) : Could not fetch \(error), \(error.userInfo)")
+            print("\(#function) Could not fetch \(error), \(error.userInfo)")
         } catch {
             print("weird fetch error")
         }
@@ -263,7 +263,7 @@ class ChatItemsFetcher: NSObject {
 
             var initialMessagesPlusSurroundingMessages = [ChatMessage]()
 
-            var lastSlice = Range<Int>(start:0, end:0)
+            var lastSlice = Range<Int>(0..<0)
 
             for message in contactMessages {
                 let (messagesRangeAroundThisMessage, disjointSlice) = surroundingMessagesForMessage(message, inMessages: allContactMessages, numberBeforeAndAfter: nbOfMessagesBeforeAfter, previousSliceRange:lastSlice)
@@ -291,12 +291,12 @@ class ChatItemsFetcher: NSObject {
         let startIndex = max(messageIndex - numberBeforeAndAfter, 0)
         let endIndex = min(messageIndex + numberBeforeAndAfter + 1, allMessages.count - 1) // +1 because range does not include endIndex item ( startIndex..<endIndex )
 
-        var slice = Range<Int>(start: startIndex, end: endIndex)
+        var slice = Range<Int>(startIndex ..< endIndex)
         var disjointSlice = true
 
         // check possible join with previous slice
         if startIndex <= previousSliceRange.endIndex {
-            slice = Range<Int>(start: previousSliceRange.startIndex, end: endIndex)
+            slice = Range<Int>(previousSliceRange.startIndex ..< endIndex)
             disjointSlice = false
         }
 

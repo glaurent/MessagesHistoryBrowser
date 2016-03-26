@@ -70,8 +70,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 shouldFail = true
             }
         } catch  {
-            let nserror = error as! NSError // removing the '!' causes a compile error 'ErrorType not convertible to NSError' - this is apparently caused by a compiler bug
-            // somehow triggered by a line in ChatTableViewController. Radar has been filed : #23359752
+            let nserror = error as NSError
+            
             if nserror.code == NSFileReadNoSuchFileError {
                 do {
                     try fileManager.createDirectoryAtPath(self.applicationDocumentsDirectory.path!, withIntermediateDirectories: true, attributes: nil)

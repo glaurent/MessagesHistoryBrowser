@@ -43,7 +43,7 @@ class ChatsDatabase: NSObject {
 
         } catch {
             super.init()
-            NSLog("%@ error", __FUNCTION__)
+            NSLog("%@ error", #function)
         }
 
     }
@@ -108,7 +108,9 @@ class ChatsDatabase: NSObject {
 
         var rowIndex:Int64 = 0
 
-        let dbRows = db.prepare(chats.select(chatRowIDColumn, chatGUIDColumn, serviceNameColumn, chatIdentifierColumn))
+        do {
+
+        let dbRows = try db.prepare(chats.select(chatRowIDColumn, chatGUIDColumn, serviceNameColumn, chatIdentifierColumn))
 
         for chatData in dbRows {
             
@@ -131,6 +133,9 @@ class ChatsDatabase: NSObject {
 
         MOCController.sharedInstance.save()
 
+        } catch {
+            NSLog("\(#function) : error when preparing DB select")
+        }
     }
 
 
@@ -148,7 +153,7 @@ class ChatsDatabase: NSObject {
                 contactIsKnown = true
             } else {
                 contactIsKnown = false
-                NSLog("\(__FUNCTION__) : no contact name found for identifier \(identifier)")
+                NSLog("\(#function) : no contact name found for identifier \(identifier)")
             }
 
         } else if serviceName == "iMessage" || serviceName == "SMS" {
@@ -197,81 +202,86 @@ class ChatsDatabase: NSObject {
 
     func collectMessagesForChat(chat:Chat)
     {
-        let messagesTable  = Table("message")
-        let isFromMeColumn = Expression<Bool>("is_from_me")
-        let textColumn     = Expression<String?>("text")
-        let dateColumn     = Expression<Int>("date")
+        do {
+            let messagesTable  = Table("message")
+            let isFromMeColumn = Expression<Bool>("is_from_me")
+            let textColumn     = Expression<String?>("text")
+            let dateColumn     = Expression<Int>("date")
 
-        let chatHandleJoinTable = Table("chat_handle_join")
-        let handleIdColumn      = Expression<Int>("handle_id")
-        let chatIdColumn        = Expression<Int>("chat_id")
+            let chatHandleJoinTable = Table("chat_handle_join")
+            let handleIdColumn      = Expression<Int>("handle_id")
+            let chatIdColumn        = Expression<Int>("chat_id")
 
-        let chatTable   = Table("chat")
-        let rowIDColumn = Expression<Int>("ROWID")
-        let guidColumn  = Expression<String>("guid")
+            let chatTable   = Table("chat")
+            let rowIDColumn = Expression<Int>("ROWID")
+            let guidColumn  = Expression<String>("guid")
 
-        let chatIDQuery = db.prepare(chatTable.select(rowIDColumn).filter(guidColumn == chat.guid))
-        var allRowIDs = [Int]()
-        for row in chatIDQuery {
-            allRowIDs.append(row[rowIDColumn])
-        }
-
-
-        let handleIDQuery = db.prepare(chatHandleJoinTable.select(handleIdColumn).filter(allRowIDs.contains(chatIdColumn)))
-        var allHandleIDs = [Int]()
-        for row in handleIDQuery {
-            allHandleIDs.append(row[handleIdColumn])
-        }
-
-        let query = db.prepare(messagesTable.select(isFromMeColumn, textColumn, dateColumn).filter(allHandleIDs.contains(handleIdColumn)))
-
-        for messageData in query {
-            let messageContent = messageData[textColumn] ?? ""
-            let dateInt = messageData[dateColumn]
-            let dateTimeInterval = NSTimeInterval(dateInt)
-            let messageDate = NSDate(timeIntervalSinceReferenceDate: dateTimeInterval)
-//            NSLog("message : \(messageContent)")
-
-            let chatMessage = ChatMessage(managedObjectContext: chat.managedObjectContext!, withMessage: messageContent, withDate: messageDate, inChat: chat)
-            chatMessage.isFromMe = messageData[isFromMeColumn]
-        }
+            let chatIDQuery = try db.prepare(chatTable.select(rowIDColumn).filter(guidColumn == chat.guid))
+            var allRowIDs = [Int]()
+            for row in chatIDQuery {
+                allRowIDs.append(row[rowIDColumn])
+            }
 
 
-        // attachments
-        //
-        let attachments = Table("attachment")
-        let filenameColumn = Expression<String>("filename")
-        let attachmentIdColumn = Expression<Int>("attachment_id")
-        let cacheHasAttachmentColumn = Expression<Bool>("cache_has_attachments")
+            let handleIDQuery = try db.prepare(chatHandleJoinTable.select(handleIdColumn).filter(allRowIDs.contains(chatIdColumn)))
+            var allHandleIDs = [Int]()
+            for row in handleIDQuery {
+                allHandleIDs.append(row[handleIdColumn])
+            }
 
-        let messagesWithAttachmentsROWIDsQuery = db.prepare(messagesTable.select(rowIDColumn, cacheHasAttachmentColumn, handleIdColumn).filter(allHandleIDs.contains(handleIdColumn) && cacheHasAttachmentColumn == true))
+            let query = try db.prepare(messagesTable.select(isFromMeColumn, textColumn, dateColumn).filter(allHandleIDs.contains(handleIdColumn)))
 
-        var messagesWithAttachmentsROWIDs = [Int]()
-        for row in messagesWithAttachmentsROWIDsQuery {
-            messagesWithAttachmentsROWIDs.append(row[rowIDColumn])
-        }
+            for messageData in query {
+                let messageContent = messageData[textColumn] ?? ""
+                let dateInt = messageData[dateColumn]
+                let dateTimeInterval = NSTimeInterval(dateInt)
+                let messageDate = NSDate(timeIntervalSinceReferenceDate: dateTimeInterval)
+//              NSLog("message : \(messageContent)")
 
-        let messageAttachmentJoinTable = Table("message_attachment_join")
-        let messageIDColumn = Expression<Int>("message_id")
-        let attachmentIDsQuery = db.prepare(messageAttachmentJoinTable.select(messageIDColumn, attachmentIdColumn).filter(messagesWithAttachmentsROWIDs.contains(messageIDColumn)))
-
-        var allAttachmentIDs = [Int]()
-        for row in attachmentIDsQuery {
-            allAttachmentIDs.append(row[attachmentIdColumn])
-        }
+                let chatMessage = ChatMessage(managedObjectContext: chat.managedObjectContext!, withMessage: messageContent, withDate: messageDate, inChat: chat)
+                chatMessage.isFromMe = messageData[isFromMeColumn]
+            }
 
 
-        let attachmentDateColumn = Expression<Int>("created_date")
+            // attachments
+            //
+            let attachments = Table("attachment")
+            let filenameColumn = Expression<String>("filename")
+            let attachmentIdColumn = Expression<Int>("attachment_id")
+            let cacheHasAttachmentColumn = Expression<Bool>("cache_has_attachments")
 
-        let attachmentDataQuery = db.prepare(attachments.select(rowIDColumn, filenameColumn, attachmentDateColumn).filter(allAttachmentIDs.contains(rowIDColumn)))
+            let messagesWithAttachmentsROWIDsQuery = try db.prepare(messagesTable.select(rowIDColumn, cacheHasAttachmentColumn, handleIdColumn).filter(allHandleIDs.contains(handleIdColumn) && cacheHasAttachmentColumn == true))
 
-        for attachmentData in attachmentDataQuery {
-            let attachmentFileName = attachmentData[filenameColumn]
-            let attachmentDateInt = attachmentData[attachmentDateColumn]
-            let attachmentTimeInterval = NSTimeInterval(attachmentDateInt)
-            let attachmentDate = NSDate(timeIntervalSinceReferenceDate: attachmentTimeInterval)
+            var messagesWithAttachmentsROWIDs = [Int]()
+            for row in messagesWithAttachmentsROWIDsQuery {
+                messagesWithAttachmentsROWIDs.append(row[rowIDColumn])
+            }
 
-            let _ = ChatAttachment(managedObjectContext: chat.managedObjectContext!, withFileName: attachmentFileName, withDate: attachmentDate, inChat:chat)
+            let messageAttachmentJoinTable = Table("message_attachment_join")
+            let messageIDColumn = Expression<Int>("message_id")
+            let attachmentIDsQuery = try db.prepare(messageAttachmentJoinTable.select(messageIDColumn, attachmentIdColumn).filter(messagesWithAttachmentsROWIDs.contains(messageIDColumn)))
+
+            var allAttachmentIDs = [Int]()
+            for row in attachmentIDsQuery {
+                allAttachmentIDs.append(row[attachmentIdColumn])
+            }
+
+
+            let attachmentDateColumn = Expression<Int>("created_date")
+
+            let attachmentDataQuery = try db.prepare(attachments.select(rowIDColumn, filenameColumn, attachmentDateColumn).filter(allAttachmentIDs.contains(rowIDColumn)))
+
+            for attachmentData in attachmentDataQuery {
+                let attachmentFileName = attachmentData[filenameColumn]
+                let attachmentDateInt = attachmentData[attachmentDateColumn]
+                let attachmentTimeInterval = NSTimeInterval(attachmentDateInt)
+                let attachmentDate = NSDate(timeIntervalSinceReferenceDate: attachmentTimeInterval)
+
+                let _ = ChatAttachment(managedObjectContext: chat.managedObjectContext!, withFileName: attachmentFileName, withDate: attachmentDate, inChat:chat)
+            }
+            
+        } catch {
+            NSLog("\(#function) : error when preparing DB select")
         }
 
     }
