@@ -10,13 +10,13 @@ import Cocoa
 
 class AttachmentsCollectionViewItem: NSCollectionViewItem {
 
-    override var selected:Bool {
+    override var isSelected:Bool {
         didSet {
-            if selected {
-                view.layer?.borderColor = NSColor.selectedMenuItemColor().CGColor
+            if isSelected {
+                view.layer?.borderColor = NSColor.selectedMenuItemColor.cgColor
                 view.layer?.borderWidth = 4.0
             } else {
-                view.layer?.borderColor = NSColor.clearColor().CGColor
+                view.layer?.borderColor = NSColor.clear.cgColor
                 view.layer?.borderWidth = 0.0
             }
         }
@@ -29,11 +29,11 @@ class AttachmentsCollectionViewItem: NSCollectionViewItem {
         view.layer?.cornerRadius = 5.0
     }
 
-    @IBAction func showInFinder(sender:AnyObject)
+    @IBAction func showInFinder(_ sender:AnyObject)
     {
         if let delegate = collectionView.delegate as? AttachmentsCollectionViewDelegate {
             NSLog("showInFinder")
-            if let thisItemIndexPath = collectionView.indexPathForItem(self) {
+            if let thisItemIndexPath = collectionView.indexPath(for: self) {
                 delegate.showAttachmentInFinderAtIndexPath(thisItemIndexPath)
             }
         }

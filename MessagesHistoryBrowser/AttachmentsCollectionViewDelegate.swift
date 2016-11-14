@@ -10,7 +10,7 @@ import Cocoa
 
 protocol AttachmentsCollectionViewDelegate: NSCollectionViewDelegate {
 
-    func displayAttachmentAtIndexPath(indexPath:NSIndexPath) -> Void
-    func showAttachmentInFinderAtIndexPath(indexPath:NSIndexPath) -> Void
+    func displayAttachmentAtIndexPath(_ indexPath:IndexPath) -> Void
+    func showAttachmentInFinderAtIndexPath(_ indexPath:IndexPath) -> Void
 
 }

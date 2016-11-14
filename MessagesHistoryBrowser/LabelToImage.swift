@@ -20,28 +20,28 @@ class LabelToImage
         view.wantsLayer = true
         view.addSubview(textField)
 
-        view.layer?.backgroundColor = NSColor.lightGrayColor().CGColor
+        view.layer?.backgroundColor = NSColor.lightGray.cgColor
 
         textField.frame.origin = NSPoint(x:0, y:-13)
         textField.drawsBackground = true
-        textField.alignment = .Center
-        textField.bezeled = false
-        textField.font = NSFont.systemFontOfSize(20.0)
-        textField.backgroundColor = NSColor.lightGrayColor()
-        textField.textColor = NSColor.whiteColor()
+        textField.alignment = .center
+        textField.isBezeled = false
+        textField.font = NSFont.systemFont(ofSize: 20.0)
+        textField.backgroundColor = NSColor.lightGray
+        textField.textColor = NSColor.white
     }
 
-    func stringToImage(label:String) -> NSImage?
+    func stringToImage(_ label:String) -> NSImage?
     {
 
         textField.stringValue = label
 
-        if let bitmapRep = view.bitmapImageRepForCachingDisplayInRect(view.frame) {
+        if let bitmapRep = view.bitmapImageRepForCachingDisplay(in: view.frame) {
 
-            view.cacheDisplayInRect(view.frame, toBitmapImageRep: bitmapRep)
+            view.cacheDisplay(in: view.frame, to: bitmapRep)
 
-            if let cgiImage = bitmapRep.CGImage {
-                return NSImage(CGImage: cgiImage, size: view.frame.size)
+            if let cgiImage = bitmapRep.cgImage {
+                return NSImage(cgImage: cgiImage, size: view.frame.size)
             } else {
                 print("stringToImage : bitmapRep has no CGIImage")
             }
@@ -54,7 +54,7 @@ class LabelToImage
 
     }
 
-    class func stringToImage(label:String) -> NSImage?
+    class func stringToImage(_ label:String) -> NSImage?
     {
         return LabelToImage.sharedInstance.stringToImage(label)
     }

@@ -23,7 +23,7 @@ class ImageAttachmentDisplayViewController: NSViewController {
 
             if let newImage = newValue {
                 let newImageSize = newImage.size
-                let mainScreenSize = NSScreen.mainScreen()!.frame.size
+                let mainScreenSize = NSScreen.main()!.frame.size
 
                 var newSize:NSSize
 
@@ -58,14 +58,14 @@ class ImageAttachmentDisplayViewController: NSViewController {
         super.viewDidLoad()
         // Do view setup here.
 
-        let mainScreenSize = NSScreen.mainScreen()!.frame.size
+        let mainScreenSize = NSScreen.main()!.frame.size
 
         halfScreenSize = NSSize(width: mainScreenSize.width / maxSizeScreenRatio, height: mainScreenSize.height / maxSizeScreenRatio)
 
         view.window?.maxSize = NSSize(width: mainScreenSize.width / maxSizeScreenRatio, height: mainScreenSize.height / maxSizeScreenRatio)
     }
 
-    func size(aSize:NSSize, inBounds bounds:NSSize) -> NSSize
+    func size(_ aSize:NSSize, inBounds bounds:NSSize) -> NSSize
     {
         let ratio = aSize.width / aSize.height
 

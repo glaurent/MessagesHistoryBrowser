@@ -11,7 +11,7 @@ import Cocoa
 
 // Copied from http://stackoverflow.com/a/27157566/1081361
 
-func roundCorners(image: NSImage) -> NSImage
+func roundCorners(_ image: NSImage) -> NSImage
 {
     let existing = image
     let esize = existing.size
@@ -20,16 +20,16 @@ func roundCorners(image: NSImage) -> NSImage
     let composedImage = NSImage(size: newSize)
 
     composedImage.lockFocus()
-    let ctx = NSGraphicsContext.currentContext()
-    ctx?.imageInterpolation = NSImageInterpolation.High
+    let ctx = NSGraphicsContext.current()
+    ctx?.imageInterpolation = NSImageInterpolation.high
 
     let imageFrame = NSRect(x: 0, y: 0, width: esize.width, height: esize.height)
-    let clipPath = NSBezierPath(ovalInRect: imageFrame)
-    clipPath.windingRule = NSWindingRule.EvenOddWindingRule
+    let clipPath = NSBezierPath(ovalIn: imageFrame)
+    clipPath.windingRule = NSWindingRule.evenOddWindingRule
     clipPath.addClip()
 
     let rect = NSRect(x: 0, y: 0, width: newSize.width, height: newSize.height)
-    image.drawAtPoint(NSZeroPoint, fromRect: rect, operation: NSCompositingOperation.CompositeSourceOver, fraction: 1)
+    image.draw(at: NSZeroPoint, from: rect, operation: NSCompositingOperation.sourceOver, fraction: 1)
     composedImage.unlockFocus()
 
     return composedImage

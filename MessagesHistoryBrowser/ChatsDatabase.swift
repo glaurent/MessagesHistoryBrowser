@@ -15,7 +15,7 @@ class ChatsDatabase: NSObject {
 
 //    let chatsDBPath = "/Users/glaurent/tmp/chat.db"
 
-    let chatsDBPath = NSString(string:"~/Library/Messages/chat.db").stringByStandardizingPath
+    let chatsDBPath = NSString(string:"~/Library/Messages/chat.db").standardizingPath
 
     var contactsPhoneNumber:ContactsMap! // want delayed init
 
@@ -49,23 +49,23 @@ class ChatsDatabase: NSObject {
     }
 
 
-    func populate(progress:NSProgress, completion:() -> Void)
+    func populate(_ progress:Progress, completion:@escaping () -> Void)
     {
         self.contactsPhoneNumber.populate()
 
         let workerContext = MOCController.sharedInstance.workerContext()
 
-        workerContext.performBlock({ () -> Void in
+        workerContext.perform({ () -> Void in
 
             if Chat.numberOfChatsInContext(workerContext) == 0 {
 
                 progress.localizedDescription = NSLocalizedString("Importing chats...", comment: "")
-                progress.becomeCurrentWithPendingUnitCount(4)
+                progress.becomeCurrent(withPendingUnitCount: 4)
                 self.importAllChatsFromDB(workerContext)
                 progress.resignCurrent()
 
                 progress.localizedDescription = NSLocalizedString("Importing chat messages...", comment: "")
-                progress.becomeCurrentWithPendingUnitCount(6)
+                progress.becomeCurrent(withPendingUnitCount: 6)
                 self.collectAllMessagesFromAllChats(workerContext)
                 progress.resignCurrent()
             }
@@ -79,7 +79,7 @@ class ChatsDatabase: NSObject {
 
             // run completion block on main queue
             //
-            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+            DispatchQueue.main.async(execute: { () -> Void in
 
                 completion()
 
@@ -89,9 +89,9 @@ class ChatsDatabase: NSObject {
 
     }
 
-    func importAllChatsFromDB(localContext:NSManagedObjectContext)
+    func importAllChatsFromDB(_ localContext:NSManagedObjectContext)
     {
-        let taskProgress = NSProgress(totalUnitCount: -1)
+        let taskProgress = Progress(totalUnitCount: -1)
 
         let chats = Table("chat")
         
@@ -103,30 +103,30 @@ class ChatsDatabase: NSObject {
         // Iterate over all chats
         //
 
-        let nbRows = Int64(db.scalar(chats.count))
-        taskProgress.totalUnitCount = nbRows
-
-        var rowIndex:Int64 = 0
-
         do {
 
-        let dbRows = try db.prepare(chats.select(chatRowIDColumn, chatGUIDColumn, serviceNameColumn, chatIdentifierColumn))
+            let nbRows = try Int64(db.scalar(chats.count))
+            taskProgress.totalUnitCount = nbRows
 
-        for chatData in dbRows {
-            
-            let guid = chatData[chatGUIDColumn]
-            let rowID = chatData[chatRowIDColumn]
-            let identifier = chatData[chatIdentifierColumn]
-            let serviceName = chatData[serviceNameColumn]
-            
-            let chatContact = contactForIdentifier(identifier, service:serviceName, inContext: localContext)
-            
-            let _ = Chat(managedObjectContext:localContext, withContact:chatContact, withServiceName:serviceName,  withGUID: guid, andRowID: rowID)
+            var rowIndex:Int64 = 0
+
+
+            let dbRows = try db.prepare(chats.select(chatRowIDColumn, chatGUIDColumn, serviceNameColumn, chatIdentifierColumn))
+
+            for chatData in dbRows {
+
+                let guid = chatData[chatGUIDColumn]
+                let rowID = chatData[chatRowIDColumn]
+                let identifier = chatData[chatIdentifierColumn]
+                let serviceName = chatData[serviceNameColumn]
+
+                let chatContact = contactForIdentifier(identifier, service:serviceName, inContext: localContext)
+
+                let _ = Chat(managedObjectContext:localContext, withContact:chatContact, withServiceName:serviceName,  withGUID: guid, andRowID: rowID)
             
 //            NSLog("chat : %@ \tcontact : %@\trowId: %d", guid, chatContact.name, rowID)
 
-            dispatch_async(dispatch_get_main_queue()) { taskProgress.completedUnitCount = rowIndex }
-            
+            DispatchQueue.main.async { taskProgress.completedUnitCount = rowIndex }
 
             rowIndex += 1
         }
@@ -139,7 +139,7 @@ class ChatsDatabase: NSObject {
     }
 
 
-    func contactForIdentifier(identifier:String, service serviceName:String, inContext context:NSManagedObjectContext) -> ChatContact
+    func contactForIdentifier(_ identifier:String, service serviceName:String, inContext context:NSManagedObjectContext) -> ChatContact
     {
         var contactName = identifier
         var contactIsKnown = false
@@ -183,7 +183,7 @@ class ChatsDatabase: NSObject {
         return contact
     }
 
-    func messagesForChat(chat:Chat) -> ([ChatMessage], [ChatAttachment])
+    func messagesForChat(_ chat:Chat) -> ([ChatMessage], [ChatAttachment])
     {
         if chat.messages.count == 0 {
             collectMessagesForChat(chat)
@@ -191,16 +191,16 @@ class ChatsDatabase: NSObject {
 
         let allMessages = chat.messages.allObjects as! [ChatMessage]
 
-        let allMessagesSorted = allMessages.sort { $0.date.compare($1.date) == .OrderedAscending }
+        let allMessagesSorted = allMessages.sorted { $0.date.compare($1.date as Date) == .orderedAscending }
 
         let allAttachments = chat.attachments.allObjects as! [ChatAttachment]
-        let allAttachmentsSorted = allAttachments.sort { $0.date.compare($1.date) == .OrderedAscending }
+        let allAttachmentsSorted = allAttachments.sorted { $0.date.compare($1.date as Date) == .orderedAscending }
 
         return (allMessagesSorted, allAttachmentsSorted)
     
     }
 
-    func collectMessagesForChat(chat:Chat)
+    func collectMessagesForChat(_ chat:Chat)
     {
         do {
             let messagesTable  = Table("message")
@@ -234,11 +234,11 @@ class ChatsDatabase: NSObject {
             for messageData in query {
                 let messageContent = messageData[textColumn] ?? ""
                 let dateInt = messageData[dateColumn]
-                let dateTimeInterval = NSTimeInterval(dateInt)
+                let dateTimeInterval = TimeInterval(dateInt)
                 let messageDate = NSDate(timeIntervalSinceReferenceDate: dateTimeInterval)
 //              NSLog("message : \(messageContent)")
 
-                let chatMessage = ChatMessage(managedObjectContext: chat.managedObjectContext!, withMessage: messageContent, withDate: messageDate, inChat: chat)
+                let chatMessage = ChatMessage(managedObjectContext: chat.managedObjectContext!, withMessage: messageContent, withDate: messageDate as Date, inChat: chat)
                 chatMessage.isFromMe = messageData[isFromMeColumn]
             }
 
@@ -274,10 +274,10 @@ class ChatsDatabase: NSObject {
             for attachmentData in attachmentDataQuery {
                 let attachmentFileName = attachmentData[filenameColumn]
                 let attachmentDateInt = attachmentData[attachmentDateColumn]
-                let attachmentTimeInterval = NSTimeInterval(attachmentDateInt)
+                let attachmentTimeInterval = TimeInterval(attachmentDateInt)
                 let attachmentDate = NSDate(timeIntervalSinceReferenceDate: attachmentTimeInterval)
 
-                let _ = ChatAttachment(managedObjectContext: chat.managedObjectContext!, withFileName: attachmentFileName, withDate: attachmentDate, inChat:chat)
+                let _ = ChatAttachment(managedObjectContext: chat.managedObjectContext!, withFileName: attachmentFileName, withDate: attachmentDate as Date, inChat:chat)
             }
             
         } catch {
@@ -286,12 +286,12 @@ class ChatsDatabase: NSObject {
 
     }
 
-    func collectAllMessagesFromAllChats(localContext:NSManagedObjectContext)
+    func collectAllMessagesFromAllChats(_ localContext:NSManagedObjectContext)
     {
         let allContacts = ChatContact.allContactsInContext(localContext)
         let allContactsCount = Int64(allContacts.count)
 
-        let taskProgress = NSProgress(totalUnitCount: allContactsCount)
+        let taskProgress = Progress(totalUnitCount: allContactsCount)
 
         for contact in allContacts {
             for obj in contact.chats {
@@ -303,14 +303,14 @@ class ChatsDatabase: NSObject {
 
             indexMessagesForContact(contact)
 
-            dispatch_async(dispatch_get_main_queue()) { taskProgress.completedUnitCount += 1 }
+            DispatchQueue.main.async { taskProgress.completedUnitCount += 1 }
             
         }
     }
 
     // TODO : this method is probably no longer useful as the whole messages DB is imported at startup anyway
     //
-    func collectMessagesForContact(contact:ChatContact)
+    func collectMessagesForContact(_ contact:ChatContact)
     {
         var newMessagesCollected = false
 
@@ -327,11 +327,11 @@ class ChatsDatabase: NSObject {
         }
     }
 
-    func indexMessagesForContact(contact:ChatContact)
+    func indexMessagesForContact(_ contact:ChatContact)
     {
         let allMessages = contact.messages.allObjects as! [ChatMessage]
 
-        let allMessagesDateSorted = allMessages.sort { $0.date.compare($1.date) == .OrderedAscending }
+        let allMessagesDateSorted = allMessages.sorted { $0.date.compare($1.date as Date) == .orderedAscending }
 
         var index:Int64 = 0
 

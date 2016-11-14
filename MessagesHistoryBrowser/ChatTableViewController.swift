@@ -18,7 +18,7 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
     @IBOutlet weak var dbPopulateProgressIndicator: NSProgressIndicator!
     @IBOutlet weak var progressReportView: NSView!
 
-    dynamic var progress:NSProgress!
+    dynamic var progress:Progress!
 
     var chatsDatabase:ChatsDatabase!
 
@@ -26,8 +26,6 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
 
     var allKnownContacts = [ChatContact]()
     var allUnknownContacts = [ChatContact]()
-
-    lazy var moc = MOCController.sharedInstance.managedObjectContext
 
     var messageFormatter = MessageFormatter()
 
@@ -41,8 +39,8 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
     dynamic var beforeDateEnabled = false
     dynamic var afterDateEnabled = false
     
-    dynamic var beforeDate = NSDate().dateByAddingTimeInterval(3600 * 24 * -7) // a week ago
-    dynamic var afterDate = NSDate().dateByAddingTimeInterval(3600 * 24 * -30) // a month ago
+    dynamic var beforeDate = Date().addingTimeInterval(3600 * 24 * -7) // a week ago
+    dynamic var afterDate = Date().addingTimeInterval(3600 * 24 * -30) // a month ago
 
     var hasChatSelected:Bool {
         get { return tableView != nil && tableView.selectedRow >= 0 }
@@ -52,21 +50,23 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
         super.viewDidLoad()
         // Do view setup here.
 
+        let moc = MOCController.sharedInstance.managedObjectContext
+
         let appDelegate = NSApp.delegate as! AppDelegate
         appDelegate.chatTableViewController = self
 
         chatsDatabase = ChatsDatabase.sharedInstance
 
-        if let parentSplitViewController = parentViewController as? NSSplitViewController {
+        if let parentSplitViewController = parent as? NSSplitViewController {
             let secondSplitViewItem = parentSplitViewController.splitViewItems[1]
 
             messagesListViewController = secondSplitViewItem.viewController as? MessagesListViewController
         }
 
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ChatTableViewController.showUnknownContactsChanged(_:)), name: AppDelegate.ShowChatsFromUnknownNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(ChatTableViewController.showUnknownContactsChanged(_:)), name: NSNotification.Name(rawValue: AppDelegate.ShowChatsFromUnknownNotification), object: nil)
 //        NSNotificationCenter.defaultCenter().addObserver(self, selector: "phonePrefixChanged:", name: NSUserDefaultsDidChangeNotification, object: nil)
 
-        NSUserDefaults.standardUserDefaults().addObserver(self, forKeyPath: "CountryPhonePrefix", options: .New, context: nil)
+        UserDefaults.standard.addObserver(self, forKeyPath: "CountryPhonePrefix", options: .new, context: nil)
 
         if Chat.numberOfChatsInContext(moc) == 0 {
 
@@ -78,12 +78,12 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
 
         } else {
 
-            progressReportView.hidden = true
-            tableView.hidden = false
-            messagesListViewController?.view.hidden = false
+            progressReportView.isHidden = true
+            tableView.isHidden = false
+            messagesListViewController?.view.isHidden = false
 
-            allKnownContacts = ChatContact.allKnownContactsInContext(self.moc)
-            allUnknownContacts = ChatContact.allUnknownContactsInContext(self.moc)
+            allKnownContacts = ChatContact.allKnownContactsInContext(moc)
+            allUnknownContacts = ChatContact.allUnknownContactsInContext(moc)
             tableView.reloadData()
 
         }
@@ -93,14 +93,14 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
 
     }
 
-    func showUnknownContactsChanged(notification:NSNotification)
+    func showUnknownContactsChanged(_ notification:Notification)
     {
         let appDelegate = NSApp.delegate as! AppDelegate
         showChatsFromUnknown = appDelegate.showChatsFromUnknown
         tableView.reloadData()
     }
 
-    func contactForRow(row:Int) -> ChatContact?
+    func contactForRow(_ row:Int) -> ChatContact?
     {
         
         guard (searchTerm != nil && row < searchedContacts!.count) || (showChatsFromUnknown && row < allKnownContacts.count + allUnknownContacts.count) || row < allKnownContacts.count else { return nil }
@@ -126,7 +126,7 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
 
     // MARK: NSTableView datasource & delegate
 
-    func numberOfRowsInTableView(tableView: NSTableView) -> Int
+    func numberOfRows(in tableView: NSTableView) -> Int
     {
         if searchTerm != nil {
             return searchedContacts?.count ?? 0
@@ -140,15 +140,15 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
     }
 
 
-    func tableView(tableView: NSTableView, viewForTableColumn tableColumn: NSTableColumn?, row: Int) -> NSView?
+    func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView?
     {
         guard let tableColumn = tableColumn else { return nil }
 
-        let cellView = tableView.makeViewWithIdentifier(tableColumn.identifier, owner: self) as! NSTableCellView
+        let cellView = tableView.make(withIdentifier: tableColumn.identifier, owner: self) as! NSTableCellView
 
         if let contact = contactForRow(row) {
             cellView.textField?.stringValue = contact.name
-            if let cellImageView = cellView.imageView, thumbnailImage = ContactsMap.sharedInstance.contactImage(contact.identifier) {
+            if let cellImageView = cellView.imageView, let thumbnailImage = ContactsMap.sharedInstance.contactImage(contact.identifier) {
                 let roundedThumbnailImage = roundCorners(thumbnailImage)
                 cellImageView.image = roundedThumbnailImage
 //              cellImageView.image = thumbnailImage
@@ -163,11 +163,11 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
         return cellView
     }
 
-    func tableViewSelectionDidChange(notification: NSNotification)
+    func tableViewSelectionDidChange(_ notification: Notification)
     {
-        let index = tableView.selectedRowIndexes.firstIndex // no multiple selection
+        let index = tableView.selectedRowIndexes.first // no multiple selection
 
-        if let selectedContact = contactForRow(index) {
+        if let selectedContact = contactForRow(index!) {
 
             displayMessageListForContact(selectedContact)
 
@@ -183,7 +183,7 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
         }
     }
 
-    func displayMessageListForContact(contact:ChatContact)
+    func displayMessageListForContact(_ contact:ChatContact)
     {
 //        chatsDatabase.collectMessagesForContact(contact)
 
@@ -194,17 +194,17 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
 
     // MARK: actions
 
-    func chatIDsForSelectedRows(selectedRowIndexes : NSIndexSet) -> [Chat]
+    func chatIDsForSelectedRows(_ selectedRowIndexes : IndexSet) -> [Chat]
     {
-        let index = selectedRowIndexes.firstIndex // no multiple selection
+        let index = selectedRowIndexes.first // no multiple selection
 
-        guard let selectedContact = contactForRow(index) else { return [Chat]() }
+        guard let selectedContact = contactForRow(index!) else { return [Chat]() }
 
         return selectedContact.chats.allObjects as! [Chat]
 
     }
 
-    @IBAction func search(sender: NSSearchField) {
+    @IBAction func search(_ sender: NSSearchField) {
 
         NSLog("search for '\(sender.stringValue)'")
 
@@ -237,7 +237,7 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
 
     // restart a search once one of the date pickers has been changed
     //
-    @IBAction func redoSearch(sender: NSObject)
+    @IBAction func redoSearch(_ sender: NSObject)
     {
         if sender == afterDatePicker {
             afterDateEnabled = true
@@ -264,29 +264,29 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
 
     // MARK: file save
 
-    enum SaveError : ErrorType {
+    enum SaveError : Error {
         case dataConversionFailed
     }
 
-    func saveContactChats(contact:ChatContact, atURL url:NSURL)
+    func saveContactChats(_ contact:ChatContact, atURL url:URL)
     {
         do {
 
             chatsDatabase.collectMessagesForContact(contact)
 
-            let messages = contact.messages.sort(ChatItemsFetcher.sharedInstance.messageDateSort) as! [ChatMessage]
+            let messages = contact.messages.sorted(by: ChatItemsFetcher.sharedInstance.messageDateSort as! (NSFastEnumerationIterator.Element, NSFastEnumerationIterator.Element) -> Bool) as! [ChatMessage]
 
             let reducer = { (currentValue:String, message:ChatMessage) -> String in
                 return currentValue + "\n" + self.messageFormatter.formatMessageAsString(message)
             }
 
-            let allMessagesAsString = messages.reduce("", combine:reducer)
+            let allMessagesAsString = messages.reduce("", reducer)
 
             let tmpNSString = NSString(string: allMessagesAsString)
 
-            if let data = tmpNSString.dataUsingEncoding(NSUTF8StringEncoding) {
+            if let data = tmpNSString.data(using: String.Encoding.utf8.rawValue) {
 
-                NSFileManager.defaultManager().createFileAtPath(url.path!, contents: data, attributes: nil)
+                FileManager.default.createFile(atPath: url.path, contents: data, attributes: nil)
 
             } else {
                 throw SaveError.dataConversionFailed
@@ -297,7 +297,7 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
         }
     }
 
-    @IBAction func saveChat(sender:AnyObject)
+    @IBAction func saveChat(_ sender:AnyObject)
     {
         guard let window = view.window else { return }
 
@@ -307,10 +307,10 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
 
         savePanel.nameFieldStringValue = selectedContact.name
 
-        savePanel.beginSheetModalForWindow(window) { (modalResponse) -> Void in
-            NSLog("do save at URL \(savePanel.URL)")
+        savePanel.beginSheetModal(for: window) { (modalResponse) -> Void in
+            NSLog("do save at URL \(savePanel.url)")
 
-            guard let saveURL = savePanel.URL else { return }
+            guard let saveURL = savePanel.url else { return }
 
             self.saveContactChats(selectedContact, atURL: saveURL)
         }
@@ -318,7 +318,7 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
 
     // used as a completion block by ChatItemsFetcher
     //
-    func displayChats(messages:[ChatItem], attachments:[ChatAttachment], matchedContacts:[ChatContact]?)
+    func displayChats(_ messages:[ChatItem], attachments:[ChatAttachment], matchedContacts:[ChatContact]?)
     {
 //        print(__FUNCTION__)
         messagesListViewController?.hideAttachmentDisplayWindow()
@@ -336,7 +336,7 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
 
 
         if searchTermHasChanged {
-            searchedContacts = matchedContacts?.sort{ $0.name < $1.name }
+            searchedContacts = matchedContacts?.sorted{ $0.name < $1.name }
             searchTermHasChanged = false
             tableView.reloadData()
         }
@@ -367,25 +367,27 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
     //
     func setupProgressBeforeImport()
     {
-        tableView.hidden = true
-        messagesListViewController?.view.hidden = true
-        progress = NSProgress(totalUnitCount: 10)
-        progressReportView.hidden = false
+        tableView.isHidden = true
+        messagesListViewController?.view.isHidden = true
+        progress = Progress(totalUnitCount: 10)
+        progressReportView.isHidden = false
     }
 
     // hide progress report, restore normal UI
     //
     func completeImport()
     {
-        if let currentProgress = NSProgress.currentProgress() {
+        if let currentProgress = Progress.current() {
             currentProgress.resignCurrent()
         }
-        progressReportView.hidden = true
-        tableView.hidden = false
-        messagesListViewController?.view.hidden = false
+        progressReportView.isHidden = true
+        tableView.isHidden = false
+        messagesListViewController?.view.isHidden = false
 
-        allKnownContacts = ChatContact.allKnownContactsInContext(self.moc)
-        allUnknownContacts = ChatContact.allUnknownContactsInContext(self.moc)
+        let moc = MOCController.sharedInstance.managedObjectContext
+
+        allKnownContacts = ChatContact.allKnownContactsInContext(moc)
+        allUnknownContacts = ChatContact.allUnknownContactsInContext(moc)
         tableView.reloadData()
     }
 
@@ -402,7 +404,7 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
 
     }
     
-    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
 //        if let newValue = change?["new"] {
 //            print("keyPath : \(keyPath) - new value : \(newValue)")
 //        } else {

@@ -10,29 +10,29 @@ import Cocoa
 
 class MOCController: NSObject {
 
-    static let sharedInstance = MOCController()
+    public static let sharedInstance = MOCController()
 
-    var managedObjectContext:NSManagedObjectContext!
-    var privateManagedObjectContext:NSManagedObjectContext!
+    var managedObjectContext:NSManagedObjectContext
+    var privateManagedObjectContext:NSManagedObjectContext
 
     override init() {
         let coordinator = (NSApp.delegate as! AppDelegate).persistentStoreCoordinator
 
-        managedObjectContext = NSManagedObjectContext(concurrencyType: .MainQueueConcurrencyType)
-        privateManagedObjectContext = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
+        managedObjectContext = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
+        privateManagedObjectContext = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
         privateManagedObjectContext.persistentStoreCoordinator = coordinator
 
-        managedObjectContext.parentContext = privateManagedObjectContext
+        managedObjectContext.parent = privateManagedObjectContext
     }
 
     func save()
     {
         guard privateManagedObjectContext.hasChanges || managedObjectContext.hasChanges else { return }
 
-        managedObjectContext.performBlockAndWait { () -> Void in
+        managedObjectContext.performAndWait { () -> Void in
             do { try self.managedObjectContext.save() } catch { NSLog("moc save error : \(error)") }
 
-            self.privateManagedObjectContext.performBlock { () -> Void in
+            self.privateManagedObjectContext.perform { () -> Void in
                 do { try self.privateManagedObjectContext.save() } catch { NSLog("bgMoc save error : \(error)") }
             }
         }
@@ -43,14 +43,14 @@ class MOCController: NSObject {
         let allContacts = ChatContact.allContactsInContext(managedObjectContext)
 
         for contact in allContacts {
-            managedObjectContext.deleteObject(contact)
+            managedObjectContext.delete(contact)
         }
     }
 
     func workerContext() -> NSManagedObjectContext
     {
-        let worker = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
-        worker.parentContext = managedObjectContext
+        let worker = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
+        worker.parent = managedObjectContext
 
         return worker
     }

@@ -10,7 +10,7 @@ import Cocoa
 
 class AttachmentsCollectionView: NSCollectionView {
 
-    override func keyDown(theEvent: NSEvent) {
+    override func keyDown(with theEvent: NSEvent) {
         if theEvent.characters == " " {
             if selectionIndexPaths.count == 1 {
                 if let attachmentsViewDelegate = delegate as? AttachmentsCollectionViewDelegate {
@@ -18,7 +18,7 @@ class AttachmentsCollectionView: NSCollectionView {
                 }
             }
         } else {
-            super.keyDown(theEvent)
+            super.keyDown(with: theEvent)
         }
     }
 

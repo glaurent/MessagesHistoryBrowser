@@ -20,17 +20,17 @@ class ContactsMap : NSObject {
 
     let contactStore = CNContactStore()
 
-    let contactIMFetchRequest = CNContactFetchRequest(keysToFetch: [CNContactFamilyNameKey, CNContactGivenNameKey, CNContactNicknameKey, CNContactInstantMessageAddressesKey])
+    let contactIMFetchRequest = CNContactFetchRequest(keysToFetch: [CNContactFamilyNameKey as CNKeyDescriptor, CNContactGivenNameKey as CNKeyDescriptor, CNContactNicknameKey as CNKeyDescriptor, CNContactInstantMessageAddressesKey as CNKeyDescriptor])
 
-    let contactEmailFetchRequest = CNContactFetchRequest(keysToFetch: [CNContactFamilyNameKey, CNContactGivenNameKey, CNContactNicknameKey, CNContactEmailAddressesKey])
+    let contactEmailFetchRequest = CNContactFetchRequest(keysToFetch: [CNContactFamilyNameKey as CNKeyDescriptor, CNContactGivenNameKey as CNKeyDescriptor, CNContactNicknameKey as CNKeyDescriptor, CNContactEmailAddressesKey as CNKeyDescriptor])
 
-    var progress:NSProgress?
+    var progress:Progress?
 
     override init()
     {
         countryPhonePrefix = "+1" // default to US prefix
 
-        if let val = NSUserDefaults.standardUserDefaults().valueForKey("CountryPhonePrefix") {
+        if let val = UserDefaults.standard.value(forKey: "CountryPhonePrefix") {
 
             if let valNum = val as? NSNumber {
                 countryPhonePrefix = "+" + valNum.stringValue
@@ -40,23 +40,23 @@ class ContactsMap : NSObject {
 
             print("Found default value for CountryPhonePrefix : \(val)")
             
-        } else if let jsonCountryPhoneCodeFileURL = NSBundle.mainBundle().URLForResource("phone country codes", withExtension: "json"),
-            jsonData = NSData(contentsOfURL: jsonCountryPhoneCodeFileURL) {
+        } else if let jsonCountryPhoneCodeFileURL = Bundle.main.url(forResource: "phone country codes", withExtension: "json"),
+            let jsonData = try? Data(contentsOf: jsonCountryPhoneCodeFileURL) {
 
                 do {
                     var countryPhonePrefixDict:[String:String]
 
-                    try countryPhonePrefixDict = NSJSONSerialization.JSONObjectWithData(jsonData, options: NSJSONReadingOptions(rawValue:0)) as! [String : String]
+                    try countryPhonePrefixDict = JSONSerialization.jsonObject(with: jsonData, options: JSONSerialization.ReadingOptions(rawValue:0)) as! [String : String]
 
-                    if let countryCode = NSLocale.currentLocale().objectForKey(NSLocaleCountryCode) as? String,
-                    phonePrefix = countryPhonePrefixDict[countryCode] {
+                    if let countryCode = (Locale.current as NSLocale).object(forKey: NSLocale.Key.countryCode) as? String,
+                    let phonePrefix = countryPhonePrefixDict[countryCode] {
 
                         if phonePrefix.characters.first == "+" {
                             countryPhonePrefix = phonePrefix
                         } else {
                             countryPhonePrefix = "+" + phonePrefix
                         }
-                        NSUserDefaults.standardUserDefaults().setValue(phonePrefix, forKey: "CountryPhonePrefix")
+                        UserDefaults.standard.setValue(phonePrefix, forKey: "CountryPhonePrefix")
                     }
 
                 } catch {
@@ -73,26 +73,26 @@ class ContactsMap : NSObject {
 
         // get number of contacts so we can set the totalUnitCount of this NSProgress
         //
-        let predicate = CNContact.predicateForContactsInContainerWithIdentifier(contactStore.defaultContainerIdentifier())
-        if let allContactsForCount = try? contactStore.unifiedContactsMatchingPredicate(predicate, keysToFetch: [CNContactGivenNameKey]) {
-            progress = NSProgress(totalUnitCount: Int64(allContactsForCount.count))
+        let predicate = CNContact.predicateForContactsInContainer(withIdentifier: contactStore.defaultContainerIdentifier())
+        if let allContactsForCount = try? contactStore.unifiedContacts(matching: predicate, keysToFetch: [CNContactGivenNameKey as CNKeyDescriptor]) {
+            progress = Progress(totalUnitCount: Int64(allContactsForCount.count))
         }
 
-        dispatch_sync(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0)) { () -> Void in
+        DispatchQueue.global(priority: DispatchQueue.GlobalQueuePriority.background).sync { () -> Void in
 
-            let contactFetchRequest = CNContactFetchRequest(keysToFetch: [CNContactPhoneNumbersKey, CNContactFamilyNameKey, CNContactGivenNameKey, CNContactNicknameKey])
+            let contactFetchRequest = CNContactFetchRequest(keysToFetch: [CNContactPhoneNumbersKey as CNKeyDescriptor, CNContactFamilyNameKey as CNKeyDescriptor, CNContactGivenNameKey as CNKeyDescriptor, CNContactNicknameKey as CNKeyDescriptor])
 
             do {
 
-                try self.contactStore.enumerateContactsWithFetchRequest(contactFetchRequest) { (contact, stop) -> Void in
+                try self.contactStore.enumerateContacts(with: contactFetchRequest) { (contact, stop) -> Void in
                     let phoneNumbers = contact.phoneNumbers
                     if phoneNumbers.count > 0 {
                         for index in 0..<phoneNumbers.count {
-                            let phoneNb = phoneNumbers[index].value as! CNPhoneNumber
+                            let phoneNb = phoneNumbers[index].value 
                             let canonPhoneNb = self.canonicalizePhoneNumber(phoneNb.stringValue)
                             // NSLog("\(__FUNCTION__) phoneNb : %@", canonPhoneNb)
                             self.phoneNumbersMap[canonPhoneNb] = contact
-                            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                            DispatchQueue.main.async(execute: { () -> Void in
                                 self.progress?.completedUnitCount = Int64(index)
                             })
                             
@@ -109,7 +109,7 @@ class ContactsMap : NSObject {
 
     }
 
-    func canonicalizePhoneNumber(rawPhoneNumber:String) -> String {
+    func canonicalizePhoneNumber(_ rawPhoneNumber:String) -> String {
 
         var res = ""
 
@@ -124,14 +124,14 @@ class ContactsMap : NSObject {
         }
 
         if res.hasPrefix("0") {
-            let skip0Index = res.startIndex.advancedBy(1)
-            res = countryPhonePrefix + res.substringFromIndex(skip0Index)
+            let skip0Index = res.characters.index(res.startIndex, offsetBy: 1)
+            res = countryPhonePrefix + res.substring(from: skip0Index)
         }
 
         return res
     }
 
-    func nameForPhoneNumber(phoneNumber:String) -> (String, String)? {
+    func nameForPhoneNumber(_ phoneNumber:String) -> (String, String)? {
 
         if let contact = phoneNumbersMap[phoneNumber] as CNContact? {
             return (contactName(contact), contact.identifier)
@@ -141,22 +141,22 @@ class ContactsMap : NSObject {
 
     }
 
-    func nameForInstantMessageAddress(imAddressToSearch:String) -> (String, String)?
+    func nameForInstantMessageAddress(_ imAddressToSearch:String) -> (String, String)?
     {
         
         var res:(String, String)?
         
         do {
             
-            try contactStore.enumerateContactsWithFetchRequest(contactIMFetchRequest) { (contact, stop) -> Void in
+            try contactStore.enumerateContacts(with: contactIMFetchRequest) { (contact, stop) -> Void in
                 
                 let imAddresses = contact.instantMessageAddresses
                 
                 for labeledValue in imAddresses {
-                    let imAddress = labeledValue.value as! CNInstantMessageAddress
+                    let imAddress = labeledValue.value 
                     if imAddress.username == imAddressToSearch {
                         res = (self.contactName(contact), contact.identifier)
-                        stop.memory = true
+                        stop.pointee = true
                     }
                 }
             }
@@ -168,21 +168,21 @@ class ContactsMap : NSObject {
         
     }
 
-    func nameForEmailAddress(emailAddressToSearch:String) -> (String, String)? {
+    func nameForEmailAddress(_ emailAddressToSearch:String) -> (String, String)? {
 
         var res:(String, String)?
         
         do {
             
-            try contactStore.enumerateContactsWithFetchRequest(contactEmailFetchRequest) { (contact, stop) -> Void in
+            try contactStore.enumerateContacts(with: contactEmailFetchRequest) { (contact, stop) -> Void in
                 
                 let emailAddresses = contact.emailAddresses
                 
                 for labeledValue in emailAddresses {
-                    let emailAddress = labeledValue.value as! String
+                    let emailAddress = labeledValue.value as String
                     if emailAddress == emailAddressToSearch {
                         res = (self.contactName(contact), contact.identifier)
-                        stop.memory = true
+                        stop.pointee = true
                     }
                 }
             }
@@ -194,7 +194,7 @@ class ContactsMap : NSObject {
 
     }
 
-    func contactName(contact:CNContact) -> String {
+    func contactName(_ contact:CNContact) -> String {
         if contact.nickname != "" {
             return contact.nickname
         }
@@ -204,9 +204,9 @@ class ContactsMap : NSObject {
         return "\(firstName) \(lastName)"
     }
 
-    func contactImage(contactIdentifier:String) -> NSImage? {
+    func contactImage(_ contactIdentifier:String) -> NSImage? {
         do {
-            let contact = try contactStore.unifiedContactWithIdentifier(contactIdentifier, keysToFetch:[CNContactImageDataKey, CNContactThumbnailImageDataKey, CNContactGivenNameKey, CNContactFamilyNameKey])
+            let contact = try contactStore.unifiedContact(withIdentifier: contactIdentifier, keysToFetch:[CNContactImageDataKey as CNKeyDescriptor, CNContactThumbnailImageDataKey as CNKeyDescriptor, CNContactGivenNameKey as CNKeyDescriptor, CNContactFamilyNameKey as CNKeyDescriptor])
             if let imageData = contact.imageData {
                 return NSImage(data: imageData) // thumbnailImageData is nil, why ?
             } else { // get a bitmap of the contact's initials (like in Contacts.app)

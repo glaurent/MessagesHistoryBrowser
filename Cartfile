@@ -1,1 +1,2 @@
-github "stephencelis/SQLite.swift" "master"
+github "stephencelis/SQLite.swift" ~> 0.11.0
+

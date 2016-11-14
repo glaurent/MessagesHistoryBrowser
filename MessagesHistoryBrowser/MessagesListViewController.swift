@@ -19,11 +19,11 @@ class MessagesListViewController: NSViewController, NSCollectionViewDataSource, 
 
     var attachmentsToDisplay:[ChatAttachment]?
 
-    let dateFormatter = NSDateFormatter()
+    let dateFormatter = DateFormatter()
 
     let messageFormatter = MessageFormatter()
 
-    let delayBetweenChatsInSeconds = NSTimeInterval(24 * 3600)
+    let delayBetweenChatsInSeconds = TimeInterval(24 * 3600)
     
     var terseTimeMode = true {
         didSet {
@@ -44,12 +44,12 @@ class MessagesListViewController: NSViewController, NSCollectionViewDataSource, 
 
         // Do view setup here.
 
-        dateFormatter.timeStyle = .ShortStyle
-        dateFormatter.dateStyle = .ShortStyle
+        dateFormatter.timeStyle = .short
+        dateFormatter.dateStyle = .short
 
         let aNib = NSNib(nibNamed: collectionViewItemID, bundle: nil)
 
-        attachmentsCollectionView.registerNib(aNib, forItemWithIdentifier: collectionViewItemID)
+        attachmentsCollectionView.register(aNib, forItemWithIdentifier: collectionViewItemID)
 
 //        let gridLayout = NSCollectionViewGridLayout()
 //        gridLayout.minimumItemSize = NSSize(width: 100, height: 100)
@@ -67,7 +67,7 @@ class MessagesListViewController: NSViewController, NSCollectionViewDataSource, 
     }
 
 
-    func collectionView(collectionView: NSCollectionView, numberOfItemsInSection section: Int) -> Int
+    func collectionView(_ collectionView: NSCollectionView, numberOfItemsInSection section: Int) -> Int
     {
         guard let attachmentsToDisplay = attachmentsToDisplay else {
             return 0
@@ -76,20 +76,20 @@ class MessagesListViewController: NSViewController, NSCollectionViewDataSource, 
         return attachmentsToDisplay.count
     }
 
-    func collectionView(collectionView: NSCollectionView, itemForRepresentedObjectAtIndexPath indexPath: NSIndexPath) -> NSCollectionViewItem
+    func collectionView(_ collectionView: NSCollectionView, itemForRepresentedObjectAt indexPath: IndexPath) -> NSCollectionViewItem
     {
         let attachmentsToDisplay = self.attachmentsToDisplay!
 
         let attachment = attachmentsToDisplay[indexPath.item]
 
-        let item = collectionView.makeItemWithIdentifier(collectionViewItemID, forIndexPath: indexPath)
+        let item = collectionView.makeItem(withIdentifier: collectionViewItemID, for: indexPath)
 
         if let attachmentFileName = attachment.fileName {
 
-            let imagePath = NSString(string:attachmentFileName).stringByStandardizingPath
+            let imagePath = NSString(string:attachmentFileName).standardizingPath
             let image = NSImage(byReferencingFile: imagePath)
             item.imageView?.image = image
-            item.textField?.stringValue = dateFormatter.stringFromDate(attachment.date)
+            item.textField?.stringValue = dateFormatter.string(from: attachment.date as Date)
         } else {
             item.textField?.stringValue = "unknown"
         }
@@ -98,7 +98,7 @@ class MessagesListViewController: NSViewController, NSCollectionViewDataSource, 
     }
 
 
-    func collectionView(collectionView: NSCollectionView, didSelectItemsAtIndexPaths indexPaths: Set<NSIndexPath>)
+    func collectionView(_ collectionView: NSCollectionView, didSelectItemsAt indexPaths: Set<IndexPath>)
     {
         NSLog("didSelectItemsAtIndexPaths \(indexPaths)")
 
@@ -112,11 +112,11 @@ class MessagesListViewController: NSViewController, NSCollectionViewDataSource, 
 
     // MARK: attachments display
 
-    func displayAttachmentAtIndexPath(indexPath: NSIndexPath) {
+    func displayAttachmentAtIndexPath(_ indexPath: IndexPath) {
         NSLog("displayAttachmentAtIndexPath \(indexPath)")
 
         if currentImageAttachmentDisplayWindowController == nil {
-            currentImageAttachmentDisplayWindowController = self.storyboard!.instantiateControllerWithIdentifier(self.windowControllerId) as? NSWindowController
+            currentImageAttachmentDisplayWindowController = self.storyboard!.instantiateController(withIdentifier: self.windowControllerId) as? NSWindowController
         }
 
         let imageAttachmentDisplayViewController = currentImageAttachmentDisplayWindowController?.contentViewController as! ImageAttachmentDisplayViewController
@@ -127,7 +127,7 @@ class MessagesListViewController: NSViewController, NSCollectionViewDataSource, 
 
 //            currentImageAttachmentDisplayWindowController.window?.level = Int(CGWindowLevelKey.FloatingWindowLevelKey.rawValue)
             currentImageAttachmentDisplayWindowController?.showWindow(self)
-            view.window?.makeKeyWindow()
+            view.window?.makeKey()
 
         }
 
@@ -138,21 +138,21 @@ class MessagesListViewController: NSViewController, NSCollectionViewDataSource, 
         currentImageAttachmentDisplayWindowController?.window?.orderOut(self)
     }
 
-    func showAttachmentInFinderAtIndexPath(indexPath:NSIndexPath) -> Void
+    func showAttachmentInFinderAtIndexPath(_ indexPath:IndexPath) -> Void
     {
-        if let attachment = attachmentsToDisplay?[indexPath.item], attachmentFileName = attachment.fileName {
+        if let attachment = attachmentsToDisplay?[indexPath.item], let attachmentFileName = attachment.fileName {
 
-            let imagePath = NSString(string:attachmentFileName).stringByStandardizingPath
-            let imageURL = NSURL(fileURLWithPath: imagePath)
-            NSWorkspace.sharedWorkspace().activateFileViewerSelectingURLs([imageURL])
+            let imagePath = NSString(string:attachmentFileName).standardizingPath
+            let imageURL = URL(fileURLWithPath: imagePath)
+            NSWorkspace.shared().activateFileViewerSelecting([imageURL])
         }
     }
 
-    func imageForAttachmentAtIndexPath(indexPath:NSIndexPath) -> NSImage?
+    func imageForAttachmentAtIndexPath(_ indexPath:IndexPath) -> NSImage?
     {
-        if let attachment = attachmentsToDisplay?[indexPath.item], attachmentFileName = attachment.fileName {
+        if let attachment = attachmentsToDisplay?[indexPath.item], let attachmentFileName = attachment.fileName {
 
-            let imagePath = NSString(string:attachmentFileName).stringByStandardizingPath
+            let imagePath = NSString(string:attachmentFileName).standardizingPath
             let image = NSImage(byReferencingFile: imagePath)
             return image
         }
@@ -173,11 +173,11 @@ class MessagesListViewController: NSViewController, NSCollectionViewDataSource, 
         messagesTextView.string = ""
     }
     
-    func showMessages(chatItems:[ChatItem], withHighlightTerm highlightTerm:String? = nil)
+    func showMessages(_ chatItems:[ChatItem], withHighlightTerm highlightTerm:String? = nil)
     {
         let allMatchingMessages = NSMutableAttributedString()
 
-        var lastShownDate:NSDate?
+        var lastShownDate:Date?
         var lastShownContact:ChatContact?
         var lastShownMessageIndex:Int64?
 
@@ -185,13 +185,13 @@ class MessagesListViewController: NSViewController, NSCollectionViewDataSource, 
         for chatItem in chatItems {
 
             if terseTimeMode {
-                if lastShownDate == nil || chatItem.date.timeIntervalSinceDate(lastShownDate!) > delayBetweenChatsInSeconds {
+                if lastShownDate == nil || chatItem.date.timeIntervalSince(lastShownDate!) > delayBetweenChatsInSeconds {
                     let highlightedDate = messageFormatter.formatMessageDate(chatItem.date)
-                    allMatchingMessages.appendAttributedString(highlightedDate)
+                    allMatchingMessages.append(highlightedDate)
                     lastShownMessageIndex = nil
                 }
                 
-                lastShownDate = chatItem.date
+                lastShownDate = chatItem.date as Date
             }
 
             // chatItem can be message or attachment
@@ -203,7 +203,7 @@ class MessagesListViewController: NSViewController, NSCollectionViewDataSource, 
 
                 if lastShownContact == nil || lastShownContact!.name != message.contact.name {
                     let highlightedContact = messageFormatter.formatMessageContact(message.contact)
-                    allMatchingMessages.appendAttributedString(highlightedContact)
+                    allMatchingMessages.append(highlightedContact)
                     lastShownContact = message.contact
                     lastShownMessageIndex = nil
                 }
@@ -211,21 +211,21 @@ class MessagesListViewController: NSViewController, NSCollectionViewDataSource, 
                 // insert seperator for non-consecutive messages
                 //
                 if highlightTerm != nil && lastShownMessageIndex != nil && message.index != (lastShownMessageIndex! + 1) {
-                    allMatchingMessages.appendAttributedString(messageFormatter.separatorString)
+                    allMatchingMessages.append(messageFormatter.separatorString)
                 }
 
                 lastShownMessageIndex = message.index
 
-                allMatchingMessages.appendAttributedString(highlightedMessage)
+                allMatchingMessages.append(highlightedMessage)
 
             } else {
                 let attachment = chatItem as! ChatAttachment
 
                 guard let attachmentFileName = attachment.fileName else { continue }
 
-                let attachmentPath = NSString(string:attachmentFileName).stringByStandardizingPath
+                let attachmentPath = NSString(string:attachmentFileName).standardizingPath
 
-                let attachmentURL = NSURL(fileURLWithPath: attachmentPath, isDirectory: false)
+                let attachmentURL = URL(fileURLWithPath: attachmentPath, isDirectory: false)
 
                 do {
                     let textAttachment:NSTextAttachment
@@ -242,7 +242,7 @@ class MessagesListViewController: NSViewController, NSCollectionViewDataSource, 
 
                     } else {
 
-                        let attachmentFileWrapper = try NSFileWrapper(URL: attachmentURL, options:NSFileWrapperReadingOptions(rawValue: 0))
+                        let attachmentFileWrapper = try FileWrapper(url: attachmentURL, options:FileWrapper.ReadingOptions(rawValue: 0))
                         textAttachment = NSTextAttachment(fileWrapper: attachmentFileWrapper)
 
                     }
@@ -251,9 +251,9 @@ class MessagesListViewController: NSViewController, NSCollectionViewDataSource, 
 
                     let attachmentStringWithNewLine = NSMutableAttributedString(attributedString: attachmentString)
 
-                    attachmentStringWithNewLine.appendAttributedString(NSAttributedString(string: "\n"))
+                    attachmentStringWithNewLine.append(NSAttributedString(string: "\n"))
 
-                    allMatchingMessages.appendAttributedString(attachmentStringWithNewLine)
+                    allMatchingMessages.append(attachmentStringWithNewLine)
 
                 } catch {
                     NSLog("Couldn't create filewrapper for \(attachment.fileName)")
@@ -262,11 +262,11 @@ class MessagesListViewController: NSViewController, NSCollectionViewDataSource, 
         }
 
         clearMessages()
-        messagesTextView.textStorage?.insertAttributedString(allMatchingMessages, atIndex: 0)
+        messagesTextView.textStorage?.insert(allMatchingMessages, at: 0)
 
     }
 
-    func isAttachmentImage(attachment:ChatAttachment) -> Bool
+    func isAttachmentImage(_ attachment:ChatAttachment) -> Bool
     {
         guard let attachmentFileName = attachment.fileName else { return false }
 
@@ -274,7 +274,7 @@ class MessagesListViewController: NSViewController, NSCollectionViewDataSource, 
 
         let pathExtension = pathString.pathExtension
 
-        if let utType = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, pathExtension, nil)?.takeRetainedValue() {
+        if let utType = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, pathExtension as CFString, nil)?.takeRetainedValue() {
 
             return UTTypeConformsTo(utType, kUTTypeImage)
         }

@@ -14,8 +14,8 @@ class ChatItemsFetcher: NSObject {
 
     var contact:ChatContact?
 
-    var afterDate:NSDate?
-    var beforeDate:NSDate?
+    var afterDate:Date?
+    var beforeDate:Date?
     var searchTerm:String?
 
     var matchingItems = [ChatItem]()
@@ -32,8 +32,23 @@ class ChatItemsFetcher: NSObject {
         let aItem = a as! ChatItem
         let bItem = b as! ChatItem
 
-        return aItem.date.isLessThan(bItem.date)
+        return (aItem.date as NSDate).isLessThan(bItem.date)
     }
+
+    let messageEnumIteratorDateSort = { (a:NSFastEnumerationIterator.Element, b:NSFastEnumerationIterator.Element) -> Bool in
+        let aItem = a as! ChatItem
+        let bItem = b as! ChatItem
+
+        return (aItem.date as NSDate).isLessThan(bItem.date)
+    }
+
+    let messageHashableDateSort = { (a:AnyHashable, b:AnyHashable) -> Bool in
+        let aItem = a as! ChatItem
+        let bItem = b as! ChatItem
+
+        return (aItem.date as NSDate).isLessThan(bItem.date)
+    }
+
 
     let messageIndexSort = { (a:AnyObject, b:AnyObject) -> Bool in
         let aItem = a as! ChatItem
@@ -49,7 +64,7 @@ class ChatItemsFetcher: NSObject {
     {
         let localMOC = MOCController.sharedInstance.workerContext()
 
-        localMOC.performBlock { () -> Void in
+        localMOC.perform { () -> Void in
             // call search, collect NSManagedObjectIDs of messages, then use those to display result from main moc in main thread
 
             self.search(localMOC)
@@ -57,7 +72,7 @@ class ChatItemsFetcher: NSObject {
             if let completion = self.completion {
                 // run completion block on main queue, passing it the search results
                 //
-                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                DispatchQueue.main.async(execute: { () -> Void in
 //                    print("searchWithCompletionBlock : calling completion block")
                     completion(self.matchingItems, self.matchingAttachments, self.matchingContacts)
                 })
@@ -81,7 +96,7 @@ class ChatItemsFetcher: NSObject {
         matchingItems = currentSearchMatchingItems
     }
 
-    func search(moc:NSManagedObjectContext)
+    func search(_ moc:NSManagedObjectContext)
     {
         if let contact = contact {
 
@@ -112,7 +127,7 @@ class ChatItemsFetcher: NSObject {
 
             // turn those objectIDs into managedObjects from the main MOC which we can then use on the main queue
             //
-            let messages = messagesObjectIDs.map { mainMOC.objectWithID($0) as! ChatMessage }
+            let messages = messagesObjectIDs.map { mainMOC.object(with: $0) as! ChatMessage }
 
             currentSearchMatchingItems = messages
             matchingItems = currentSearchMatchingItems
@@ -128,14 +143,14 @@ class ChatItemsFetcher: NSObject {
     // MARK: Array-based search
     // when no search term is specified
     //
-    func collectChatItemsForContact(contact: ChatContact, afterDate:NSDate? = nil, beforeDate:NSDate? = nil)
+    func collectChatItemsForContact(_ contact: ChatContact, afterDate:Date? = nil, beforeDate:Date? = nil)
     {
 
-        let allContactItems = contact.messages.setByAddingObjectsFromSet(contact.attachments as Set<NSObject>)
+        let allContactItems = contact.messages.addingObjects(from: contact.attachments as Set<NSObject>)
 
-        let allContactItemsSorted = allContactItems.sort(messageDateSort) as! [ChatItem]
+        let allContactItemsSorted = allContactItems.sorted(by: messageHashableDateSort) as! [ChatItem]
 
-        let contactAttachments = contact.attachments.sort(messageDateSort) as! [ChatAttachment]
+        let contactAttachments = contact.attachments.sorted(by: messageEnumIteratorDateSort) as! [ChatAttachment]
 
         if afterDate != nil || beforeDate != nil {
 
@@ -152,7 +167,7 @@ class ChatItemsFetcher: NSObject {
     }
     
 
-    func filterChatItemsForDateInterval<T: ChatItem>(chatItems:[T], afterDate:NSDate? = nil, beforeDate:NSDate?) -> [T]
+    func filterChatItemsForDateInterval<T: ChatItem>(_ chatItems:[T], afterDate:Date? = nil, beforeDate:Date?) -> [T]
     {
         // filter according to after/before dates
         //
@@ -161,7 +176,7 @@ class ChatItemsFetcher: NSObject {
 
             var res = true
             if let afterDate = afterDate {
-                res = afterDate.compare(item.date) == .OrderedAscending
+                res = afterDate.compare(item.date as Date) == .orderedAscending
 
                 if !res {
                     return false
@@ -169,13 +184,13 @@ class ChatItemsFetcher: NSObject {
             }
 
             if let beforeDate = beforeDate {
-                res = beforeDate.compare(item.date) == .OrderedDescending
+                res = beforeDate.compare(item.date as Date) == .orderedDescending
             }
 
             return res
         }
 
-        return filteredContactChatItems.sort(messageDateSort) 
+        return filteredContactChatItems.sorted(by: messageDateSort)
 
     }
 
@@ -185,12 +200,12 @@ class ChatItemsFetcher: NSObject {
 
     // return an array of NSManagedObjectIDs of ChatItems sorted by index
     //
-    func searchChatsForString(string:String, inManagedObjectContext moc:NSManagedObjectContext, afterDate:NSDate? = nil, beforeDate:NSDate? = nil) -> [NSManagedObjectID]
+    func searchChatsForString(_ string:String, inManagedObjectContext moc:NSManagedObjectContext, afterDate:Date? = nil, beforeDate:Date? = nil) -> [NSManagedObjectID]
     {
         var result = [NSManagedObjectID]()
 
-        let fetchRequest = NSFetchRequest(entityName: ChatMessage.EntityName)
-        let argArray:[AnyObject] = [ChatMessage.Attributes.content.rawValue, string]
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: ChatMessage.EntityName)
+        let argArray:[AnyObject] = [ChatMessage.Attributes.content.rawValue as AnyObject, string as AnyObject]
 
 
         let stringSearchPredicate = NSPredicate(format: "%K CONTAINS %@", argumentArray:argArray)
@@ -215,8 +230,8 @@ class ChatItemsFetcher: NSObject {
         }
 
         do {
-            let matchingMessages = try moc.executeFetchRequest(fetchRequest)
-            let matchingMessagesSorted = (matchingMessages as! [ChatMessage]).sort(messageDateSort) // messages here are from multiple contacts, so use date for global sort
+            let matchingMessages = try moc.fetch(fetchRequest)
+            let matchingMessagesSorted = (matchingMessages as! [ChatMessage]).sorted(by: messageDateSort) // messages here are from multiple contacts, so use date for global sort
 
             let matchingMessagesWithSurroundingMessages = addSurroundingMessages(matchingMessagesSorted)
 
@@ -231,7 +246,7 @@ class ChatItemsFetcher: NSObject {
         return result
     }
 
-    func splitMessagesPerContact(messages:[ChatMessage]) -> [ChatContact:[ChatMessage]]
+    func splitMessagesPerContact(_ messages:[ChatMessage]) -> [ChatContact:[ChatMessage]]
     {
         var result = [ChatContact:[ChatMessage]]()
 
@@ -250,7 +265,7 @@ class ChatItemsFetcher: NSObject {
     //
     let nbOfMessagesBeforeAfter = 2 // TODO: make this user configurable
 
-    func addSurroundingMessages(messages:[ChatMessage]) -> [ChatMessage]
+    func addSurroundingMessages(_ messages:[ChatMessage]) -> [ChatMessage]
     {
         // messages are time-sorted
 
@@ -259,31 +274,31 @@ class ChatItemsFetcher: NSObject {
         let messagesSortedPerContact = splitMessagesPerContact(messages)
 
         for (contact, contactMessages) in messagesSortedPerContact {
-            let allContactMessages = contact.messages.sort(messageIndexSort) as! [ChatMessage]
+            let allContactMessages = contact.messages.sorted(by: messageIndexSort as! (NSFastEnumerationIterator.Element, NSFastEnumerationIterator.Element) -> Bool) as! [ChatMessage]
 
             var initialMessagesPlusSurroundingMessages = [ChatMessage]()
 
-            var lastSlice = Range<Int>(0..<0)
+            var lastSlice = CountableRange<Int>(0..<0)
 
             for message in contactMessages {
                 let (messagesRangeAroundThisMessage, disjointSlice) = surroundingMessagesForMessage(message, inMessages: allContactMessages, numberBeforeAndAfter: nbOfMessagesBeforeAfter, previousSliceRange:lastSlice)
 
                 if disjointSlice {
-                    initialMessagesPlusSurroundingMessages.appendContentsOf(allContactMessages[messagesRangeAroundThisMessage])
+                    initialMessagesPlusSurroundingMessages.append(contentsOf: allContactMessages[messagesRangeAroundThisMessage])
                 }
 
                 lastSlice = messagesRangeAroundThisMessage
 
             }
 
-            result.appendContentsOf(initialMessagesPlusSurroundingMessages) // TODO: remove duplicates
+            result.append(contentsOf: initialMessagesPlusSurroundingMessages) // TODO: remove duplicates
         }
 
         return result
     }
 
     
-    func surroundingMessagesForMessage(message:ChatMessage, inMessages allMessages:[ChatMessage], numberBeforeAndAfter:Int, previousSliceRange:Range<Int>) -> (Range<Int>, Bool)
+    func surroundingMessagesForMessage(_ message:ChatMessage, inMessages allMessages:[ChatMessage], numberBeforeAndAfter:Int, previousSliceRange:CountableRange<Int>) -> (CountableRange<Int>, Bool)
     {
 //        let messageIndex = messageIndexInDateSortedMessages(message, inMessages: allMessages)
         let messageIndex = Int(message.index)
@@ -291,12 +306,12 @@ class ChatItemsFetcher: NSObject {
         let startIndex = max(messageIndex - numberBeforeAndAfter, 0)
         let endIndex = min(messageIndex + numberBeforeAndAfter + 1, allMessages.count - 1) // +1 because range does not include endIndex item ( startIndex..<endIndex )
 
-        var slice = Range<Int>(startIndex ..< endIndex)
+        var slice = CountableRange<Int>(startIndex ..< endIndex)
         var disjointSlice = true
 
         // check possible join with previous slice
-        if startIndex <= previousSliceRange.endIndex {
-            slice = Range<Int>(previousSliceRange.startIndex ..< endIndex)
+        if startIndex <= previousSliceRange.upperBound {
+            slice = CountableRange<Int>(previousSliceRange.lowerBound ..< endIndex)
             disjointSlice = false
         }
 
@@ -305,7 +320,7 @@ class ChatItemsFetcher: NSObject {
 
     // Taken from http://rshankar.com/binary-search-in-swift/
     //
-    func messageIndexInDateSortedMessages(message:ChatMessage, inMessages allMessages:[ChatMessage]) -> Int
+    func messageIndexInDateSortedMessages(_ message:ChatMessage, inMessages allMessages:[ChatMessage]) -> Int
     {
         var lowerIndex = 0;
         var upperIndex = allMessages.count - 1
@@ -317,8 +332,8 @@ class ChatItemsFetcher: NSObject {
             } else if (lowerIndex > upperIndex) {
                 return allMessages.count
             } else {
-                let messageDateCompare = allMessages[currentIndex].date.compare(message.date)
-                if (messageDateCompare == .OrderedDescending) {
+                let messageDateCompare = allMessages[currentIndex].date.compare(message.date as Date)
+                if (messageDateCompare == .orderedDescending) {
                     upperIndex = currentIndex - 1
                 } else {
                     lowerIndex = currentIndex + 1
@@ -342,7 +357,7 @@ class ChatItemsFetcher: NSObject {
     // Used when searching all messages for a string
     // Given the resulting messages, get all the contacts they come from, so these contacts only are shown in the contact list
     //
-    func contactsFromMessages(messages: [ChatMessage]) -> [ChatContact]
+    func contactsFromMessages(_ messages: [ChatMessage]) -> [ChatContact]
     {
         let allContacts = messages.map { (message) -> ChatContact in
             return message.contact

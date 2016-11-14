@@ -26,38 +26,36 @@ class Chat : NSManagedObject {
 
     convenience init(managedObjectContext:NSManagedObjectContext, withContact aContact:ChatContact, withServiceName aServiceName:String, withGUID aGuid:String, andRowID aRowID:Int) {
 
-        let entityDescription = NSEntityDescription.entityForName("Chat", inManagedObjectContext: managedObjectContext)
-        self.init(entity: entityDescription!, insertIntoManagedObjectContext: managedObjectContext)
+        let entityDescription = NSEntityDescription.entity(forEntityName: "Chat", in: managedObjectContext)
+        self.init(entity: entityDescription!, insertInto: managedObjectContext)
 
         contact = aContact
         serviceName = aServiceName
         guid = aGuid
-        rowID = aRowID
+        rowID = NSNumber(value:aRowID)
     }
 
-    class func numberOfChatsInContext(managedObjectContext:NSManagedObjectContext) -> Int {
-        let fetchRequest = NSFetchRequest(entityName: "Chat")
+    class func numberOfChatsInContext(_ managedObjectContext:NSManagedObjectContext) -> Int {
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Chat")
 
         var res:Int = 0
 
-        var err:NSError?
-
-        managedObjectContext.performBlockAndWait { () -> Void in
-            res = managedObjectContext.countForFetchRequest(fetchRequest, error: &err)
+        managedObjectContext.performAndWait { () -> Void in
+            res = try! managedObjectContext.count(for: fetchRequest)
         }
 
         return res
 
     }
 
-    class func allChatsInContext(managedObjectContext:NSManagedObjectContext) -> [Chat] {
-        let fetchRequest = NSFetchRequest(entityName: "Chat")
+    class func allChatsInContext(_ managedObjectContext:NSManagedObjectContext) -> [Chat] {
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Chat")
 
         var allChats = [Chat]()
 
-        managedObjectContext.performBlockAndWait { () -> Void in
+        managedObjectContext.performAndWait { () -> Void in
             do {
-                let results = try managedObjectContext.executeFetchRequest(fetchRequest)
+                let results = try managedObjectContext.fetch(fetchRequest)
                 allChats = results as! [Chat]
             } catch let error as NSError {
                 print("\(#function) : Could not fetch \(error), \(error.userInfo)")

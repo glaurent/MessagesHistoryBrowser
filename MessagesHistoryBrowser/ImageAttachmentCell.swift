@@ -13,7 +13,7 @@ import Cocoa
 
 class ImageAttachmentCell: NSTextAttachmentCell {
 
-    override func cellFrameForTextContainer(textContainer: NSTextContainer, proposedLineFragment lineFrag: NSRect, glyphPosition position: NSPoint, characterIndex charIndex: Int) -> NSRect
+    override func cellFrame(for textContainer: NSTextContainer, proposedLineFragment lineFrag: NSRect, glyphPosition position: NSPoint, characterIndex charIndex: Int) -> NSRect
     {
         let width = lineFrag.size.width
 
@@ -22,7 +22,7 @@ class ImageAttachmentCell: NSTextAttachmentCell {
         return imageRect
     }
 
-    func scaleImageToWidth(width:CGFloat) -> NSRect
+    func scaleImageToWidth(_ width:CGFloat) -> NSRect
     {
         guard let image = self.image else { return NSZeroRect }
 
@@ -40,9 +40,9 @@ class ImageAttachmentCell: NSTextAttachmentCell {
 
     }
 
-    override func drawWithFrame(cellFrame: NSRect, inView controlView: NSView?)
+    override func draw(withFrame cellFrame: NSRect, in controlView: NSView?)
     {
-        image?.drawInRect(cellFrame, fromRect: NSZeroRect, operation: .CompositeSourceOver, fraction: 1.0, respectFlipped: true, hints: nil)
+        image?.draw(in: cellFrame, from: NSZeroRect, operation: .sourceOver, fraction: 1.0, respectFlipped: true, hints: nil)
     }
 
 }

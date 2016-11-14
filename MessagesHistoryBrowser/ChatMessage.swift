@@ -26,9 +26,9 @@ class ChatMessage : ChatItem {
     @NSManaged var chat:Chat
     @NSManaged var contact:ChatContact
 
-    convenience init(managedObjectContext:NSManagedObjectContext, withMessage aMessage:String, withDate aDate:NSDate, inChat aChat:Chat) {
+    convenience init(managedObjectContext:NSManagedObjectContext, withMessage aMessage:String, withDate aDate:Date, inChat aChat:Chat) {
 
-        let entityDescription = NSEntityDescription.entityForName(ChatMessage.EntityName, inManagedObjectContext: managedObjectContext)
+        let entityDescription = NSEntityDescription.entity(forEntityName: ChatMessage.EntityName, in: managedObjectContext)
         self.init(entityDescription: entityDescription!, managedObjectContext: managedObjectContext, withDate:aDate)
 
         content = aMessage

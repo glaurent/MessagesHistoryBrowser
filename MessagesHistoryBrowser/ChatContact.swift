@@ -18,24 +18,24 @@ class ChatContact: NSManagedObject {
     @NSManaged var messages:NSSet
     @NSManaged var attachments:NSSet
 
-    static let fetchRequest = NSFetchRequest(entityName: "Contact")
+//    static let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Contact")
     static let sortDescriptor = NSSortDescriptor(key: "name", ascending: true)
 
 
     convenience init(managedObjectContext:NSManagedObjectContext, withName aName:String, withIdentifier anIdentifier:String) {
 
-        let entityDescription = NSEntityDescription.entityForName("Contact", inManagedObjectContext: managedObjectContext)
-        self.init(entity: entityDescription!, insertIntoManagedObjectContext: managedObjectContext)
+        let entityDescription = NSEntityDescription.entity(forEntityName: "Contact", in: managedObjectContext)
+        self.init(entity: entityDescription!, insertInto: managedObjectContext)
 
         name = aName
         identifier = anIdentifier
     }
 
-    class func setupFetchRequest() {
-        if (ChatContact.fetchRequest.sortDescriptors == nil) {
-            ChatContact.fetchRequest.sortDescriptors = [ChatContact.sortDescriptor]
-        }
-    }
+//    class func setupFetchRequest() {
+//        if (ChatContact.fetchRequest().sortDescriptors == nil) {
+//            ChatContact.fetchRequest().sortDescriptors = [ChatContact.sortDescriptor]
+//        }
+//    }
 
 //    class func allContactsInContext(managedObjectContext:NSManagedObjectContext) -> [ChatContact] {
 //
@@ -51,32 +51,33 @@ class ChatContact: NSManagedObject {
 //        return allContacts
 //    }
 
-    class func allKnownContactsInContext(managedObjectContext:NSManagedObjectContext) -> [ChatContact] {
+    class func allKnownContactsInContext(_ managedObjectContext:NSManagedObjectContext) -> [ChatContact] {
 
         return allContactsInContext(managedObjectContext, withPredicate: NSPredicate(format: "known == YES && messages.@count > 0"))
     }
 
-    class func allUnknownContactsInContext(managedObjectContext:NSManagedObjectContext) -> [ChatContact] {
+    class func allUnknownContactsInContext(_ managedObjectContext:NSManagedObjectContext) -> [ChatContact] {
 
         return allContactsInContext(managedObjectContext, withPredicate: NSPredicate(format: "known == NO && messages.@count > 0"))
     }
 
-    class func allContactsInContext(managedObjectContext:NSManagedObjectContext, withPredicate predicate:NSPredicate? = nil) -> [ChatContact] {
-
-        ChatContact.setupFetchRequest()
+    class func allContactsInContext(_ managedObjectContext:NSManagedObjectContext, withPredicate predicate:NSPredicate? = nil) -> [ChatContact] {
 
         var allContacts = [ChatContact]()
 
-        managedObjectContext.performBlockAndWait { () -> Void in
+        managedObjectContext.performAndWait { () -> Void in
 
             do {
-                if let predicate = predicate {
-                    fetchRequest.predicate = predicate
-                } else {
-                    fetchRequest.predicate = nil
-                }
+                let contactFetchRequest:NSFetchRequest<NSFetchRequestResult>
 
-                let results = try managedObjectContext.executeFetchRequest(fetchRequest)
+                if #available(OSX 10.12, *) {
+                    contactFetchRequest = fetchRequest()
+                } else {
+                    contactFetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName:"Contact")
+                }
+                contactFetchRequest.predicate = predicate
+
+                let results = try managedObjectContext.fetch(contactFetchRequest)
                 allContacts = results as! [ChatContact]
             } catch let error as NSError {
                 print("\(#function) : Could not fetch \(error), \(error.userInfo)")
@@ -87,17 +88,17 @@ class ChatContact: NSManagedObject {
     }
 
 
-    class func contactIn(managedObjectContext:NSManagedObjectContext, named name:String, withIdentifier identifier:String) -> ChatContact {
-        let contactNamedFetchRequest = NSFetchRequest(entityName: "Contact")
+    class func contactIn(_ managedObjectContext:NSManagedObjectContext, named name:String, withIdentifier identifier:String) -> ChatContact {
+        let contactNamedFetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Contact")
         let namePredicate = NSPredicate(format: "name == %@", name)
         contactNamedFetchRequest.predicate = namePredicate
 
         var res:ChatContact?
 
-        managedObjectContext.performBlockAndWait { () -> Void in
+        managedObjectContext.performAndWait { () -> Void in
 
             do {
-                let r = try managedObjectContext.executeFetchRequest(contactNamedFetchRequest)
+                let r = try managedObjectContext.fetch(contactNamedFetchRequest)
                 let foundContacts = r as! [ChatContact]
 
                 if foundContacts.count > 0 {
