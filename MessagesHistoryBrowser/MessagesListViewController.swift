@@ -256,7 +256,7 @@ class MessagesListViewController: NSViewController, NSCollectionViewDataSource, 
                     allMatchingMessages.append(attachmentStringWithNewLine)
 
                 } catch {
-                    NSLog("Couldn't create filewrapper for \(attachment.fileName)")
+                    NSLog("Couldn't create filewrapper for \(String(describing: attachment.fileName))")
                 }
             }
         }

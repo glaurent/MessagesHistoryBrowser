@@ -76,21 +76,24 @@ class ContactsMap : NSObject {
         let predicate = CNContact.predicateForContactsInContainer(withIdentifier: contactStore.defaultContainerIdentifier())
         if let allContactsForCount = try? contactStore.unifiedContacts(matching: predicate, keysToFetch: [CNContactGivenNameKey as CNKeyDescriptor]) {
             progress = Progress(totalUnitCount: Int64(allContactsForCount.count))
+//            NSLog("\(#function) : nb of contacts : \(allContactsForCount.count)")
         }
 
-        DispatchQueue.global(priority: DispatchQueue.GlobalQueuePriority.background).sync { () -> Void in
+        DispatchQueue.global(qos: .background).sync { () -> Void in
 
             let contactFetchRequest = CNContactFetchRequest(keysToFetch: [CNContactPhoneNumbersKey as CNKeyDescriptor, CNContactFamilyNameKey as CNKeyDescriptor, CNContactGivenNameKey as CNKeyDescriptor, CNContactNicknameKey as CNKeyDescriptor])
 
             do {
 
                 try self.contactStore.enumerateContacts(with: contactFetchRequest) { (contact, stop) -> Void in
+//                    NSLog("contact : \(contact.givenName)")
+
                     let phoneNumbers = contact.phoneNumbers
                     if phoneNumbers.count > 0 {
                         for index in 0..<phoneNumbers.count {
                             let phoneNb = phoneNumbers[index].value 
                             let canonPhoneNb = self.canonicalizePhoneNumber(phoneNb.stringValue)
-                            // NSLog("\(__FUNCTION__) phoneNb : %@", canonPhoneNb)
+                            // NSLog("\(#function) phoneNb : %@", canonPhoneNb)
                             self.phoneNumbersMap[canonPhoneNb] = contact
                             DispatchQueue.main.async(execute: { () -> Void in
                                 self.progress?.completedUnitCount = Int64(index)
@@ -100,8 +103,8 @@ class ContactsMap : NSObject {
                         
                     }
                 }
-            } catch {
-                
+            } catch let e {
+                NSLog("\(#function) error while enumerating contacts : \(e)")
             }
         }
 

@@ -51,7 +51,7 @@ class ChatsDatabase: NSObject {
 
     func populate(_ progress:Progress, completion:@escaping () -> Void)
     {
-        self.contactsPhoneNumber.populate()
+        contactsPhoneNumber.populate()
 
         let workerContext = MOCController.sharedInstance.workerContext()
 

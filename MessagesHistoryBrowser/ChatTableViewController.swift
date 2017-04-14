@@ -308,7 +308,7 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
         savePanel.nameFieldStringValue = selectedContact.name
 
         savePanel.beginSheetModal(for: window) { (modalResponse) -> Void in
-            NSLog("do save at URL \(savePanel.url)")
+            NSLog("do save at URL \(String(describing: savePanel.url))")
 
             guard let saveURL = savePanel.url else { return }
 
