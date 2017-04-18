@@ -165,9 +165,9 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
 
     func tableViewSelectionDidChange(_ notification: Notification)
     {
-        let index = tableView.selectedRowIndexes.first // no multiple selection
+        guard let index = tableView.selectedRowIndexes.first else { return } // no multiple selection
 
-        if let selectedContact = contactForRow(index!) {
+        if let selectedContact = contactForRow(index) {
 
             displayMessageListForContact(selectedContact)
 
@@ -192,17 +192,35 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
         ChatItemsFetcher.sharedInstance.searchWithCompletionBlock()
     }
 
-    // MARK: actions
-
-    func chatIDsForSelectedRows(_ selectedRowIndexes : IndexSet) -> [Chat]
+    func orderedMessagesForSelectedRow() -> (ChatContact, [ChatMessage])?
     {
-        let index = selectedRowIndexes.first // no multiple selection
+        guard tableView.selectedRow >= 0 else { return nil }
 
-        guard let selectedContact = contactForRow(index!) else { return [Chat]() }
+        let index = tableView.selectedRow
 
-        return selectedContact.chats.allObjects as! [Chat]
+        guard let selectedContact = contactForRow(index) else { return nil }
+
+        let allContactChats = selectedContact.chats.allObjects as! [Chat]
+
+        let allContactMessageArrays = allContactChats.flatMap { (chat) -> [ChatMessage]? in
+            return chat.messages.allObjects as? [ChatMessage]
+        }
+
+//        let allContactMessages = allContactMessageArrays.reduce([ChatMessage]()) { (result, messageArray) -> [ChatMessage] in
+//            return result + messageArray
+//        }
+
+        let allContactMessages = allContactMessageArrays.reduce([ChatMessage](), +)
+
+        let allContactSortedMessages = allContactMessages.sorted { (messageA, messageB) -> Bool in
+            return messageA.date < messageB.date
+        }
+
+        return (selectedContact, allContactSortedMessages)
 
     }
+
+    // MARK: actions
 
     @IBAction func search(_ sender: NSSearchField) {
 

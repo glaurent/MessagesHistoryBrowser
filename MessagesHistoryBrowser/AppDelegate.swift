@@ -30,6 +30,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
+    dynamic var isChatSelected:Bool {
+        get {
+            guard let chatTableViewController = chatTableViewController else { return false }
+            return chatTableViewController.tableView.selectedRow >= 0 && chatTableViewController.tableView.selectedRowIndexes.count == 1
+        }
+    }
     dynamic var isRefreshingHistory = false
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
@@ -193,13 +199,46 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         return .terminateNow
     }
 
+    func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
+        return true
+    }
+
+    // MARK: Actions
+
     @IBAction func refreshChatHistory(_ sender: AnyObject) {
         isRefreshingHistory = true
         chatTableViewController?.refreshChatHistory()
     }
 
-    func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
-        return true
+    @IBAction func exportSelectedChatToJSON(_ sender: AnyObject) {
+
+        guard let (contact, messages) = chatTableViewController?.orderedMessagesForSelectedRow() else { return }
+
+        let messagesAsDicts = messages.map { $0.toJSONConvertibleDict() }
+
+        let dict:[String:Any] = ["contact" : contact.name, "messages" : messagesAsDicts]
+
+        let savePanel = NSSavePanel()
+
+        if let mainWindow = NSApplication.shared().mainWindow {
+
+            savePanel.beginSheetModal(for: mainWindow, completionHandler: { (action) in
+                guard action == NSFileHandlingPanelOKButton else { return }
+                guard let fileURL = savePanel.url else { return }
+
+                do {
+
+                    let jsonDataToSave = try JSONSerialization.data(withJSONObject: dict, options: .prettyPrinted)
+                    try jsonDataToSave.write(to: fileURL)
+
+                } catch let error {
+                    NSLog("error while exporting to JSON : " + error.localizedDescription)
+                }
+
+            })
+
+        }
     }
+
 }
 

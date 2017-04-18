@@ -65,5 +65,31 @@ class Chat : NSManagedObject {
         return allChats
     }
 
+
+    func toJSON() -> Data {
+
+        let sortDescriptor = NSSortDescriptor(key: "index", ascending: true) { (anyA, anyB) -> ComparisonResult in
+            let indexA = anyA as! Int64
+            let indexB = anyB as! Int64
+
+            if indexA < indexB {
+                return ComparisonResult.orderedAscending
+            }
+            if indexA == indexB {
+                return ComparisonResult.orderedSame
+            }
+
+            return ComparisonResult.orderedDescending
+        }
+
+        let sortedMessages = messages.sortedArray(using: [sortDescriptor])
+
+        let chatAsDict:[String:Any] = ["contact" : contact.name,
+                                       "messages" : sortedMessages]
+
+        return try! JSONSerialization.data(withJSONObject: chatAsDict, options: .prettyPrinted)
+
+    }
+
 }
 

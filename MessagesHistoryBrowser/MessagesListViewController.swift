@@ -23,6 +23,8 @@ class MessagesListViewController: NSViewController, NSCollectionViewDataSource, 
 
     let messageFormatter = MessageFormatter()
 
+    // if two messages are seperated by a time interval longer than this, add a time tag in between
+    //
     let delayBetweenChatsInSeconds = TimeInterval(24 * 3600)
     
     var terseTimeMode = true {

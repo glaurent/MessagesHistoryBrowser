@@ -61,7 +61,7 @@ class ChatListViewController: NSViewController, NSOutlineViewDataSource, NSOutli
                 return NSString(string:unKnownCategoryLabel)
 
             default:
-                NSLog("\(__FUNCTION__) : unknown index \(index)")
+                NSLog("\(#function) : unknown index \(index)")
                 return NSString(string:"ERROR INDEX \(index)")
             }
         }
