@@ -620,7 +620,6 @@
 				DEVELOPMENT_TEAM = 6YMA3EN78R;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Build/Mac",
 					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = MessagesHistoryBrowser/Info.plist;
@@ -642,7 +641,6 @@
 				DEVELOPMENT_TEAM = 6YMA3EN78R;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Build/Mac",
 					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = MessagesHistoryBrowser/Info.plist;
