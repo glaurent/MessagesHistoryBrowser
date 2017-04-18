@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8133F945D8099994BDC50671 /* Pods_MessagesHistoryBrowser.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2336992AB1809901AA9D8E24 /* Pods_MessagesHistoryBrowser.framework */; };
 		AF029C441C4D746100B1A950 /* phone country codes.json in Resources */ = {isa = PBXBuildFile; fileRef = AF029C431C4D746100B1A950 /* phone country codes.json */; };
 		AF2B2DEF1BC18BE1000B8293 /* ChatsDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF2B2DEE1BC18BE1000B8293 /* ChatsDatabase.swift */; };
 		AF2B2DF11BC19BAE000B8293 /* ChatMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF2B2DF01BC19BAE000B8293 /* ChatMessage.swift */; };
@@ -15,8 +16,6 @@
 		AF424CD81BC963E4006EE8D2 /* ChatContact.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF424CD71BC963E4006EE8D2 /* ChatContact.swift */; };
 		AF47D8771BDCDD20002CDF4B /* ChatTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF47D8761BDCDD20002CDF4B /* ChatTableViewController.swift */; };
 		AF55D3271C543357000377DD /* LabelToImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF55D3261C543357000377DD /* LabelToImage.swift */; };
-		AF6F10E91BB81D5900A93152 /* SQLite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AF6F10E81BB81D5900A93152 /* SQLite.framework */; };
-		AF6F10EA1BB81D5900A93152 /* SQLite.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = AF6F10E81BB81D5900A93152 /* SQLite.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		AF8003B81C273838008A1D64 /* ImageAttachmentDisplayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF8003B71C273838008A1D64 /* ImageAttachmentDisplayViewController.swift */; };
 		AF8003BC1C2E9D04008A1D64 /* MOCController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF8003BB1C2E9D04008A1D64 /* MOCController.swift */; };
 		AF8003BF1C357A0E008A1D64 /* ChatItemsFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF8003BE1C357A0E008A1D64 /* ChatItemsFetcher.swift */; };
@@ -25,9 +24,6 @@
 		AF82EDB71C23723F00F8132D /* AttachmentsCollectionViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF82EDB61C23723F00F8132D /* AttachmentsCollectionViewDelegate.swift */; };
 		AFAF8B141BF3B91E009D92F6 /* ImageAttachmentCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFAF8B131BF3B91E009D92F6 /* ImageAttachmentCell.swift */; };
 		AFBF11451BE77E6E00D3D596 /* ChatItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFBF11441BE77E6E00D3D596 /* ChatItem.swift */; };
-		AFC38AB41C81F35E008910A1 /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AFC38AB11C8120C7008910A1 /* Sparkle.framework */; };
-		AFC38AB51C81F35E008910A1 /* Sparkle.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = AFC38AB11C8120C7008910A1 /* Sparkle.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		AFC38AB71C9A1391008910A1 /* Sparkle.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = AFC38AB11C8120C7008910A1 /* Sparkle.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		AFC38AB91C9A1913008910A1 /* dsa_pub.pem in Resources */ = {isa = PBXBuildFile; fileRef = AFC38AB81C9A1913008910A1 /* dsa_pub.pem */; };
 		AFD974971BB816B5004CF8D7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFD974961BB816B5004CF8D7 /* AppDelegate.swift */; };
 		AFD974991BB816B5004CF8D7 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFD974981BB816B5004CF8D7 /* ViewController.swift */; };
@@ -60,32 +56,10 @@
 		};
 /* End PBXContainerItemProxy section */
 
-/* Begin PBXCopyFilesBuildPhase section */
-		AF6F10EB1BB81D5A00A93152 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				AF6F10EA1BB81D5900A93152 /* SQLite.framework in Embed Frameworks */,
-				AFC38AB51C81F35E008910A1 /* Sparkle.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		AFC38AB61C9A136E008910A1 /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				AFC38AB71C9A1391008910A1 /* Sparkle.framework in CopyFiles */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
-
 /* Begin PBXFileReference section */
+		06B41BFE43415391B628446C /* Pods-MessagesHistoryBrowser.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MessagesHistoryBrowser.release.xcconfig"; path = "Pods/Target Support Files/Pods-MessagesHistoryBrowser/Pods-MessagesHistoryBrowser.release.xcconfig"; sourceTree = "<group>"; };
+		2336992AB1809901AA9D8E24 /* Pods_MessagesHistoryBrowser.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MessagesHistoryBrowser.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		9226CB04737EBB6E974F761C /* Pods-MessagesHistoryBrowser.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MessagesHistoryBrowser.debug.xcconfig"; path = "Pods/Target Support Files/Pods-MessagesHistoryBrowser/Pods-MessagesHistoryBrowser.debug.xcconfig"; sourceTree = "<group>"; };
 		AF01B05C1EA13C9A0039A46F /* MessagesHistoryBrowser.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MessagesHistoryBrowser.entitlements; sourceTree = "<group>"; };
 		AF029C431C4D746100B1A950 /* phone country codes.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "phone country codes.json"; sourceTree = "<group>"; };
 		AF2B2DEE1BC18BE1000B8293 /* ChatsDatabase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatsDatabase.swift; sourceTree = "<group>"; };
@@ -132,8 +106,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AF6F10E91BB81D5900A93152 /* SQLite.framework in Frameworks */,
-				AFC38AB41C81F35E008910A1 /* Sparkle.framework in Frameworks */,
+				8133F945D8099994BDC50671 /* Pods_MessagesHistoryBrowser.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -154,6 +127,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		35B0AF69470812EC5E751CD1 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				2336992AB1809901AA9D8E24 /* Pods_MessagesHistoryBrowser.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		AF424CD91BC965FF006EE8D2 /* CoreData */ = {
 			isa = PBXGroup;
 			children = (
@@ -214,6 +195,8 @@
 				AFD974AA1BB816B6004CF8D7 /* MessagesHistoryBrowserTests */,
 				AFD974B51BB816B6004CF8D7 /* MessagesHistoryBrowserUITests */,
 				AFD974941BB816B5004CF8D7 /* Products */,
+				EB9DF8F0FA471DFB38E36325 /* Pods */,
+				35B0AF69470812EC5E751CD1 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -272,6 +255,15 @@
 			path = MessagesHistoryBrowserUITests;
 			sourceTree = "<group>";
 		};
+		EB9DF8F0FA471DFB38E36325 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				9226CB04737EBB6E974F761C /* Pods-MessagesHistoryBrowser.debug.xcconfig */,
+				06B41BFE43415391B628446C /* Pods-MessagesHistoryBrowser.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -279,11 +271,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = AFD974BB1BB816B6004CF8D7 /* Build configuration list for PBXNativeTarget "MessagesHistoryBrowser" */;
 			buildPhases = (
+				B73606C5BC3A8B0CB4E20E4B /* [CP] Check Pods Manifest.lock */,
 				AFD9748F1BB816B5004CF8D7 /* Sources */,
 				AFD974901BB816B5004CF8D7 /* Frameworks */,
 				AFD974911BB816B5004CF8D7 /* Resources */,
-				AF6F10EB1BB81D5A00A93152 /* Embed Frameworks */,
-				AFC38AB61C9A136E008910A1 /* CopyFiles */,
+				EE821D9E53F83750E5D9F2D9 /* [CP] Embed Pods Frameworks */,
+				5925E4043F570748AD1BD582 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -412,6 +405,54 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		5925E4043F570748AD1BD582 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-MessagesHistoryBrowser/Pods-MessagesHistoryBrowser-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		B73606C5BC3A8B0CB4E20E4B /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		EE821D9E53F83750E5D9F2D9 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-MessagesHistoryBrowser/Pods-MessagesHistoryBrowser-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		AFD9748F1BB816B5004CF8D7 /* Sources */ = {
@@ -570,6 +611,7 @@
 		};
 		AFD974BC1BB816B6004CF8D7 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9226CB04737EBB6E974F761C /* Pods-MessagesHistoryBrowser.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = MessagesHistoryBrowser/MessagesHistoryBrowser.entitlements;
@@ -591,6 +633,7 @@
 		};
 		AFD974BD1BB816B6004CF8D7 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 06B41BFE43415391B628446C /* Pods-MessagesHistoryBrowser.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = MessagesHistoryBrowser/MessagesHistoryBrowser.entitlements;

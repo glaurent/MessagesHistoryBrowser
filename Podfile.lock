@@ -1,0 +1,17 @@
+PODS:
+  - Sparkle (1.16.0)
+  - SQLite.swift (0.11.2):
+    - SQLite.swift/standard (= 0.11.2)
+  - SQLite.swift/standard (0.11.2)
+
+DEPENDENCIES:
+  - Sparkle
+  - SQLite.swift
+
+SPEC CHECKSUMS:
+  Sparkle: 57650c525b8922b1ef72021f9d92287fc7d5d6f0
+  SQLite.swift: 670c3e9e0a806bbfd56a3de5d530768dc0e6fe7c
+
+PODFILE CHECKSUM: 25618fe46d4c7ace8a7bb7291c22aad2e38409b9
+
+COCOAPODS: 1.2.0

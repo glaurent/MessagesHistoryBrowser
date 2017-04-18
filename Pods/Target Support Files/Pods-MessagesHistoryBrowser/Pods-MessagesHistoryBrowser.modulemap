@@ -1,0 +1,6 @@
+framework module Pods_MessagesHistoryBrowser {
+  umbrella header "Pods-MessagesHistoryBrowser-umbrella.h"
+
+  export *
+  module * { export * }
+}
