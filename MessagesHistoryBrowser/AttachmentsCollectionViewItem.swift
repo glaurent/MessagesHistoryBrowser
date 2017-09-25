@@ -31,9 +31,9 @@ class AttachmentsCollectionViewItem: NSCollectionViewItem {
 
     @IBAction func showInFinder(_ sender:AnyObject)
     {
-        if let delegate = collectionView.delegate as? AttachmentsCollectionViewDelegate {
+        if let delegate = collectionView?.delegate as? AttachmentsCollectionViewDelegate {
             NSLog("showInFinder")
-            if let thisItemIndexPath = collectionView.indexPath(for: self) {
+            if let thisItemIndexPath = collectionView?.indexPath(for: self) {
                 delegate.showAttachmentInFinderAtIndexPath(thisItemIndexPath)
             }
         }
