@@ -246,7 +246,7 @@ class ChatsDatabase: NSObject {
             // attachments
             //
             let attachments = Table("attachment")
-            let filenameColumn = Expression<String>("filename")
+            let filenameColumn = Expression<String?>("filename")
             let attachmentIdColumn = Expression<Int>("attachment_id")
             let cacheHasAttachmentColumn = Expression<Bool>("cache_has_attachments")
 
@@ -272,12 +272,14 @@ class ChatsDatabase: NSObject {
             let attachmentDataQuery = try db.prepare(attachments.select(rowIDColumn, filenameColumn, attachmentDateColumn).filter(allAttachmentIDs.contains(rowIDColumn)))
 
             for attachmentData in attachmentDataQuery {
-                let attachmentFileName = attachmentData[filenameColumn]
+                let attachmentFileName:String? = attachmentData[filenameColumn]
                 let attachmentDateInt = attachmentData[attachmentDateColumn]
                 let attachmentTimeInterval = TimeInterval(attachmentDateInt)
                 let attachmentDate = NSDate(timeIntervalSinceReferenceDate: attachmentTimeInterval)
 
-                let _ = ChatAttachment(managedObjectContext: chat.managedObjectContext!, withFileName: attachmentFileName, withDate: attachmentDate as Date, inChat:chat)
+                if let attachmentFileName = attachmentFileName {
+                    let _ = ChatAttachment(managedObjectContext: chat.managedObjectContext!, withFileName: attachmentFileName, withDate: attachmentDate as Date, inChat:chat)
+                }
             }
             
         } catch {

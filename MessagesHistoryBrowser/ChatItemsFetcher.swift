@@ -50,7 +50,7 @@ class ChatItemsFetcher: NSObject {
     }
 
 
-    let messageIndexSort = { (a:AnyObject, b:AnyObject) -> Bool in
+    let messageIndexSort = { (a:Any, b:Any) -> Bool in
         let aItem = a as! ChatItem
         let bItem = b as! ChatItem
 //        print("a.index : \(aItem.index) - b.index : \(bItem.index)")
@@ -274,7 +274,8 @@ class ChatItemsFetcher: NSObject {
         let messagesSortedPerContact = splitMessagesPerContact(messages)
 
         for (contact, contactMessages) in messagesSortedPerContact {
-            let allContactMessages = contact.messages.sorted(by: messageIndexSort as! (NSFastEnumerationIterator.Element, NSFastEnumerationIterator.Element) -> Bool) as! [ChatMessage]
+            let allContactMessagesSorted = contact.messages.sorted(by: messageIndexSort)
+            let allContactMessages = allContactMessagesSorted as! [ChatMessage]
 
             var initialMessagesPlusSurroundingMessages = [ChatMessage]()
 
