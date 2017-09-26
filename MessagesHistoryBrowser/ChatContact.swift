@@ -76,7 +76,8 @@ class ChatContact: NSManagedObject {
                     contactFetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName:"Contact")
                 }
                 contactFetchRequest.predicate = predicate
-
+                contactFetchRequest.sortDescriptors = [ChatContact.sortDescriptor]
+                
                 let results = try managedObjectContext.fetch(contactFetchRequest)
                 allContacts = results as! [ChatContact]
             } catch let error as NSError {
