@@ -429,7 +429,14 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
 //            print("observeValueForKeyPath on NSUserDefaults : no new value found")
 //        }
 
-        refreshChatHistory()
+        let currentCountryPhonePrefix = ContactsMap.sharedInstance.countryPhonePrefix.dropFirst() // ContactsMap adds a leading "+"
+
+        if let newValue = change?[NSKeyValueChangeKey.newKey] as? String {
+            if currentCountryPhonePrefix != newValue {
+                refreshChatHistory()
+            }
+        }
+
     }
 
 }
