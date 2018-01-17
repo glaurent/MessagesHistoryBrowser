@@ -15,7 +15,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     var needDBReload = false
 
-    var showChatsFromUnknown = false {
+    @objc var showChatsFromUnknown = false {
         didSet {
             NSLog("showChatsFromUnknown set")
             NotificationCenter.default.post(name: Notification.Name(rawValue: AppDelegate.ShowChatsFromUnknownNotification), object: self)
@@ -24,19 +24,20 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     var chatTableViewController:ChatTableViewController?
 
-    var hasChatSelected:Bool {
+    @objc var hasChatSelected:Bool {
         get {
             return chatTableViewController?.hasChatSelected ?? false
         }
     }
 
-    dynamic var isChatSelected:Bool {
+    @objc dynamic var isChatSelected:Bool {
         get {
             guard let chatTableViewController = chatTableViewController else { return false }
             return chatTableViewController.tableView.selectedRow >= 0 && chatTableViewController.tableView.selectedRowIndexes.count == 1
         }
     }
-    dynamic var isRefreshingHistory = false
+    
+    @objc dynamic var isRefreshingHistory = false
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         // Insert code here to initialize your application        
@@ -115,7 +116,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 dict[NSUnderlyingErrorKey] = failError
             }
             let error = NSError(domain: "YOUR_ERROR_DOMAIN", code: 9999, userInfo: dict)
-            NSApplication.shared().presentError(error)
+            NSApplication.shared.presentError(error)
             abort()
         } else {
             return coordinator!
@@ -147,7 +148,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 try managedObjectContext.save()
             } catch {
                 let nserror = error as NSError
-                NSApplication.shared().presentError(nserror)
+                NSApplication.shared.presentError(nserror)
             }
         }
     }
@@ -157,7 +158,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         return MOCController.sharedInstance.managedObjectContext.undoManager
     }
 
-    func applicationShouldTerminate(_ sender: NSApplication) -> NSApplicationTerminateReply {
+    func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
         // Save changes in the application's managed object context before the application terminates.
         let managedObjectContext = MOCController.sharedInstance.managedObjectContext
 
@@ -191,7 +192,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             alert.addButton(withTitle: cancelButton)
             
             let answer = alert.runModal()
-            if answer == NSAlertFirstButtonReturn {
+            if answer == NSApplication.ModalResponse.alertFirstButtonReturn {
                 return .terminateCancel
             }
         }
@@ -220,10 +221,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         let savePanel = NSSavePanel()
 
-        if let mainWindow = NSApplication.shared().mainWindow {
+        if let mainWindow = NSApplication.shared.mainWindow {
 
             savePanel.beginSheetModal(for: mainWindow, completionHandler: { (action) in
-                guard action == NSFileHandlingPanelOKButton else { return }
+                guard action.rawValue == NSFileHandlingPanelOKButton else { return }
                 guard let fileURL = savePanel.url else { return }
 
                 do {

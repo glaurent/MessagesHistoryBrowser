@@ -84,7 +84,7 @@ class MessageFormatter {
 
         if let highlightTerm = highlightTerm {
             let rangeOfSearchedTerm = messageContentNS.range(of: highlightTerm)
-            highlightedMessage.addAttribute(NSForegroundColorAttributeName, value: searchHighlightColor, range: rangeOfSearchedTerm)
+            highlightedMessage.addAttribute(NSAttributedStringKey.foregroundColor, value: searchHighlightColor, range: rangeOfSearchedTerm)
         }
 
         result.append(highlightedMessage)
@@ -104,9 +104,9 @@ class MessageFormatter {
             let sender:NSMutableAttributedString
 
             if message.isFromMe {
-                sender = NSMutableAttributedString(string: meString, attributes: [NSBackgroundColorAttributeName : meColor])
+                sender = NSMutableAttributedString(string: meString, attributes: [NSAttributedStringKey.backgroundColor : meColor])
             } else {
-                sender = NSMutableAttributedString(string: chatContact.name , attributes: [NSBackgroundColorAttributeName : contactColor])
+                sender = NSMutableAttributedString(string: chatContact.name , attributes: [NSAttributedStringKey.backgroundColor : contactColor])
             }
 
             let dateString = NSMutableAttributedString(string: dateFormatter.string(from: message.date as Date))
@@ -122,9 +122,9 @@ class MessageFormatter {
             let range = NSRange(location: 0, length: dateString.length)
 
             if message.isFromMe {
-                dateString.addAttribute(NSBackgroundColorAttributeName, value: meColor, range: range)
+                dateString.addAttribute(NSAttributedStringKey.backgroundColor, value: meColor, range: range)
             } else {
-                dateString.addAttribute(NSBackgroundColorAttributeName, value: contactColor, range: range)
+                dateString.addAttribute(NSAttributedStringKey.backgroundColor, value: contactColor, range: range)
             }
             
             return dateString
@@ -141,8 +141,8 @@ class MessageFormatter {
 //        res.addAttribute(NSForegroundColorAttributeName, value: NSColor.lightGrayColor(), range: range)
 
         res.addAttributes([
-            NSParagraphStyleAttributeName  : dateParagraphStyle,
-            NSForegroundColorAttributeName : NSColor.lightGray],
+            NSAttributedStringKey.paragraphStyle  : dateParagraphStyle,
+            NSAttributedStringKey.foregroundColor : NSColor.lightGray],
             range: range)
 
         return res
@@ -155,9 +155,9 @@ class MessageFormatter {
         let range = NSRange(location: 0, length: res.length)
 
         res.addAttributes([
-            NSFontAttributeName : NSFont.boldSystemFont(ofSize: 13.0),
-            NSParagraphStyleAttributeName  : contactNameParagraphStyle,
-            NSForegroundColorAttributeName : NSColor.darkGray],
+            NSAttributedStringKey.font : NSFont.boldSystemFont(ofSize: 13.0),
+            NSAttributedStringKey.paragraphStyle  : contactNameParagraphStyle,
+            NSAttributedStringKey.foregroundColor : NSColor.darkGray],
             range: range)
         
         return res
@@ -174,9 +174,9 @@ class MessageFormatter {
         let range = NSRange(location: 0, length: res.length)
 
         res.addAttributes([
-            NSFontAttributeName : NSFont.systemFont(ofSize: 15.0),
-            NSParagraphStyleAttributeName  : separatorParagraphStyle,
-            NSForegroundColorAttributeName : NSColor.lightGray],
+            NSAttributedStringKey.font : NSFont.systemFont(ofSize: 15.0),
+            NSAttributedStringKey.paragraphStyle  : separatorParagraphStyle,
+            NSAttributedStringKey.foregroundColor : NSColor.lightGray],
             range: range)
 
         return res

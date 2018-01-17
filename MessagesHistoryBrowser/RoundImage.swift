@@ -20,12 +20,12 @@ func roundCorners(_ image: NSImage) -> NSImage
     let composedImage = NSImage(size: newSize)
 
     composedImage.lockFocus()
-    let ctx = NSGraphicsContext.current()
+    let ctx = NSGraphicsContext.current
     ctx?.imageInterpolation = NSImageInterpolation.high
 
     let imageFrame = NSRect(x: 0, y: 0, width: esize.width, height: esize.height)
     let clipPath = NSBezierPath(ovalIn: imageFrame)
-    clipPath.windingRule = NSWindingRule.evenOddWindingRule
+    clipPath.windingRule = NSBezierPath.WindingRule.evenOddWindingRule
     clipPath.addClip()
 
     let rect = NSRect(x: 0, y: 0, width: newSize.width, height: newSize.height)

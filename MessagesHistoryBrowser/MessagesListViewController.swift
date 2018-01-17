@@ -49,9 +49,9 @@ class MessagesListViewController: NSViewController, NSCollectionViewDataSource, 
         dateFormatter.timeStyle = .short
         dateFormatter.dateStyle = .short
 
-        let aNib = NSNib(nibNamed: collectionViewItemID, bundle: nil)
+        let aNib = NSNib(nibNamed: NSNib.Name(rawValue: collectionViewItemID), bundle: nil)
 
-        attachmentsCollectionView.register(aNib, forItemWithIdentifier: collectionViewItemID)
+        attachmentsCollectionView.register(aNib, forItemWithIdentifier: NSUserInterfaceItemIdentifier(rawValue: collectionViewItemID))
 
 //        let gridLayout = NSCollectionViewGridLayout()
 //        gridLayout.minimumItemSize = NSSize(width: 100, height: 100)
@@ -84,7 +84,7 @@ class MessagesListViewController: NSViewController, NSCollectionViewDataSource, 
 
         let attachment = attachmentsToDisplay[indexPath.item]
 
-        let item = collectionView.makeItem(withIdentifier: collectionViewItemID, for: indexPath)
+        let item = collectionView.makeItem(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: collectionViewItemID), for: indexPath)
 
         if let attachmentFileName = attachment.fileName {
 
@@ -118,7 +118,7 @@ class MessagesListViewController: NSViewController, NSCollectionViewDataSource, 
         NSLog("displayAttachmentAtIndexPath \(indexPath)")
 
         if currentImageAttachmentDisplayWindowController == nil {
-            currentImageAttachmentDisplayWindowController = self.storyboard!.instantiateController(withIdentifier: self.windowControllerId) as? NSWindowController
+            currentImageAttachmentDisplayWindowController = self.storyboard!.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier(rawValue: self.windowControllerId)) as? NSWindowController
         }
 
         let imageAttachmentDisplayViewController = currentImageAttachmentDisplayWindowController?.contentViewController as! ImageAttachmentDisplayViewController
@@ -146,7 +146,7 @@ class MessagesListViewController: NSViewController, NSCollectionViewDataSource, 
 
             let imagePath = NSString(string:attachmentFileName).standardizingPath
             let imageURL = URL(fileURLWithPath: imagePath)
-            NSWorkspace.shared().activateFileViewerSelecting([imageURL])
+            NSWorkspace.shared.activateFileViewerSelecting([imageURL])
         }
     }
 

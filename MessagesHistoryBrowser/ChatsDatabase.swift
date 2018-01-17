@@ -159,7 +159,7 @@ class ChatsDatabase: NSObject {
         } else if serviceName == "iMessage" || serviceName == "SMS" {
 
             // check if identifier contains a '@'
-            if identifier.characters.contains("@") {
+            if identifier.contains("@") {
                 if let chatContactNameIdentifierPair = contactsPhoneNumber.nameForEmailAddress(identifier) {
                     contactName = chatContactNameIdentifierPair.0
                     contactCNIdentifier = chatContactNameIdentifierPair.1

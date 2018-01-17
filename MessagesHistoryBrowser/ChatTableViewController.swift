@@ -18,7 +18,7 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
     @IBOutlet weak var dbPopulateProgressIndicator: NSProgressIndicator!
     @IBOutlet weak var progressReportView: NSView!
 
-    dynamic var progress:Progress!
+    @objc dynamic var progress:Progress!
 
     var chatsDatabase:ChatsDatabase!
 
@@ -36,11 +36,11 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
     var searchedMessages:[ChatMessage]?
     var searchTermHasChanged = false
 
-    dynamic var beforeDateEnabled = false
-    dynamic var afterDateEnabled = false
+    @objc dynamic var beforeDateEnabled = false
+    @objc dynamic var afterDateEnabled = false
     
-    dynamic var beforeDate = Date().addingTimeInterval(3600 * 24 * -7) // a week ago
-    dynamic var afterDate = Date().addingTimeInterval(3600 * 24 * -30) // a month ago
+    @objc dynamic var beforeDate = Date().addingTimeInterval(3600 * 24 * -7) // a week ago
+    @objc dynamic var afterDate = Date().addingTimeInterval(3600 * 24 * -30) // a month ago
 
     var hasChatSelected:Bool {
         get { return tableView != nil && tableView.selectedRow >= 0 }
@@ -93,7 +93,7 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
 
     }
 
-    func showUnknownContactsChanged(_ notification:Notification)
+    @objc func showUnknownContactsChanged(_ notification:Notification)
     {
         let appDelegate = NSApp.delegate as! AppDelegate
         showChatsFromUnknown = appDelegate.showChatsFromUnknown
@@ -144,7 +144,7 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
     {
         guard let tableColumn = tableColumn else { return nil }
 
-        let cellView = tableView.make(withIdentifier: tableColumn.identifier, owner: self) as! NSTableCellView
+        let cellView = tableView.makeView(withIdentifier: tableColumn.identifier, owner: self) as! NSTableCellView
 
         if let contact = contactForRow(row) {
             cellView.textField?.stringValue = contact.name
@@ -241,7 +241,7 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
             messagesListViewController?.clearAttachments()
             tableView.reloadData()
             
-        } else if sender.stringValue.characters.count >= 3 && sender.stringValue != searchTerm {
+        } else if sender.stringValue.count >= 3 && sender.stringValue != searchTerm {
 
             searchTerm = sender.stringValue
 

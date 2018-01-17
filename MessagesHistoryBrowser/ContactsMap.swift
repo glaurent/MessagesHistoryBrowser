@@ -51,7 +51,7 @@ class ContactsMap : NSObject {
                     if let countryCode = (Locale.current as NSLocale).object(forKey: NSLocale.Key.countryCode) as? String,
                     let phonePrefix = countryPhonePrefixDict[countryCode] {
 
-                        if phonePrefix.characters.first == "+" {
+                        if phonePrefix.first == "+" {
                             countryPhonePrefix = phonePrefix
                         } else {
                             countryPhonePrefix = "+" + phonePrefix
@@ -116,7 +116,7 @@ class ContactsMap : NSObject {
 
         var res = ""
 
-        for ch in rawPhoneNumber.characters {
+        for ch in rawPhoneNumber {
             switch ch {
             case "0"..."9", "+":
                 res.append(ch)
@@ -127,8 +127,9 @@ class ContactsMap : NSObject {
         }
 
         if res.hasPrefix("0") {
-            let skip0Index = res.characters.index(res.startIndex, offsetBy: 1)
-            res = countryPhonePrefix + res.substring(from: skip0Index)
+            let skip0Index = res.index(res.startIndex, offsetBy: 1)
+//            res = countryPhonePrefix + res.substring(from: skip0Index)
+            res = countryPhonePrefix + res[skip0Index...]
         }
 
         return res
@@ -218,11 +219,11 @@ class ContactsMap : NSObject {
 
                 var initials = ""
 
-                if firstName.characters.count > 0 {
-                    initials = initials + "\(firstName.characters.first!)"
+                if firstName.count > 0 {
+                    initials = initials + "\(firstName.first!)"
                 }
-                if lastName.characters.count > 0 {
-                    initials = initials + "\(lastName.characters.first!)"
+                if lastName.count > 0 {
+                    initials = initials + "\(lastName.first!)"
                 }
 
                 if let imageLabel = LabelToImage.stringToImage(initials) {
