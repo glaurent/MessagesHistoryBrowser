@@ -208,6 +208,8 @@ class ChatsDatabase: NSObject {
             let textColumn     = Expression<String?>("text")
             let dateColumn     = Expression<Int>("date")
 
+//            let dateDeliveredColumn = Expression<Int>("date_delivered") // used only for sanity check on dateColumn value
+
             let chatHandleJoinTable = Table("chat_handle_join")
             let handleIdColumn      = Expression<Int>("handle_id")
             let chatIdColumn        = Expression<Int>("chat_id")
@@ -233,12 +235,15 @@ class ChatsDatabase: NSObject {
 
             for messageData in query {
                 let messageContent = messageData[textColumn] ?? ""
-                let dateInt = messageData[dateColumn]
+                var dateInt = messageData[dateColumn]
+                if dateInt > Int(10e9) { // I have this case of timestamp values being multiplied by 10e8 on my iMac running High Sierra, with no apparent effect on the values displayed in the chats history
+                    dateInt = dateInt / Int(10e8)
+                }
                 let dateTimeInterval = TimeInterval(dateInt)
-                let messageDate = NSDate(timeIntervalSinceReferenceDate: dateTimeInterval)
+                let messageDate = Date(timeIntervalSinceReferenceDate: dateTimeInterval)
 //              NSLog("message : \(messageContent)")
 
-                let chatMessage = ChatMessage(managedObjectContext: chat.managedObjectContext!, withMessage: messageContent, withDate: messageDate as Date, inChat: chat)
+                let chatMessage = ChatMessage(managedObjectContext: chat.managedObjectContext!, withMessage: messageContent, withDate: messageDate, inChat: chat)
                 chatMessage.isFromMe = messageData[isFromMeColumn]
             }
 
@@ -275,7 +280,7 @@ class ChatsDatabase: NSObject {
                 let attachmentFileName:String? = attachmentData[filenameColumn]
                 let attachmentDateInt = attachmentData[attachmentDateColumn]
                 let attachmentTimeInterval = TimeInterval(attachmentDateInt)
-                let attachmentDate = NSDate(timeIntervalSinceReferenceDate: attachmentTimeInterval)
+                let attachmentDate = Date(timeIntervalSinceReferenceDate: attachmentTimeInterval)
 
                 if let attachmentFileName = attachmentFileName {
                     let _ = ChatAttachment(managedObjectContext: chat.managedObjectContext!, withFileName: attachmentFileName, withDate: attachmentDate as Date, inChat:chat)

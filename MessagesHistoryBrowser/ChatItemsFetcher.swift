@@ -32,21 +32,21 @@ class ChatItemsFetcher: NSObject {
         let aItem = a as! ChatItem
         let bItem = b as! ChatItem
 
-        return (aItem.date as NSDate).isLessThan(bItem.date)
+        return aItem.date < bItem.date
     }
 
     let messageEnumIteratorDateSort = { (a:NSFastEnumerationIterator.Element, b:NSFastEnumerationIterator.Element) -> Bool in
         let aItem = a as! ChatItem
         let bItem = b as! ChatItem
 
-        return (aItem.date as NSDate).isLessThan(bItem.date)
+        return aItem.date < bItem.date
     }
 
     let messageHashableDateSort = { (a:AnyHashable, b:AnyHashable) -> Bool in
         let aItem = a as! ChatItem
         let bItem = b as! ChatItem
 
-        return (aItem.date as NSDate).isLessThan(bItem.date)
+        return aItem.date < bItem.date
     }
 
 
