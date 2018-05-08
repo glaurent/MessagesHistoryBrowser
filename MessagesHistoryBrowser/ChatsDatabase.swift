@@ -305,6 +305,14 @@ class ChatsDatabase: NSObject {
                 let chat = obj as! Chat
                 if chat.messages.count == 0 {
                     collectMessagesForChat(chat)
+
+                    do {
+                        try localContext.save()
+                        MOCController.sharedInstance.save()
+                    } catch let error as NSError {
+                        print("ChatsDatabase.collectAllMessagesFromAllChats : worker context save fail : \(error)")
+                    }
+
                 }
             }
 
