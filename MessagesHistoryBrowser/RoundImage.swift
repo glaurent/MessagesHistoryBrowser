@@ -16,14 +16,16 @@ func roundCorners(_ image: NSImage) -> NSImage
     let existing = image
     let esize = existing.size
 
-    let newSize = NSSize(width:esize.width, height:esize.height)
+    let sideLength = min(esize.width, esize.height) // make sure the resulting image is an actual circle - doesn't always look good if original image isn't properly centered
+
+    let newSize = NSSize(width:sideLength, height:sideLength)
     let composedImage = NSImage(size: newSize)
 
     composedImage.lockFocus()
     let ctx = NSGraphicsContext.current
     ctx?.imageInterpolation = NSImageInterpolation.high
 
-    let imageFrame = NSRect(x: 0, y: 0, width: esize.width, height: esize.height)
+    let imageFrame = NSRect(x: 0, y: 0, width: sideLength, height: sideLength)
     let clipPath = NSBezierPath(ovalIn: imageFrame)
     clipPath.windingRule = NSBezierPath.WindingRule.evenOddWindingRule
     clipPath.addClip()
