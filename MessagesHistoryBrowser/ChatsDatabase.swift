@@ -185,10 +185,6 @@ class ChatsDatabase: NSObject {
 
     func messagesForChat(_ chat:Chat) -> ([ChatMessage], [ChatAttachment])
     {
-        if chat.messages.count == 0 {
-            collectMessagesForChat(chat)
-        }
-
         let allMessages = chat.messages.allObjects as! [ChatMessage]
 
         let allMessagesSorted = allMessages.sorted { $0.date.compare($1.date as Date) == .orderedAscending }
@@ -200,8 +196,10 @@ class ChatsDatabase: NSObject {
     
     }
 
-    func collectMessagesForChat(_ chat:Chat)
+    func collectMessagesForChat(_ chat:Chat, localContext:NSManagedObjectContext)
     {
+        let messageSaveThreshold = 300
+
         do {
             let messagesTable  = Table("message")
             let isFromMeColumn = Expression<Bool>("is_from_me")
@@ -233,6 +231,8 @@ class ChatsDatabase: NSObject {
 
             let query = try db.prepare(messagesTable.select(isFromMeColumn, textColumn, dateColumn).filter(allHandleIDs.contains(handleIdColumn)))
 
+            var messageCounter = 0
+
             for messageData in query {
                 let messageContent = messageData[textColumn] ?? ""
                 var dateInt = messageData[dateColumn]
@@ -243,8 +243,19 @@ class ChatsDatabase: NSObject {
                 let messageDate = Date(timeIntervalSinceReferenceDate: dateTimeInterval)
 //              NSLog("message : \(messageContent)")
 
-                let chatMessage = ChatMessage(managedObjectContext: chat.managedObjectContext!, withMessage: messageContent, withDate: messageDate, inChat: chat)
+                let chatMessage = ChatMessage(managedObjectContext: localContext, withMessage: messageContent, withDate: messageDate, inChat: chat)
                 chatMessage.isFromMe = messageData[isFromMeColumn]
+
+                messageCounter += 1
+                if messageCounter >= messageSaveThreshold {
+                    messageCounter = 0
+                    do {
+                        try localContext.save()
+                        MOCController.sharedInstance.save()
+                    } catch let error as NSError {
+                        print("ChatsDatabase.collectMessagesForChat : worker context save fail : \(error)")
+                    }
+                }
             }
 
 
@@ -304,7 +315,7 @@ class ChatsDatabase: NSObject {
             for obj in contact.chats {
                 let chat = obj as! Chat
                 if chat.messages.count == 0 {
-                    collectMessagesForChat(chat)
+                    collectMessagesForChat(chat, localContext: localContext)
 
                     do {
                         try localContext.save()
@@ -323,25 +334,6 @@ class ChatsDatabase: NSObject {
         }
     }
 
-    // TODO : this method is probably no longer useful as the whole messages DB is imported at startup anyway
-    //
-    func collectMessagesForContact(_ contact:ChatContact)
-    {
-        var newMessagesCollected = false
-
-        for c in contact.chats {
-            let chat = c as! Chat
-            if chat.messages.count == 0 {
-                collectMessagesForChat(chat)
-                newMessagesCollected = true
-            }
-        }
-
-        if newMessagesCollected {
-            indexMessagesForContact(contact)
-        }
-    }
-
     func indexMessagesForContact(_ contact:ChatContact)
     {
         let allMessages = contact.messages.allObjects as! [ChatMessage]
@@ -353,8 +345,6 @@ class ChatsDatabase: NSObject {
         _ = allMessagesDateSorted.map { $0.index = index; index += 1 }
 
     }
-
-    // MARK: String Search
 
 
 }

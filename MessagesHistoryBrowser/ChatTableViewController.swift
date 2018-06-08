@@ -290,8 +290,6 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
     {
         do {
 
-            chatsDatabase.collectMessagesForContact(contact)
-
             let messages = contact.messages.sorted(by: ChatItemsFetcher.sharedInstance.messageDateSort as! (NSFastEnumerationIterator.Element, NSFastEnumerationIterator.Element) -> Bool) as! [ChatMessage]
 
             let reducer = { (currentValue:String, message:ChatMessage) -> String in
