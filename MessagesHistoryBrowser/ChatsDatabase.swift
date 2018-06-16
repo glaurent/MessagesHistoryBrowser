@@ -196,7 +196,7 @@ class ChatsDatabase: NSObject {
     
     }
 
-    func collectMessagesForChat(_ chat:Chat, localContext:NSManagedObjectContext)
+    func collectMessagesForChat(_ chat:Chat, workerContext:NSManagedObjectContext)
     {
         let messageSaveThreshold = 300
 
@@ -243,15 +243,15 @@ class ChatsDatabase: NSObject {
                 let messageDate = Date(timeIntervalSinceReferenceDate: dateTimeInterval)
 //              NSLog("message : \(messageContent)")
 
-                let chatMessage = ChatMessage(managedObjectContext: localContext, withMessage: messageContent, withDate: messageDate, inChat: chat)
+                let chatMessage = ChatMessage(managedObjectContext: workerContext, withMessage: messageContent, withDate: messageDate, inChat: chat)
                 chatMessage.isFromMe = messageData[isFromMeColumn]
 
                 messageCounter += 1
                 if messageCounter >= messageSaveThreshold {
                     messageCounter = 0
                     do {
-                        try localContext.save()
-                        MOCController.sharedInstance.save()
+                        try workerContext.save()
+//                        MOCController.sharedInstance.save()
                     } catch let error as NSError {
                         print("ChatsDatabase.collectMessagesForChat : worker context save fail : \(error)")
                     }
@@ -304,9 +304,9 @@ class ChatsDatabase: NSObject {
 
     }
 
-    func collectAllMessagesFromAllChats(_ localContext:NSManagedObjectContext)
+    func collectAllMessagesFromAllChats(_ workerContext:NSManagedObjectContext)
     {
-        let allContacts = ChatContact.allContactsInContext(localContext)
+        let allContacts = ChatContact.allContactsInContext(workerContext)
         let allContactsCount = Int64(allContacts.count)
 
         let taskProgress = Progress(totalUnitCount: allContactsCount)
@@ -315,10 +315,10 @@ class ChatsDatabase: NSObject {
             for obj in contact.chats {
                 let chat = obj as! Chat
                 if chat.messages.count == 0 {
-                    collectMessagesForChat(chat, localContext: localContext)
+                    collectMessagesForChat(chat, workerContext: workerContext)
 
                     do {
-                        try localContext.save()
+                        try workerContext.save()
                         MOCController.sharedInstance.save()
                     } catch let error as NSError {
                         print("ChatsDatabase.collectAllMessagesFromAllChats : worker context save fail : \(error)")
