@@ -29,7 +29,8 @@ class MOCController: NSObject {
     {
         guard privateManagedObjectContext.hasChanges || managedObjectContext.hasChanges else { return }
 
-        managedObjectContext.performAndWait { () -> Void in
+        managedObjectContext.performAndWait { [unowned self] () -> Void in
+
             do { try self.managedObjectContext.save() } catch { NSLog("moc save error : \(error)") }
 
             self.privateManagedObjectContext.perform { () -> Void in
