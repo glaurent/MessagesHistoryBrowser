@@ -279,7 +279,7 @@ class ChatItemsFetcher: NSObject {
 
             var initialMessagesPlusSurroundingMessages = [ChatMessage]()
 
-            var lastSlice = CountableRange<Int>(0..<0)
+            var lastSlice = (0..<0)
 
             for message in contactMessages {
                 let (messagesRangeAroundThisMessage, disjointSlice) = surroundingMessagesForMessage(message, inMessages: allContactMessages, numberBeforeAndAfter: nbOfMessagesBeforeAfter, previousSliceRange:lastSlice)
@@ -307,12 +307,12 @@ class ChatItemsFetcher: NSObject {
         let startIndex = max(messageIndex - numberBeforeAndAfter, 0)
         let endIndex = min(messageIndex + numberBeforeAndAfter + 1, allMessages.count - 1) // +1 because range does not include endIndex item ( startIndex..<endIndex )
 
-        var slice = CountableRange<Int>(startIndex ..< endIndex)
+        var slice = (startIndex ..< endIndex)
         var disjointSlice = true
 
         // check possible join with previous slice
         if startIndex <= previousSliceRange.upperBound {
-            slice = CountableRange<Int>(previousSliceRange.lowerBound ..< endIndex)
+            slice = (previousSliceRange.lowerBound ..< endIndex)
             disjointSlice = false
         }
 
