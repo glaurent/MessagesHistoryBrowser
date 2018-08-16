@@ -68,6 +68,7 @@ class MessagesListViewController: NSViewController, NSCollectionViewDataSource, 
 
     }
 
+    // MARK - Attachments CollectionView
 
     func collectionView(_ collectionView: NSCollectionView, numberOfItemsInSection section: Int) -> Int
     {
@@ -89,8 +90,15 @@ class MessagesListViewController: NSViewController, NSCollectionViewDataSource, 
         if let attachmentFileName = attachment.fileName {
 
             let imagePath = NSString(string:attachmentFileName).standardizingPath
-            let image = NSImage(byReferencingFile: imagePath)
-            item.imageView?.image = image
+            // load image in background
+            let backgroundQueue = DispatchQueue.global(qos: .background)
+            backgroundQueue.async {
+                let image = NSImage(contentsOfFile: imagePath)
+                DispatchQueue.main.async {
+                    item.imageView?.image = image
+                }
+            }
+
             item.textField?.stringValue = dateFormatter.string(from: attachment.date as Date)
         } else {
             item.textField?.stringValue = "unknown"
