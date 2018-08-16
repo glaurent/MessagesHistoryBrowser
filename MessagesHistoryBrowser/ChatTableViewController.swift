@@ -202,7 +202,7 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
 
         let allContactChats = selectedContact.chats.allObjects as! [Chat]
 
-        let allContactMessageArrays = allContactChats.flatMap { (chat) -> [ChatMessage]? in
+        let allContactMessageArrays = allContactChats.compactMap { (chat) -> [ChatMessage]? in
             return chat.messages.allObjects as? [ChatMessage]
         }
 

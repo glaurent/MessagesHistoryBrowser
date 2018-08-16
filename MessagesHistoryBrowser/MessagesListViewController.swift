@@ -49,7 +49,7 @@ class MessagesListViewController: NSViewController, NSCollectionViewDataSource, 
         dateFormatter.timeStyle = .short
         dateFormatter.dateStyle = .short
 
-        let aNib = NSNib(nibNamed: NSNib.Name(rawValue: collectionViewItemID), bundle: nil)
+        let aNib = NSNib(nibNamed: collectionViewItemID, bundle: nil)
 
         attachmentsCollectionView.register(aNib, forItemWithIdentifier: NSUserInterfaceItemIdentifier(rawValue: collectionViewItemID))
 
@@ -118,7 +118,7 @@ class MessagesListViewController: NSViewController, NSCollectionViewDataSource, 
         NSLog("displayAttachmentAtIndexPath \(indexPath)")
 
         if currentImageAttachmentDisplayWindowController == nil {
-            currentImageAttachmentDisplayWindowController = self.storyboard!.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier(rawValue: self.windowControllerId)) as? NSWindowController
+            currentImageAttachmentDisplayWindowController = self.storyboard!.instantiateController(withIdentifier: self.windowControllerId) as? NSWindowController
         }
 
         let imageAttachmentDisplayViewController = currentImageAttachmentDisplayWindowController?.contentViewController as! ImageAttachmentDisplayViewController

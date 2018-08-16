@@ -27,7 +27,7 @@ func roundCorners(_ image: NSImage) -> NSImage
 
     let imageFrame = NSRect(x: 0, y: 0, width: sideLength, height: sideLength)
     let clipPath = NSBezierPath(ovalIn: imageFrame)
-    clipPath.windingRule = NSBezierPath.WindingRule.evenOddWindingRule
+    clipPath.windingRule = NSBezierPath.WindingRule.evenOdd
     clipPath.addClip()
 
     let rect = NSRect(x: 0, y: 0, width: newSize.width, height: newSize.height)

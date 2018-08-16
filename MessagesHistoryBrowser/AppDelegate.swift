@@ -140,9 +140,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         let managedObjectContext = MOCController.sharedInstance.managedObjectContext
 
         // Performs the save action for the application, which is to send the save: message to the application's managed object context. Any encountered errors are presented to the user.
-        if !(managedObjectContext.commitEditing()) {
-            NSLog("\(NSStringFromClass(type(of: self))) unable to commit editing before saving")
-        }
         if (managedObjectContext.hasChanges) {
             do {
                 try managedObjectContext.save()
@@ -162,11 +159,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // Save changes in the application's managed object context before the application terminates.
         let managedObjectContext = MOCController.sharedInstance.managedObjectContext
 
-        if !(managedObjectContext.commitEditing()) {
-            NSLog("\(NSStringFromClass(type(of: self))) unable to commit editing to terminate")
-            return .terminateCancel
-        }
-        
         if !(managedObjectContext.hasChanges) {
             return .terminateNow
         }
