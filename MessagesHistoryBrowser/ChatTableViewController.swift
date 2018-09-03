@@ -82,8 +82,8 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
             tableView.isHidden = false
             messagesListViewController?.view.isHidden = false
 
-            allKnownContacts = ChatContact.allKnownContactsInContext(moc)
-            allUnknownContacts = ChatContact.allUnknownContactsInContext(moc)
+            allKnownContacts = ChatContact.allKnownContacts(moc)
+            allUnknownContacts = ChatContact.allUnknownContacts(moc)
             tableView.reloadData()
 
         }
@@ -400,10 +400,8 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
         tableView.isHidden = false
         messagesListViewController?.view.isHidden = false
 
-        let moc = MOCController.sharedInstance.managedObjectContext
-
-        allKnownContacts = ChatContact.allKnownContactsInContext(moc)
-        allUnknownContacts = ChatContact.allUnknownContactsInContext(moc)
+        allKnownContacts = ChatContact.allKnownContacts(MOCController.sharedInstance.managedObjectContext)
+        allUnknownContacts = ChatContact.allUnknownContacts(MOCController.sharedInstance.managedObjectContext)
         tableView.reloadData()
     }
 

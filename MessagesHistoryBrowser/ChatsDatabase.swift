@@ -74,7 +74,7 @@ class ChatsDatabase: NSObject {
                 try workerContext.save()
                 MOCController.sharedInstance.save()
             } catch let error as NSError {
-                print("ChatsDatabase.populate : worker context save fail : \(error)")
+                NSLog("\(#function) : worker context save fail : \(error)")
             }
 
             // run completion block on main queue
@@ -131,7 +131,11 @@ class ChatsDatabase: NSObject {
             rowIndex += 1
         }
 
-        MOCController.sharedInstance.save()
+            do {
+                try localContext.save()
+            } catch let error as NSError {
+                NSLog("\(#function) : worker context save fail : \(error)")
+            }
 
         } catch {
             NSLog("\(#function) : error when preparing DB select")
@@ -306,7 +310,7 @@ class ChatsDatabase: NSObject {
 
     func collectAllMessagesFromAllChats(_ workerContext:NSManagedObjectContext)
     {
-        let allContacts = ChatContact.allContactsInContext(workerContext)
+        let allContacts = ChatContact.allContacts(workerContext)
         let allContactsCount = Int64(allContacts.count)
 
         let taskProgress = Progress(totalUnitCount: allContactsCount)

@@ -51,30 +51,26 @@ class ChatContact: NSManagedObject {
 //        return allContacts
 //    }
 
-    class func allKnownContactsInContext(_ managedObjectContext:NSManagedObjectContext) -> [ChatContact] {
+    class func allKnownContacts(_ managedObjectContext:NSManagedObjectContext) -> [ChatContact] {
 
-        return allContactsInContext(managedObjectContext, withPredicate: NSPredicate(format: "known == YES && messages.@count > 0"))
+        return allContactsWithPredicate(managedObjectContext, predicate:NSPredicate(format: "known == YES && messages.@count > 0"))
     }
 
-    class func allUnknownContactsInContext(_ managedObjectContext:NSManagedObjectContext) -> [ChatContact] {
+    class func allUnknownContacts(_ managedObjectContext:NSManagedObjectContext) -> [ChatContact] {
 
-        return allContactsInContext(managedObjectContext, withPredicate: NSPredicate(format: "known == NO && messages.@count > 0"))
+        return allContactsWithPredicate(managedObjectContext, predicate:NSPredicate(format: "known == NO && messages.@count > 0"))
     }
 
-    class func allContactsInContext(_ managedObjectContext:NSManagedObjectContext, withPredicate predicate:NSPredicate? = nil) -> [ChatContact] {
+    class func allContactsWithPredicate(_ managedObjectContext:NSManagedObjectContext, predicate:NSPredicate? = nil) -> [ChatContact] {
 
         var allContacts = [ChatContact]()
+
+        guard let appDelegate = NSApp.delegate as? AppDelegate else { return [ChatContact]() }
 
         managedObjectContext.performAndWait { () -> Void in
 
             do {
-                let contactFetchRequest:NSFetchRequest<NSFetchRequestResult>
-
-                if #available(OSX 10.12, *) {
-                    contactFetchRequest = fetchRequest()
-                } else {
-                    contactFetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName:"Contact")
-                }
+                let contactFetchRequest:NSFetchRequest<NSFetchRequestResult> = fetchRequest()
                 contactFetchRequest.predicate = predicate
                 contactFetchRequest.sortDescriptors = [ChatContact.sortDescriptor]
                 
@@ -88,6 +84,9 @@ class ChatContact: NSManagedObject {
         return allContacts
     }
 
+    class func allContacts(_ managedObjectContext:NSManagedObjectContext) -> [ChatContact] {
+        return allContactsWithPredicate(managedObjectContext)
+    }
 
     class func contactIn(_ managedObjectContext:NSManagedObjectContext, named name:String, withIdentifier identifier:String) -> ChatContact {
         let contactNamedFetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Contact")

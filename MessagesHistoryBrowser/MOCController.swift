@@ -12,46 +12,45 @@ class MOCController: NSObject {
 
     public static let sharedInstance = MOCController()
 
-    var managedObjectContext:NSManagedObjectContext
-    var privateManagedObjectContext:NSManagedObjectContext
+    var managedObjectContext:NSManagedObjectContext {
+        let appDelegate = NSApp.delegate as! AppDelegate
+        return appDelegate.persistentContainer.viewContext
+    }
 
     override init() {
-        let coordinator = (NSApp.delegate as! AppDelegate).persistentStoreCoordinator
-
-        managedObjectContext = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
-        privateManagedObjectContext = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
-        privateManagedObjectContext.persistentStoreCoordinator = coordinator
-
-        managedObjectContext.parent = privateManagedObjectContext
     }
 
     func save()
     {
-        guard privateManagedObjectContext.hasChanges || managedObjectContext.hasChanges else { return }
-
-        managedObjectContext.performAndWait { [unowned self] () -> Void in
-
-            do { try self.managedObjectContext.save() } catch { NSLog("moc save error : \(error)") }
-
-            self.privateManagedObjectContext.perform { () -> Void in
-                do { try self.privateManagedObjectContext.save() } catch { NSLog("bgMoc save error : \(error)") }
-            }
-        }
+        let appDelegate = NSApp.delegate as! AppDelegate
+        appDelegate.saveAction(self)
     }
 
     func clearAllCoreData()
     {
-        let allContacts = ChatContact.allContactsInContext(managedObjectContext)
+//        let allContacts = ChatContact.allContacts()
+//
+//        for contact in allContacts {
+//            managedObjectContext.delete(contact)
+//        }
 
-        for contact in allContacts {
-            managedObjectContext.delete(contact)
+        let contactsFetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Contact")
+
+        let deleteContactsRequest = NSBatchDeleteRequest(fetchRequest: contactsFetchRequest)
+
+        do {
+            try workerContext().execute(deleteContactsRequest)
+        } catch let error {
+            NSLog("ERROR when deleting contacts : \(error)")
         }
+
     }
 
     func workerContext() -> NSManagedObjectContext
     {
-        let worker = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
-        worker.parent = managedObjectContext
+        let appDelegate = NSApp.delegate as! AppDelegate
+
+        let worker = appDelegate.persistentContainer.newBackgroundContext()
 
         return worker
     }
