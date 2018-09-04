@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="13196" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="14313.13.2" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="13196"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14313.13.2"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -654,7 +654,7 @@
         <scene sceneID="R2V-B0-nI4">
             <objects>
                 <windowController showSeguePresentationStyle="single" id="B8D-0N-5wS" sceneMemberID="viewController">
-                    <window key="window" title="Message History Browser" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" animationBehavior="default" id="IQv-IB-iLA">
+                    <window key="window" title="Message History Browser" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" animationBehavior="default" id="IQv-IB-iLA">
                         <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
                         <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
                         <rect key="contentRect" x="196" y="240" width="480" height="270"/>
@@ -701,7 +701,7 @@
         <scene sceneID="ZrA-Yq-GBj">
             <objects>
                 <windowController id="gm6-k5-ZEv" userLabel="Preferences" sceneMemberID="viewController">
-                    <window key="window" title="Preferences" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" id="fCU-aS-7xX">
+                    <window key="window" title="Preferences" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" id="fCU-aS-7xX">
                         <windowStyleMask key="styleMask" titled="YES" closable="YES"/>
                         <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
                         <rect key="contentRect" x="163" y="199" width="294" height="118"/>
@@ -724,7 +724,7 @@
         <scene sceneID="ZMx-gO-QrC">
             <objects>
                 <windowController id="Ou8-pI-cNp" sceneMemberID="viewController">
-                    <window key="window" title="About" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" id="n8J-GQ-SCG">
+                    <window key="window" title="About" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" id="n8J-GQ-SCG">
                         <windowStyleMask key="styleMask" titled="YES" closable="YES"/>
                         <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
                         <rect key="contentRect" x="294" y="362" width="392" height="346"/>
@@ -804,7 +804,7 @@ Jean-Marie Lafon : http://www.lafon.mobi</string>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" placeholderString="01" drawsBackground="YES" id="nfM-8N-ott">
                                     <font key="font" metaFont="system"/>
-                                    <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                                 <connections>
@@ -857,7 +857,7 @@ Jean-Marie Lafon : http://www.lafon.mobi</string>
                                         </connections>
                                     </button>
                                     <datePicker verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="lou-wM-eNy">
-                                        <rect key="frame" x="87" y="47" width="97" height="27"/>
+                                        <rect key="frame" x="87" y="47" width="99" height="27"/>
                                         <datePickerCell key="cell" borderStyle="bezel" alignment="left" id="kXc-qA-xvl">
                                             <font key="font" metaFont="system"/>
                                             <date key="date" timeIntervalSinceReferenceDate="-595929600">
@@ -883,7 +883,7 @@ Jean-Marie Lafon : http://www.lafon.mobi</string>
                                         </connections>
                                     </button>
                                     <datePicker verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="JJY-fj-bdz">
-                                        <rect key="frame" x="87" y="16" width="97" height="27"/>
+                                        <rect key="frame" x="87" y="16" width="99" height="27"/>
                                         <datePickerCell key="cell" borderStyle="bezel" alignment="left" id="5UX-CT-Hnh">
                                             <font key="font" metaFont="system"/>
                                             <date key="date" timeIntervalSinceReferenceDate="-595929600">
@@ -1026,9 +1026,22 @@ Jean-Marie Lafon : http://www.lafon.mobi</string>
                                             </binding>
                                         </connections>
                                     </textField>
+                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="rXY-5L-Tvu">
+                                        <rect key="frame" x="89" y="81" width="162" height="17"/>
+                                        <textFieldCell key="cell" lineBreakMode="clipping" title="additional progress report" id="3Fs-Pb-8i2">
+                                            <font key="font" metaFont="system"/>
+                                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                        <connections>
+                                            <binding destination="c6g-xc-DOK" name="value" keyPath="self.progress.localizedAdditionalDescription" id="XBI-nf-6T5"/>
+                                        </connections>
+                                    </textField>
                                 </subviews>
                                 <constraints>
+                                    <constraint firstItem="rXY-5L-Tvu" firstAttribute="top" secondItem="G2L-Mo-7yd" secondAttribute="bottom" constant="8" id="7U0-Qw-NZm"/>
                                     <constraint firstItem="G2L-Mo-7yd" firstAttribute="centerX" secondItem="LcQ-1Y-GBm" secondAttribute="centerX" id="8bM-PG-VdJ"/>
+                                    <constraint firstItem="rXY-5L-Tvu" firstAttribute="leading" secondItem="G2L-Mo-7yd" secondAttribute="leading" id="BT7-11-6GJ"/>
                                     <constraint firstItem="LcQ-1Y-GBm" firstAttribute="centerY" secondItem="PId-FV-l0o" secondAttribute="centerY" id="Jn8-ZY-Ooe"/>
                                     <constraint firstItem="LcQ-1Y-GBm" firstAttribute="centerX" secondItem="PId-FV-l0o" secondAttribute="centerX" id="LFB-lH-q2p"/>
                                     <constraint firstItem="G2L-Mo-7yd" firstAttribute="width" secondItem="LcQ-1Y-GBm" secondAttribute="width" id="dbw-jw-Ys5"/>
@@ -1207,7 +1220,7 @@ Jean-Marie Lafon : http://www.lafon.mobi</string>
                                                     <subviews>
                                                         <collectionView selectable="YES" id="Tmj-AG-K2d" customClass="AttachmentsCollectionView" customModule="MessagesHistoryBrowser" customModuleProvider="target">
                                                             <rect key="frame" x="0.0" y="0.0" width="448" height="140"/>
-                                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                            <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
                                                             <collectionViewFlowLayout key="collectionViewLayout" minimumInteritemSpacing="15" minimumLineSpacing="15" id="fGR-We-cEX">
                                                                 <size key="itemSize" width="100" height="100"/>
                                                             </collectionViewFlowLayout>
@@ -1242,20 +1255,20 @@ Jean-Marie Lafon : http://www.lafon.mobi</string>
                                         <subviews>
                                             <scrollView horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lTo-HJ-H2q">
                                                 <rect key="frame" x="0.0" y="0.0" width="450" height="148"/>
-                                                <clipView key="contentView" id="Ku1-yh-KWT">
+                                                <clipView key="contentView" drawsBackground="NO" id="Ku1-yh-KWT">
                                                     <rect key="frame" x="1" y="1" width="448" height="146"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     <subviews>
                                                         <textView editable="NO" importsGraphics="NO" verticallyResizable="YES" findStyle="panel" continuousSpellChecking="YES" allowsNonContiguousLayout="YES" quoteSubstitution="YES" dashSubstitution="YES" smartInsertDelete="YES" id="cOK-Z4-ECw">
                                                             <rect key="frame" x="0.0" y="0.0" width="448" height="146"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                             <size key="minSize" width="448" height="146"/>
                                                             <size key="maxSize" width="463" height="10000000"/>
                                                             <color key="insertionPointColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                         </textView>
                                                     </subviews>
-                                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                 </clipView>
                                                 <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="YES" id="qxC-be-hWL">
                                                     <rect key="frame" x="-100" y="-100" width="87" height="18"/>
@@ -1305,7 +1318,7 @@ Jean-Marie Lafon : http://www.lafon.mobi</string>
         <scene sceneID="VDb-aV-IJH">
             <objects>
                 <windowController storyboardIdentifier="ImageAttachmentDisplayWindowController" id="loG-ru-snG" sceneMemberID="viewController">
-                    <window key="window" title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" id="ocX-Z0-xfv" customClass="NSPanel">
+                    <window key="window" title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" id="ocX-Z0-xfv" customClass="NSPanel">
                         <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" utility="YES" nonactivatingPanel="YES" HUD="YES"/>
                         <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
                         <rect key="contentRect" x="294" y="362" width="480" height="270"/>

@@ -95,9 +95,9 @@ class ContactsMap : NSObject {
                             let canonPhoneNb = self.canonicalizePhoneNumber(phoneNb.stringValue)
                             // NSLog("\(#function) phoneNb : %@", canonPhoneNb)
                             self.phoneNumbersMap[canonPhoneNb] = contact
-                            DispatchQueue.main.async(execute: { () -> Void in
+                            DispatchQueue.main.async {
                                 self.progress?.completedUnitCount = Int64(index)
-                            })
+                            }
                             
                         }
                         
