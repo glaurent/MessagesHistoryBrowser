@@ -30,8 +30,8 @@ class MessageFormatter {
     let separatorParagraphStyle = NSMutableParagraphStyle()
 
     let meColor = NSColor.clear
-    let contactColor = NSColor(red: 0x66 / 255.0, green: 0x66 / 255.0, blue: 0xff / 255.0, alpha: 1.0)
-    let searchHighlightColor = NSColor.red
+    let contactColor = NSColor(calibratedRed: 0.231, green: 0.518, blue: 0.941, alpha: 1) // NSColor(red: 0x66 / 255.0, green: 0x66 / 255.0, blue: 0xff / 255.0, alpha: 1.0)
+    let searchHighlightColor = NSColor(calibratedRed: 0.951, green: 0.165, blue: 0.276, alpha: 1) // NSColor.red
 
     init() {
         dateFormatter.timeStyle = .short
