@@ -10,6 +10,8 @@ import Cocoa
 
 class AttachmentsCollectionView: NSCollectionView {
 
+    // display the selected image on spacebar
+    //
     override func keyDown(with theEvent: NSEvent) {
         if theEvent.characters == " " {
             if selectionIndexPaths.count == 1 {
