@@ -191,6 +191,7 @@ class MessagesListViewController: NSViewController, NSCollectionViewDataSource, 
         var lastShownContact:ChatContact?
         var lastShownMessageIndex:Int64?
 
+        var hasAttachmentsInICloud = false
 
         for chatItem in chatItems {
 
@@ -266,6 +267,12 @@ class MessagesListViewController: NSViewController, NSCollectionViewDataSource, 
                     allMatchingMessages.append(attachmentStringWithNewLine)
 
                 } catch {
+
+                    if let fileName = attachment.fileName {
+                        if fileName.hasSuffix(".pluginPayloadAttachment") {
+                            hasAttachmentsInICloud = true
+                        }
+                    }
                     NSLog("Couldn't create filewrapper for \(String(describing: attachment.fileName))")
                 }
             }
@@ -274,6 +281,17 @@ class MessagesListViewController: NSViewController, NSCollectionViewDataSource, 
         clearMessages()
         messagesTextView.textStorage?.insert(allMatchingMessages, at: 0)
 
+        if #available(OSX 10.13, *) { // check if we need to show a dialog about attachments in iCloud - can happen if the user has messages in iCloud enabled
+
+            if hasAttachmentsInICloud {
+                let skipDialog = UserDefaults.standard.value(forKey: ShowImagesDownloadViewController.ShowImagesDownloadUserDefaultsKey) as? Bool ?? false
+
+                if !skipDialog {
+                    let showImagesDownloadWindowController = storyboard?.instantiateController(withIdentifier: "ShowImagesDownloadDialog") as! NSWindowController
+                    view.window?.beginSheet(showImagesDownloadWindowController.window!, completionHandler: nil)
+                }
+            }
+        }
     }
 
     func isAttachmentImage(_ attachment:ChatAttachment) -> Bool

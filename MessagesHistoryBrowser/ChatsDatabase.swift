@@ -9,13 +9,13 @@
 import Cocoa
 import SQLite
 
-class ChatsDatabase: NSObject {
+class ChatsDatabase {
 
-    static let sharedInstance = ChatsDatabase()
+    enum ChatasDatabaseError : Error {
+        case DBConnectionFailed
+    }
 
 //    let chatsDBPath = "/Users/glaurent/tmp/chat.db"
-
-    let chatsDBPath = NSString(string:"~/Library/Messages/chat.db").standardizingPath
 
     var contactsPhoneNumber:ContactsMap! // want delayed init
 
@@ -27,11 +27,7 @@ class ChatsDatabase: NSObject {
 
     var db:Connection!
 
-//    let progress:NSProgress
-
-//    lazy var moc = MOCController.sharedInstance.managedObjectContext
-
-    override init() {
+    init(chatsDBPath:String) throws {
 
         contactsPhoneNumber = ContactsMap.sharedInstance
 
@@ -39,15 +35,13 @@ class ChatsDatabase: NSObject {
 
             db = try Connection(chatsDBPath, readonly:true)
 
-            super.init()
+        } catch let error {
 
-        } catch {
-            super.init()
-            NSLog("%@ error", #function)
+            NSLog("\(#function) error : \(error)")
+            throw ChatasDatabaseError.DBConnectionFailed
         }
 
     }
-
 
     func populate(_ progress:Progress, completion:@escaping () -> Void)
     {

@@ -20,7 +20,7 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
 
     @objc dynamic var progress:Progress!
 
-    var chatsDatabase:ChatsDatabase!
+    var chatsDatabase:ChatsDatabase?
 
     var messagesListViewController:MessagesListViewController?
 
@@ -55,7 +55,7 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
         let appDelegate = NSApp.delegate as! AppDelegate
         appDelegate.chatTableViewController = self
 
-        chatsDatabase = ChatsDatabase.sharedInstance
+        chatsDatabase = appDelegate.chatsDatabase
 
         if let parentSplitViewController = parent as? NSSplitViewController {
             let secondSplitViewItem = parentSplitViewController.splitViewItems[1]
@@ -362,6 +362,8 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
     //
     func refreshChatHistory() {
 
+        guard let chatsDatabase = chatsDatabase else { return }
+
         setupProgressBeforeImport()
 
         let appDelegate = NSApp.delegate as! AppDelegate
@@ -407,6 +409,8 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
 
     func importMessagesFromOSXApp()
     {
+        guard let chatsDatabase = chatsDatabase else { return }
+        
         setupProgressBeforeImport()
         
         chatsDatabase.populate(progress, completion:{ () -> Void in

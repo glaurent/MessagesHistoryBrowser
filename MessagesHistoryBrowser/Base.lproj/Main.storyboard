@@ -1197,6 +1197,161 @@ Jean-Marie Lafon : http://www.lafon.mobi</string>
             </objects>
             <point key="canvasLocation" x="2206" y="434"/>
         </scene>
+        <!--Window Controller-->
+        <scene sceneID="cG3-6Q-7b6">
+            <objects>
+                <windowController storyboardIdentifier="AccessPrivilegesDialog" id="EBr-gr-TbP" sceneMemberID="viewController">
+                    <window key="window" title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" id="bai-Q7-PaA">
+                        <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
+                        <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
+                        <rect key="contentRect" x="425" y="461" width="480" height="270"/>
+                        <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1417"/>
+                        <connections>
+                            <outlet property="delegate" destination="EBr-gr-TbP" id="LQp-C3-Ci9"/>
+                        </connections>
+                    </window>
+                    <connections>
+                        <segue destination="ITq-nw-9aL" kind="relationship" relationship="window.shadowedContentViewController" id="XaU-Sd-WcF"/>
+                    </connections>
+                </windowController>
+                <customObject id="uIo-60-XAX" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1966" y="968"/>
+        </scene>
+        <!--Window Controller-->
+        <scene sceneID="Gr7-gl-7Br">
+            <objects>
+                <windowController storyboardIdentifier="ShowImagesDownloadDialog" id="wE0-0f-oOI" sceneMemberID="viewController">
+                    <window key="window" title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" id="lxN-LS-VhZ">
+                        <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
+                        <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
+                        <rect key="contentRect" x="425" y="461" width="480" height="270"/>
+                        <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1417"/>
+                        <connections>
+                            <outlet property="delegate" destination="wE0-0f-oOI" id="W2x-YE-DIP"/>
+                        </connections>
+                    </window>
+                    <connections>
+                        <segue destination="d7C-Yi-4Bd" kind="relationship" relationship="window.shadowedContentViewController" id="Nh4-2d-FsA"/>
+                    </connections>
+                </windowController>
+                <customObject id="8bg-Q9-JQc" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1966" y="1518"/>
+        </scene>
+        <!--Show Images Download View Controller-->
+        <scene sceneID="918-2P-WBT">
+            <objects>
+                <viewController id="d7C-Yi-4Bd" customClass="ShowImagesDownloadViewController" customModule="MessagesHistoryBrowser" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" id="Poi-nH-co7">
+                        <rect key="frame" x="0.0" y="0.0" width="532" height="460"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="MMx-K4-LS6">
+                                <rect key="frame" x="71" y="48" width="390" height="342"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="342" id="Avx-Sv-jhn"/>
+                                    <constraint firstAttribute="width" constant="390" id="enx-Ze-JTH"/>
+                                </constraints>
+                                <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="icloud_images_download" id="nzE-Cc-05j"/>
+                            </imageView>
+                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="zVM-2a-edc">
+                                <rect key="frame" x="18" y="406" width="496" height="34"/>
+                                <textFieldCell key="cell" selectable="YES" alignment="left" id="mA4-Au-hVq">
+                                    <font key="font" metaFont="system"/>
+                                    <string key="title">Some images for this chat appear to be stored in iCloud. To access them, please download them locally from the Messages app, then do a re-import.</string>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="IYZ-fP-x1X">
+                                <rect key="frame" x="459" y="13" width="59" height="32"/>
+                                <buttonCell key="cell" type="push" title="OK" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="aIG-tD-Rum">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="okButtonClicked:" target="d7C-Yi-4Bd" id="mte-vw-Ol5"/>
+                                </connections>
+                            </button>
+                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Ptd-FN-eX6">
+                                <rect key="frame" x="18" y="18" width="126" height="18"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <buttonCell key="cell" type="check" title="Don't show again" bezelStyle="regularSquare" imagePosition="left" inset="2" id="Zqf-X7-HuL">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                            </button>
+                        </subviews>
+                        <constraints>
+                            <constraint firstItem="MMx-K4-LS6" firstAttribute="top" secondItem="zVM-2a-edc" secondAttribute="bottom" constant="16" id="6OM-cV-BHT"/>
+                            <constraint firstItem="MMx-K4-LS6" firstAttribute="centerX" secondItem="Poi-nH-co7" secondAttribute="centerX" id="Fzk-1R-iFP"/>
+                            <constraint firstAttribute="trailing" secondItem="IYZ-fP-x1X" secondAttribute="trailing" constant="20" id="Jix-m3-lpW"/>
+                            <constraint firstAttribute="bottom" secondItem="IYZ-fP-x1X" secondAttribute="bottom" constant="20" id="MSe-gE-qob"/>
+                            <constraint firstItem="zVM-2a-edc" firstAttribute="leading" secondItem="Poi-nH-co7" secondAttribute="leading" constant="20" id="V7W-q5-ZZm"/>
+                            <constraint firstAttribute="trailing" secondItem="zVM-2a-edc" secondAttribute="trailing" constant="20" id="W5h-53-4mp"/>
+                            <constraint firstItem="zVM-2a-edc" firstAttribute="top" secondItem="Poi-nH-co7" secondAttribute="top" constant="20" id="xsb-yl-2Va"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="dontShowAgainCheckBox" destination="Ptd-FN-eX6" id="XvG-j6-Ih1"/>
+                    </connections>
+                </viewController>
+                <customObject id="CSj-Uf-s4o" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2694" y="1518"/>
+        </scene>
+        <!--Show App Privileges Setup View Controller-->
+        <scene sceneID="NQw-pR-DVT">
+            <objects>
+                <viewController id="ITq-nw-9aL" customClass="ShowAppPrivilegesSetupViewController" customModule="MessagesHistoryBrowser" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" id="qP6-xJ-mek">
+                        <rect key="frame" x="0.0" y="0.0" width="552" height="461"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="uNn-Co-aUA">
+                                <rect key="frame" x="81" y="49" width="390" height="342"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="342" id="hlU-3v-Vg4"/>
+                                    <constraint firstAttribute="width" constant="390" id="wdP-gB-KoC"/>
+                                </constraints>
+                                <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="security_setup" id="7K8-xZ-ExO"/>
+                            </imageView>
+                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="EmY-B0-Omt">
+                                <rect key="frame" x="18" y="407" width="516" height="34"/>
+                                <textFieldCell key="cell" selectable="YES" alignment="left" id="p5e-Yh-NAf">
+                                    <font key="font" metaFont="system"/>
+                                    <string key="title">Please grant Full Disk Access privileges to application. It is required to access your Messages database and the messages attachments.</string>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="g2t-Cg-vNB">
+                                <rect key="frame" x="459" y="13" width="66" height="32"/>
+                                <buttonCell key="cell" type="push" title="Quit" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="EuM-7H-aQd">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="quitButtonClicked:" target="ITq-nw-9aL" id="flU-34-wxP"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="g2t-Cg-vNB" secondAttribute="trailing" constant="33" id="LOe-l7-9Em"/>
+                            <constraint firstAttribute="bottom" secondItem="g2t-Cg-vNB" secondAttribute="bottom" constant="20" id="R9y-E5-vkr"/>
+                            <constraint firstItem="EmY-B0-Omt" firstAttribute="leading" secondItem="qP6-xJ-mek" secondAttribute="leading" constant="20" id="bC3-G1-oRX"/>
+                            <constraint firstAttribute="trailing" secondItem="EmY-B0-Omt" secondAttribute="trailing" constant="20" id="dnI-de-hUq"/>
+                            <constraint firstItem="uNn-Co-aUA" firstAttribute="top" secondItem="EmY-B0-Omt" secondAttribute="bottom" constant="16" id="fze-Zj-b53"/>
+                            <constraint firstItem="uNn-Co-aUA" firstAttribute="centerX" secondItem="qP6-xJ-mek" secondAttribute="centerX" id="sLf-ZX-sZ7"/>
+                            <constraint firstItem="EmY-B0-Omt" firstAttribute="top" secondItem="qP6-xJ-mek" secondAttribute="top" constant="20" id="zh4-nN-CfK"/>
+                        </constraints>
+                    </view>
+                </viewController>
+                <customObject id="OW2-sc-x4O" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2674" y="969"/>
+        </scene>
         <!--Messages List View Controller-->
         <scene sceneID="ELx-7x-MUW">
             <objects>
@@ -1364,4 +1519,8 @@ Jean-Marie Lafon : http://www.lafon.mobi</string>
             <point key="canvasLocation" x="1299" y="1547"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="icloud_images_download" width="602" height="498"/>
+        <image name="security_setup" width="780" height="685"/>
+    </resources>
 </document>
