@@ -1244,11 +1244,11 @@ Jean-Marie Lafon : http://www.lafon.mobi</string>
             <objects>
                 <viewController id="d7C-Yi-4Bd" customClass="ShowImagesDownloadViewController" customModule="MessagesHistoryBrowser" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="Poi-nH-co7">
-                        <rect key="frame" x="0.0" y="0.0" width="532" height="460"/>
+                        <rect key="frame" x="0.0" y="0.0" width="532" height="488"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="MMx-K4-LS6">
-                                <rect key="frame" x="71" y="48" width="390" height="342"/>
+                                <rect key="frame" x="71" y="59" width="390" height="342"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="342" id="Avx-Sv-jhn"/>
                                     <constraint firstAttribute="width" constant="390" id="enx-Ze-JTH"/>
@@ -1256,10 +1256,10 @@ Jean-Marie Lafon : http://www.lafon.mobi</string>
                                 <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="icloud_images_download" id="nzE-Cc-05j"/>
                             </imageView>
                             <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="zVM-2a-edc">
-                                <rect key="frame" x="18" y="406" width="496" height="34"/>
+                                <rect key="frame" x="18" y="417" width="496" height="51"/>
                                 <textFieldCell key="cell" selectable="YES" alignment="left" id="mA4-Au-hVq">
                                     <font key="font" metaFont="system"/>
-                                    <string key="title">Some images for this chat appear to be stored in iCloud. To access them, please download them locally from the Messages app, then do a re-import.</string>
+                                    <string key="title">You have enabled iCloud Messages synchronisation. Some images for this chat appear to be stored in iCloud. To view them here, please download them locally from the Messages app, then do a re-import.</string>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
@@ -1269,14 +1269,16 @@ Jean-Marie Lafon : http://www.lafon.mobi</string>
                                 <buttonCell key="cell" type="push" title="OK" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="aIG-tD-Rum">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="system"/>
+                                    <string key="keyEquivalent" base64-UTF8="YES">
+DQ
+</string>
                                 </buttonCell>
                                 <connections>
                                     <action selector="okButtonClicked:" target="d7C-Yi-4Bd" id="mte-vw-Ol5"/>
                                 </connections>
                             </button>
-                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Ptd-FN-eX6">
-                                <rect key="frame" x="18" y="18" width="126" height="18"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Ptd-FN-eX6">
+                                <rect key="frame" x="18" y="22" width="126" height="18"/>
                                 <buttonCell key="cell" type="check" title="Don't show again" bezelStyle="regularSquare" imagePosition="left" inset="2" id="Zqf-X7-HuL">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
@@ -1290,6 +1292,8 @@ Jean-Marie Lafon : http://www.lafon.mobi</string>
                             <constraint firstAttribute="bottom" secondItem="IYZ-fP-x1X" secondAttribute="bottom" constant="20" id="MSe-gE-qob"/>
                             <constraint firstItem="zVM-2a-edc" firstAttribute="leading" secondItem="Poi-nH-co7" secondAttribute="leading" constant="20" id="V7W-q5-ZZm"/>
                             <constraint firstAttribute="trailing" secondItem="zVM-2a-edc" secondAttribute="trailing" constant="20" id="W5h-53-4mp"/>
+                            <constraint firstItem="Ptd-FN-eX6" firstAttribute="firstBaseline" secondItem="IYZ-fP-x1X" secondAttribute="firstBaseline" id="rux-jX-Rt2"/>
+                            <constraint firstItem="Ptd-FN-eX6" firstAttribute="leading" secondItem="Poi-nH-co7" secondAttribute="leading" constant="20" id="x0E-AW-rRL"/>
                             <constraint firstItem="zVM-2a-edc" firstAttribute="top" secondItem="Poi-nH-co7" secondAttribute="top" constant="20" id="xsb-yl-2Va"/>
                         </constraints>
                     </view>
@@ -1299,7 +1303,7 @@ Jean-Marie Lafon : http://www.lafon.mobi</string>
                 </viewController>
                 <customObject id="CSj-Uf-s4o" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2694" y="1518"/>
+            <point key="canvasLocation" x="2694" y="1532"/>
         </scene>
         <!--Show App Privileges Setup View Controller-->
         <scene sceneID="NQw-pR-DVT">

@@ -14,6 +14,8 @@ class MessagesListViewController: NSViewController, NSCollectionViewDataSource, 
 
     let windowControllerId = "ImageAttachmentDisplayWindowController"
 
+    let attachmentInICloudPathSuffix = ".pluginPayloadAttachment"
+
     @IBOutlet weak var attachmentsCollectionView: NSCollectionView!
     @IBOutlet var messagesTextView: NSTextView!
 
@@ -90,15 +92,20 @@ class MessagesListViewController: NSViewController, NSCollectionViewDataSource, 
         if let attachmentFileName = attachment.fileName {
 
             let imagePath = NSString(string:attachmentFileName).standardizingPath
-            // load image in background
-            let backgroundQueue = DispatchQueue.global(qos: .background)
-            backgroundQueue.async {
-                let image = NSImage(contentsOfFile: imagePath)
-                DispatchQueue.main.async {
-                    item.imageView?.image = image
+
+            if !imagePath.hasSuffix(attachmentInICloudPathSuffix) { // default image set in xib is iCloud icon, don't change it if attachment is in iCloud
+
+//                NSLog("loading image in background")
+                // load image in background
+                let backgroundQueue = DispatchQueue.global(qos: .background)
+                backgroundQueue.async {
+                    if let image = NSImage(contentsOfFile: imagePath) {
+                        DispatchQueue.main.async {
+                            item.imageView?.image = image
+                        }
+                    }
                 }
             }
-
             item.textField?.stringValue = dateFormatter.string(from: attachment.date as Date)
         } else {
             item.textField?.stringValue = "unknown"
@@ -126,7 +133,7 @@ class MessagesListViewController: NSViewController, NSCollectionViewDataSource, 
         NSLog("displayAttachmentAtIndexPath \(indexPath)")
 
         if currentImageAttachmentDisplayWindowController == nil {
-            currentImageAttachmentDisplayWindowController = self.storyboard!.instantiateController(withIdentifier: self.windowControllerId) as? NSWindowController
+            currentImageAttachmentDisplayWindowController = storyboard!.instantiateController(withIdentifier: self.windowControllerId) as? NSWindowController
         }
 
         let imageAttachmentDisplayViewController = currentImageAttachmentDisplayWindowController?.contentViewController as! ImageAttachmentDisplayViewController
@@ -236,15 +243,17 @@ class MessagesListViewController: NSViewController, NSCollectionViewDataSource, 
 
                 let attachmentPath = NSString(string:attachmentFileName).standardizingPath
 
+                let fileExists = FileManager.default.fileExists(atPath: attachmentPath)
+
                 let attachmentURL = URL(fileURLWithPath: attachmentPath, isDirectory: false)
 
                 do {
                     let textAttachment:NSTextAttachment
 
-                    if isAttachmentImage(attachment) {
+                    if isAttachmentImage(attachment) || !fileExists { // either show the image itself or an icloud icon if it's not there
 
                         textAttachment = NSTextAttachment()
-                        let image = NSImage(byReferencingFile: attachmentPath)
+                        let image = fileExists ? NSImage(byReferencingFile: attachmentPath) : NSImage(named: "icloud icon")
                         let textAttachmentCell = ImageAttachmentCell(imageCell: image)
                         textAttachment.attachmentCell = textAttachmentCell
 
@@ -269,7 +278,7 @@ class MessagesListViewController: NSViewController, NSCollectionViewDataSource, 
                 } catch {
 
                     if let fileName = attachment.fileName {
-                        if fileName.hasSuffix(".pluginPayloadAttachment") {
+                        if fileName.hasSuffix(attachmentInICloudPathSuffix) {
                             hasAttachmentsInICloud = true
                         }
                     }
