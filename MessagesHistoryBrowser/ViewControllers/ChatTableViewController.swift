@@ -20,8 +20,6 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
 
     @objc dynamic var progress:Progress!
 
-    var chatsDatabase:ChatsDatabase?
-
     var messagesListViewController:MessagesListViewController?
 
     var allKnownContacts = [ChatContact]()
@@ -54,8 +52,6 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
 
         let appDelegate = NSApp.delegate as! AppDelegate
         appDelegate.chatTableViewController = self
-
-        chatsDatabase = appDelegate.chatsDatabase
 
         if let parentSplitViewController = parent as? NSSplitViewController {
             let secondSplitViewItem = parentSplitViewController.splitViewItems[1]
@@ -362,20 +358,22 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
     //
     func refreshChatHistory() {
 
-        guard let chatsDatabase = chatsDatabase else { return }
-
         setupProgressBeforeImport()
 
         let appDelegate = NSApp.delegate as! AppDelegate
+
+        guard let chatsDatabase = appDelegate.chatsDatabase else {
+//            appDelegate.isRefreshingHistory = false
+            return
+        }
 
         MOCController.sharedInstance.clearAllCoreData()
 
         chatsDatabase.populate(progress, completion:{ () -> Void in
 
             self.completeImport()
-            appDelegate.isRefreshingHistory = false
-
             MOCController.sharedInstance.save()
+            appDelegate.isRefreshingHistory = false
         })
     }
 
@@ -409,15 +407,22 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
 
     func importMessagesFromOSXApp()
     {
-        guard let chatsDatabase = chatsDatabase else { return }
-        
+        let appDelegate = NSApp.delegate as! AppDelegate
+
+        appDelegate.isRefreshingHistory = true
+
+        guard let chatsDatabase = appDelegate.chatsDatabase else {
+            appDelegate.isRefreshingHistory = false
+            return
+        }
+
         setupProgressBeforeImport()
         
         chatsDatabase.populate(progress, completion:{ () -> Void in
             
             self.completeImport()
             MOCController.sharedInstance.save()
-            
+            appDelegate.isRefreshingHistory = false
         })
 
     }
