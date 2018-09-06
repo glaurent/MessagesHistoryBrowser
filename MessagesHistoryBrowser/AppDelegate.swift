@@ -54,8 +54,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             if #available(OSX 10.14, *) {
 
                 let showAppPrivilegesSetupWindowController = NSStoryboard.main?.instantiateController(withIdentifier: "AccessPrivilegesDialog") as! NSWindowController
-                NSApp.runModal(for: showAppPrivilegesSetupWindowController.window!)
-                NSApp.terminate(nil)
+
+                NSApp.mainWindow?.beginSheet(showAppPrivilegesSetupWindowController.window!, completionHandler: { (_) in
+                    NSApp.terminate(nil)
+                })
 
             } else {
                 let alert = NSAlert()

@@ -16,7 +16,7 @@ class ShowAppPrivilegesSetupViewController: NSViewController {
     }
 
     @IBAction func quitButtonClicked(_ sender: Any) {
-        NSApp.terminate(sender)
+        view.window?.sheetParent?.endSheet(view.window!)
     }
 
 }
