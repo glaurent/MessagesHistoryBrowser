@@ -8,6 +8,9 @@
 
 import Cocoa
 
+/**
+ * Wraps XPC service to return Swift objects
+ */
 class ContactsMapProxy {
 
     static let sharedInstance = ContactsMapProxy()
@@ -36,11 +39,8 @@ class ContactsMapProxy {
 
         contactsFetcher.nameAndCNIdentifierFromChatIdentifier(identifier, serviceName: serviceName) { (nsStrings, contactIsKnown) in
 
-            if nsStrings[0].length == 0 {
-                reply(nil, false)
-            } else {
-                reply((nsStrings[0] as String, nsStrings[1] as String), true)
-            }
+            reply((nsStrings[0] as String, nsStrings[1] as String), contactIsKnown)
+
         }
     }
 
