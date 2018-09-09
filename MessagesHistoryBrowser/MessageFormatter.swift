@@ -80,7 +80,7 @@ class MessageFormatter {
 //        let messageContentNS = NSString(string:" - \(message.index) : " + messageContent + "\n") // has to be an NSString because we use rangeOfString below
         let messageContentNS = NSString(string:" : " + messageContent + "\n") // has to be an NSString because we use rangeOfString below
 
-        let highlightedMessage = NSMutableAttributedString(string: messageContentNS as String)
+        let highlightedMessage = NSMutableAttributedString(string: messageContentNS as String, attributes: [NSAttributedString.Key.foregroundColor : NSColor.textColor])
 
         if let highlightTerm = highlightTerm {
             let rangeOfSearchedTerm = messageContentNS.range(of: highlightTerm)
@@ -104,12 +104,14 @@ class MessageFormatter {
             let sender:NSMutableAttributedString
 
             if message.isFromMe {
-                sender = NSMutableAttributedString(string: meString, attributes: [NSAttributedString.Key.backgroundColor : meColor])
+                sender = NSMutableAttributedString(string: meString, attributes: [NSAttributedString.Key.foregroundColor : NSColor.textColor,
+                    NSAttributedString.Key.backgroundColor : meColor])
             } else {
-                sender = NSMutableAttributedString(string: chatContact.name , attributes: [NSAttributedString.Key.backgroundColor : contactColor])
+                sender = NSMutableAttributedString(string: chatContact.name , attributes: [NSAttributedString.Key.foregroundColor : NSColor.textColor,
+                                                                                           NSAttributedString.Key.backgroundColor : contactColor])
             }
 
-            let dateString = NSMutableAttributedString(string: dateFormatter.string(from: message.date as Date))
+            let dateString = NSMutableAttributedString(string: dateFormatter.string(from: message.date as Date), attributes:[NSAttributedString.Key.foregroundColor : NSColor.textColor])
             dateString.append(NSAttributedString(string: " - "))
 //            dateString.appendAttributedString(NSAttributedString(string: " - \(message.index) -"))
 
@@ -126,6 +128,7 @@ class MessageFormatter {
             } else {
                 dateString.addAttribute(NSAttributedString.Key.backgroundColor, value: contactColor, range: range)
             }
+            dateString.addAttribute(NSAttributedString.Key.foregroundColor, value: NSColor.textColor, range: range)
             
             return dateString
         }

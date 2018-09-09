@@ -857,7 +857,7 @@ Jean-Marie Lafon : http://www.lafon.mobi</string>
                                         </connections>
                                     </button>
                                     <datePicker verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="lou-wM-eNy">
-                                        <rect key="frame" x="87" y="47" width="99" height="27"/>
+                                        <rect key="frame" x="87" y="47" width="100" height="27"/>
                                         <datePickerCell key="cell" borderStyle="bezel" alignment="left" id="kXc-qA-xvl">
                                             <font key="font" metaFont="system"/>
                                             <date key="date" timeIntervalSinceReferenceDate="-595929600">
@@ -883,7 +883,7 @@ Jean-Marie Lafon : http://www.lafon.mobi</string>
                                         </connections>
                                     </button>
                                     <datePicker verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="JJY-fj-bdz">
-                                        <rect key="frame" x="87" y="16" width="99" height="27"/>
+                                        <rect key="frame" x="87" y="16" width="100" height="27"/>
                                         <datePickerCell key="cell" borderStyle="bezel" alignment="left" id="5UX-CT-Hnh">
                                             <font key="font" metaFont="system"/>
                                             <date key="date" timeIntervalSinceReferenceDate="-595929600">
@@ -981,11 +981,11 @@ Jean-Marie Lafon : http://www.lafon.mobi</string>
                                         </tableView>
                                     </subviews>
                                 </clipView>
-                                <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="dLE-Ys-cpM">
+                                <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="dLE-Ys-cpM">
                                     <rect key="frame" x="1" y="263" width="448" height="16"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
-                                <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="clj-6B-EVO">
+                                <scroller key="verticalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="NO" id="clj-6B-EVO">
                                     <rect key="frame" x="224" y="17" width="15" height="102"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
@@ -998,7 +998,7 @@ Jean-Marie Lafon : http://www.lafon.mobi</string>
                                 <rect key="frame" x="0.0" y="0.0" width="505" height="280"/>
                                 <subviews>
                                     <progressIndicator wantsLayer="YES" canDrawConcurrently="YES" maxValue="1" style="bar" translatesAutoresizingMaskIntoConstraints="NO" id="LcQ-1Y-GBm">
-                                        <rect key="frame" x="91" y="130" width="322" height="20"/>
+                                        <rect key="frame" x="92" y="130" width="322" height="20"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="322" id="do5-qG-93O"/>
                                             <constraint firstAttribute="height" constant="18" id="tjQ-of-yef"/>
@@ -1012,7 +1012,7 @@ Jean-Marie Lafon : http://www.lafon.mobi</string>
                                         </connections>
                                     </progressIndicator>
                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="G2L-Mo-7yd">
-                                        <rect key="frame" x="89" y="106" width="326" height="17"/>
+                                        <rect key="frame" x="90" y="106" width="326" height="17"/>
                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="progress report" id="jdD-9y-Tp5">
                                             <font key="font" metaFont="system"/>
                                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -1027,7 +1027,7 @@ Jean-Marie Lafon : http://www.lafon.mobi</string>
                                         </connections>
                                     </textField>
                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="rXY-5L-Tvu">
-                                        <rect key="frame" x="89" y="81" width="162" height="17"/>
+                                        <rect key="frame" x="90" y="81" width="162" height="17"/>
                                         <textFieldCell key="cell" lineBreakMode="clipping" title="additional progress report" id="3Fs-Pb-8i2">
                                             <font key="font" metaFont="system"/>
                                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -1145,11 +1145,11 @@ Jean-Marie Lafon : http://www.lafon.mobi</string>
                                         </outlineView>
                                     </subviews>
                                 </clipView>
-                                <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="ALX-k3-YnV">
+                                <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="ALX-k3-YnV">
                                     <rect key="frame" x="1" y="7" width="0.0" height="16"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
-                                <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="Ra3-73-Pyq">
+                                <scroller key="verticalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="NO" id="Ra3-73-Pyq">
                                     <rect key="frame" x="-15" y="23" width="16" height="0.0"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
@@ -1373,7 +1373,7 @@ DQ
                                         <subviews>
                                             <scrollView wantsLayer="YES" autohidesScrollers="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zoY-MA-Jro">
                                                 <rect key="frame" x="0.0" y="0.0" width="450" height="142"/>
-                                                <clipView key="contentView" drawsBackground="NO" id="Hl6-Yh-RpC">
+                                                <clipView key="contentView" id="Hl6-Yh-RpC">
                                                     <rect key="frame" x="1" y="1" width="448" height="140"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     <subviews>
@@ -1391,11 +1391,11 @@ DQ
                                                         </collectionView>
                                                     </subviews>
                                                 </clipView>
-                                                <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="w56-Rq-Bv4">
+                                                <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="w56-Rq-Bv4">
                                                     <rect key="frame" x="1" y="144" width="233" height="15"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                 </scroller>
-                                                <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="bAE-nO-uFN">
+                                                <scroller key="verticalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="bAE-nO-uFN">
                                                     <rect key="frame" x="234" y="1" width="15" height="143"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                 </scroller>
@@ -1429,11 +1429,11 @@ DQ
                                                         </textView>
                                                     </subviews>
                                                 </clipView>
-                                                <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="YES" id="qxC-be-hWL">
+                                                <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="YES" id="qxC-be-hWL">
                                                     <rect key="frame" x="-100" y="-100" width="87" height="18"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                 </scroller>
-                                                <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="Icy-xM-cH8">
+                                                <scroller key="verticalScroller" wantsLayer="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="Icy-xM-cH8">
                                                     <rect key="frame" x="433" y="1" width="16" height="146"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                 </scroller>
