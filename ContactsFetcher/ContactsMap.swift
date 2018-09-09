@@ -126,6 +126,8 @@ class ContactsMap : NSObject {
             }
         }
 
+        // This really works for French numbers only
+        //
         if res.hasPrefix("0") {
             let skip0Index = res.index(res.startIndex, offsetBy: 1)
 //            res = countryPhonePrefix + res.substring(from: skip0Index)
