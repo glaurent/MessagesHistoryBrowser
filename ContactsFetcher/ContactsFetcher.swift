@@ -15,11 +15,11 @@ class ContactsFetcher: NSObject, ContactsFetcherProtocol {
     let emptyResult = [NSString(), NSString()]
 
     override init() {
-        contactsMap.populate()
+//        contactsMap.populate()
     }
 
-    func populate() {
-        contactsMap.populate()
+    func populate(withPhonePrefix phonePrefix:String) {
+        contactsMap.populate(withCountryPhonePrefix: phonePrefix)
     }
 
     func nameAndCNIdentifierFromChatIdentifier(_ identifier:String, serviceName:String, withReply reply: @escaping (_ nameAndCNIdentifierPair:[NSString], _ contactIsKnown:Bool) -> Void) {

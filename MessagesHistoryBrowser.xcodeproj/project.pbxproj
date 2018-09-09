@@ -30,6 +30,7 @@
 		AFAB02462142745F000D9864 /* ContactsMapProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFAB02452142745F000D9864 /* ContactsMapProxy.swift */; };
 		AFAB024821447BB1000D9864 /* Contacts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AFAB024721447BB1000D9864 /* Contacts.framework */; };
 		AFAB024921452C1D000D9864 /* LabelToImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF55D3261C543357000377DD /* LabelToImage.swift */; };
+		AFAB024A21458DE4000D9864 /* phone country codes.json in Resources */ = {isa = PBXBuildFile; fileRef = AF029C431C4D746100B1A950 /* phone country codes.json */; };
 		AFAF103C213F3707009DDA82 /* ShowAppPrivilegesSetupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFAF103B213F3706009DDA82 /* ShowAppPrivilegesSetupViewController.swift */; };
 		AFAF103F2140523F009DDA82 /* ShowImagesDownloadViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFAF103E2140523F009DDA82 /* ShowImagesDownloadViewController.swift */; };
 		AFAF8B141BF3B91E009D92F6 /* ImageAttachmentCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFAF8B131BF3B91E009D92F6 /* ImageAttachmentCell.swift */; };
@@ -486,6 +487,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AFAB024A21458DE4000D9864 /* phone country codes.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

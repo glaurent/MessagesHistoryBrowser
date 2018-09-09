@@ -9,7 +9,7 @@
 import Cocoa
 import Contacts
 
-class ContactsMap : NSObject {
+class ContactsMap {
 
 //    let countryPhonePrefix = "+33"
     var countryPhonePrefix:String
@@ -26,50 +26,13 @@ class ContactsMap : NSObject {
 
     var progress:Progress?
 
-    override init()
-    {
-        countryPhonePrefix = "+1" // default to US prefix
-
-        if let val = UserDefaults.standard.value(forKey: "CountryPhonePrefix") {
-
-            if let valNum = val as? NSNumber {
-                countryPhonePrefix = "+" + valNum.stringValue
-            } else if let valString = val as? String {
-                countryPhonePrefix = "+" + valString
-            }
-
-            print("Found default value for CountryPhonePrefix : \(val)")
-            
-        } else if let jsonCountryPhoneCodeFileURL = Bundle.main.url(forResource: "phone country codes", withExtension: "json"),
-            let jsonData = try? Data(contentsOf: jsonCountryPhoneCodeFileURL) {
-
-                do {
-                    var countryPhonePrefixDict:[String:String]
-
-                    try countryPhonePrefixDict = JSONSerialization.jsonObject(with: jsonData, options: JSONSerialization.ReadingOptions(rawValue:0)) as! [String : String]
-
-                    if let countryCode = (Locale.current as NSLocale).object(forKey: NSLocale.Key.countryCode) as? String,
-                    let phonePrefix = countryPhonePrefixDict[countryCode] {
-
-                        if phonePrefix.first == "+" {
-                            countryPhonePrefix = phonePrefix
-                        } else {
-                            countryPhonePrefix = "+" + phonePrefix
-                        }
-                        UserDefaults.standard.setValue(phonePrefix, forKey: "CountryPhonePrefix")
-                    }
-
-                } catch {
-                    print("Couldn't parse JSON phone code data")
-                }
-        }
-
-        super.init()
-        
+    init() {
+        countryPhonePrefix = "+1"
     }
 
-    func populate()
-    {
+    func populate(withCountryPhonePrefix phonePrefix:String) {
+
+        countryPhonePrefix = phonePrefix
 
         // get number of contacts so we can set the totalUnitCount of this NSProgress
         //
@@ -79,14 +42,14 @@ class ContactsMap : NSObject {
 //            NSLog("\(#function) : nb of contacts : \(allContactsForCount.count)")
         }
 
-        DispatchQueue.global(qos: .background).sync { () -> Void in
+//        DispatchQueue.global(qos: .background).sync { () -> Void in
 
             let contactFetchRequest = CNContactFetchRequest(keysToFetch: [CNContactPhoneNumbersKey as CNKeyDescriptor, CNContactFamilyNameKey as CNKeyDescriptor, CNContactGivenNameKey as CNKeyDescriptor, CNContactNicknameKey as CNKeyDescriptor])
 
             do {
 
                 try self.contactStore.enumerateContacts(with: contactFetchRequest) { (contact, stop) -> Void in
-//                    NSLog("contact : \(contact.givenName)")
+                    NSLog("\(#function) contact : \(contact.givenName)")
 
                     let phoneNumbers = contact.phoneNumbers
                     if phoneNumbers.count > 0 {
@@ -106,7 +69,8 @@ class ContactsMap : NSObject {
             } catch let e {
                 NSLog("\(#function) error while enumerating contacts : \(e)")
             }
-        }
+
+//        }
 
         self.progress = nil
 

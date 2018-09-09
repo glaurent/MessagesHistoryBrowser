@@ -39,7 +39,9 @@ class MOCController: NSObject {
         let deleteContactsRequest = NSBatchDeleteRequest(fetchRequest: contactsFetchRequest)
 
         do {
-            try workerContext().execute(deleteContactsRequest)
+            let context = workerContext()
+            try context.execute(deleteContactsRequest)
+            try context.save()
         } catch let error {
             NSLog("ERROR when deleting contacts : \(error)")
         }

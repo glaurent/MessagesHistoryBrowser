@@ -379,9 +379,10 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
     //
     func refreshChatHistory() {
 
-        setupProgressBeforeImport()
-
         let appDelegate = NSApp.delegate as! AppDelegate
+        appDelegate.isRefreshingHistory = true
+
+        setupProgressBeforeImport()
 
         guard let chatsDatabase = appDelegate.chatsDatabase else {
 //            appDelegate.isRefreshingHistory = false
@@ -455,7 +456,9 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
 //            print("observeValueForKeyPath on NSUserDefaults : no new value found")
 //        }
 
-        refreshChatHistory()
+        // probably not a good idea from a usability point of view to trigger a re-import on pref change
+        //
+//        refreshChatHistory()
     }
 
     func setupChatDatabase() {

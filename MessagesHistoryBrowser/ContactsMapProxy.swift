@@ -19,7 +19,11 @@ class ContactsMapProxy {
 
     var contactsFetcher:ContactsFetcherProtocol
 
+    var countryPhonePrefix:String
+
     init() {
+        countryPhonePrefix = "+1" // default to US phone prefix
+        
         connection = NSXPCConnection(serviceName: "org.telegraph-road.MessagesHistoryBrowser.ContactsFetcher")
         connection.remoteObjectInterface = NSXPCInterface(with: ContactsFetcherProtocol.self)
         connection.resume()
@@ -32,7 +36,8 @@ class ContactsMapProxy {
     }
 
     func populate() {
-        contactsFetcher.populate()
+        setupCountryPhonePrefix()
+        contactsFetcher.populate(withPhonePrefix: countryPhonePrefix)
     }
 
     func nameAndCNIdentifierFromChatIdentifier(_ identifier:String, serviceName:String, withReply reply: @escaping (_ nameIdentifierPair:(String, String)?, _ contactIsKnown:Bool) -> Void) {
@@ -96,9 +101,42 @@ class ContactsMapProxy {
 
     }
 
-    func countryPhonePrefix(reply: @escaping (String) -> Void) {
-        contactsFetcher.countryPhonePrefix() { (prefix:NSString) in
-            reply(prefix as String)
+    fileprivate func setupCountryPhonePrefix() {
+        // default to US prefix
+
+        if let val = UserDefaults.standard.value(forKey: "CountryPhonePrefix") {
+
+            if let valNum = val as? NSNumber {
+                countryPhonePrefix = "+" + valNum.stringValue
+            } else if let valString = val as? String {
+                countryPhonePrefix = "+" + valString
+            }
+
+            NSLog("\(#function) Found default value for CountryPhonePrefix : \(val) in UserDefaults")
+
+        } else if let jsonCountryPhoneCodeFileURL = Bundle.main.url(forResource: "phone country codes", withExtension: "json"),
+            let jsonData = try? Data(contentsOf: jsonCountryPhoneCodeFileURL) {
+
+            do {
+                var countryPhonePrefixDict:[String:String]
+
+                try countryPhonePrefixDict = JSONSerialization.jsonObject(with: jsonData, options: JSONSerialization.ReadingOptions(rawValue:0)) as! [String : String]
+
+                if let countryCode = (Locale.current as NSLocale).object(forKey: NSLocale.Key.countryCode) as? String,
+                    let phonePrefix = countryPhonePrefixDict[countryCode] {
+
+                    if phonePrefix.first == "+" {
+                        countryPhonePrefix = phonePrefix
+                    } else {
+                        countryPhonePrefix = "+" + phonePrefix
+                    }
+                    UserDefaults.standard.setValue(phonePrefix, forKey: "CountryPhonePrefix")
+                    NSLog("\(#function) set CountryPhonePrefix to \(phonePrefix) from JSON file")
+                }
+
+            } catch {
+                NSLog("\(#function) Couldn't parse JSON phone code data")
+            }
         }
     }
 

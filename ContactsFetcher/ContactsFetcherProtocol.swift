@@ -9,7 +9,7 @@
 import Foundation
 
 @objc(ContactsFetcherProtocol) protocol ContactsFetcherProtocol {
-    func populate()
+    func populate(withPhonePrefix:String)
 
     func nameAndCNIdentifierFromChatIdentifier(_ chatIdentifier:String, serviceName:String, withReply: @escaping (_ nameIdentifierPair:[NSString], _ contactIsKnown:Bool) -> Void)
 

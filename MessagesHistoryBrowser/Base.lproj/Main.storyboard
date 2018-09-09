@@ -1371,13 +1371,13 @@ DQ
                                         <rect key="frame" x="0.0" y="0.0" width="450" height="142"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <subviews>
-                                            <scrollView autohidesScrollers="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zoY-MA-Jro">
+                                            <scrollView wantsLayer="YES" autohidesScrollers="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zoY-MA-Jro">
                                                 <rect key="frame" x="0.0" y="0.0" width="450" height="142"/>
                                                 <clipView key="contentView" drawsBackground="NO" id="Hl6-Yh-RpC">
                                                     <rect key="frame" x="1" y="1" width="448" height="140"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     <subviews>
-                                                        <collectionView selectable="YES" id="Tmj-AG-K2d" customClass="AttachmentsCollectionView" customModule="MessagesHistoryBrowser" customModuleProvider="target">
+                                                        <collectionView wantsLayer="YES" selectable="YES" id="Tmj-AG-K2d" customClass="AttachmentsCollectionView" customModule="MessagesHistoryBrowser" customModuleProvider="target">
                                                             <rect key="frame" x="0.0" y="0.0" width="448" height="140"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
                                                             <collectionViewFlowLayout key="collectionViewLayout" minimumInteritemSpacing="15" minimumLineSpacing="15" id="fGR-We-cEX">
