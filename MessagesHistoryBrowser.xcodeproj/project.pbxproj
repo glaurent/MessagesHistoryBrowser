@@ -15,13 +15,21 @@
 		AF424CD61BC9609D006EE8D2 /* ChatAttachment.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF424CD51BC9609D006EE8D2 /* ChatAttachment.swift */; };
 		AF424CD81BC963E4006EE8D2 /* ChatContact.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF424CD71BC963E4006EE8D2 /* ChatContact.swift */; };
 		AF47D8771BDCDD20002CDF4B /* ChatTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF47D8761BDCDD20002CDF4B /* ChatTableViewController.swift */; };
-		AF55D3271C543357000377DD /* LabelToImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF55D3261C543357000377DD /* LabelToImage.swift */; };
 		AF8003B81C273838008A1D64 /* ImageAttachmentDisplayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF8003B71C273838008A1D64 /* ImageAttachmentDisplayViewController.swift */; };
 		AF8003BC1C2E9D04008A1D64 /* MOCController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF8003BB1C2E9D04008A1D64 /* MOCController.swift */; };
 		AF8003BF1C357A0E008A1D64 /* ChatItemsFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF8003BE1C357A0E008A1D64 /* ChatItemsFetcher.swift */; };
 		AF8003C11C4A6545008A1D64 /* RoundImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF8003C01C4A6545008A1D64 /* RoundImage.swift */; };
 		AF82EDB51C23708B00F8132D /* AttachmentsCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF82EDB41C23708B00F8132D /* AttachmentsCollectionView.swift */; };
 		AF82EDB71C23723F00F8132D /* AttachmentsCollectionViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF82EDB61C23723F00F8132D /* AttachmentsCollectionViewDelegate.swift */; };
+		AFAB02362141D65B000D9864 /* ContactsFetcher.xpc in Embed XPC Services */ = {isa = PBXBuildFile; fileRef = AFAB022B2141D65B000D9864 /* ContactsFetcher.xpc */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		AFAB023D2141D6F0000D9864 /* ContactsFetcherProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFAB023C2141D6F0000D9864 /* ContactsFetcherProtocol.swift */; };
+		AFAB023E21426093000D9864 /* ContactsMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFD974C91BB81885004CF8D7 /* ContactsMap.swift */; };
+		AFAB0241214261FD000D9864 /* ContactsFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFAB0240214261FD000D9864 /* ContactsFetcher.swift */; };
+		AFAB024321426573000D9864 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFAB024221426573000D9864 /* main.swift */; };
+		AFAB0244214273DC000D9864 /* ContactsFetcherProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFAB023C2141D6F0000D9864 /* ContactsFetcherProtocol.swift */; };
+		AFAB02462142745F000D9864 /* ContactsMapProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFAB02452142745F000D9864 /* ContactsMapProxy.swift */; };
+		AFAB024821447BB1000D9864 /* Contacts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AFAB024721447BB1000D9864 /* Contacts.framework */; };
+		AFAB024921452C1D000D9864 /* LabelToImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF55D3261C543357000377DD /* LabelToImage.swift */; };
 		AFAF103C213F3707009DDA82 /* ShowAppPrivilegesSetupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFAF103B213F3706009DDA82 /* ShowAppPrivilegesSetupViewController.swift */; };
 		AFAF103F2140523F009DDA82 /* ShowImagesDownloadViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFAF103E2140523F009DDA82 /* ShowImagesDownloadViewController.swift */; };
 		AFAF8B141BF3B91E009D92F6 /* ImageAttachmentCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFAF8B131BF3B91E009D92F6 /* ImageAttachmentCell.swift */; };
@@ -35,13 +43,19 @@
 		AFD974AC1BB816B6004CF8D7 /* MessagesHistoryBrowserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFD974AB1BB816B6004CF8D7 /* MessagesHistoryBrowserTests.swift */; };
 		AFD974B71BB816B6004CF8D7 /* MessagesHistoryBrowserUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFD974B61BB816B6004CF8D7 /* MessagesHistoryBrowserUITests.swift */; };
 		AFD974CA1BB81885004CF8D7 /* Chat.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFD974C81BB81885004CF8D7 /* Chat.swift */; };
-		AFD974CB1BB81885004CF8D7 /* ContactsMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFD974C91BB81885004CF8D7 /* ContactsMap.swift */; };
 		AFE9B8031BCB088A007FC376 /* AttachmentsCollectionViewItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFE9B8011BCB088A007FC376 /* AttachmentsCollectionViewItem.swift */; };
 		AFE9B8041BCB088A007FC376 /* AttachmentsCollectionViewItem.xib in Resources */ = {isa = PBXBuildFile; fileRef = AFE9B8021BCB088A007FC376 /* AttachmentsCollectionViewItem.xib */; };
 		AFE9B8061BD3A2EE007FC376 /* MessageFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFE9B8051BD3A2EE007FC376 /* MessageFormatter.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		AFAB02342141D65B000D9864 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AFD9748B1BB816B5004CF8D7 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = AFAB022A2141D65B000D9864;
+			remoteInfo = ContactsFetcher;
+		};
 		AFD974A81BB816B6004CF8D7 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = AFD9748B1BB816B5004CF8D7 /* Project object */;
@@ -57,6 +71,20 @@
 			remoteInfo = MessagesHistoryBrowser;
 		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		AFAB023A2141D65B000D9864 /* Embed XPC Services */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/XPCServices";
+			dstSubfolderSpec = 16;
+			files = (
+				AFAB02362141D65B000D9864 /* ContactsFetcher.xpc in Embed XPC Services */,
+			);
+			name = "Embed XPC Services";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		06B41BFE43415391B628446C /* Pods-MessagesHistoryBrowser.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MessagesHistoryBrowser.release.xcconfig"; path = "Pods/Target Support Files/Pods-MessagesHistoryBrowser/Pods-MessagesHistoryBrowser.release.xcconfig"; sourceTree = "<group>"; };
@@ -78,6 +106,14 @@
 		AF8003C01C4A6545008A1D64 /* RoundImage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RoundImage.swift; sourceTree = "<group>"; };
 		AF82EDB41C23708B00F8132D /* AttachmentsCollectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttachmentsCollectionView.swift; sourceTree = "<group>"; };
 		AF82EDB61C23723F00F8132D /* AttachmentsCollectionViewDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttachmentsCollectionViewDelegate.swift; sourceTree = "<group>"; };
+		AFAB022B2141D65B000D9864 /* ContactsFetcher.xpc */ = {isa = PBXFileReference; explicitFileType = "wrapper.xpc-service"; includeInIndex = 0; path = ContactsFetcher.xpc; sourceTree = BUILT_PRODUCTS_DIR; };
+		AFAB02332141D65B000D9864 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		AFAB023B2141D66F000D9864 /* ContactsFetcher.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ContactsFetcher.entitlements; sourceTree = "<group>"; };
+		AFAB023C2141D6F0000D9864 /* ContactsFetcherProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsFetcherProtocol.swift; sourceTree = "<group>"; };
+		AFAB0240214261FD000D9864 /* ContactsFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsFetcher.swift; sourceTree = "<group>"; };
+		AFAB024221426573000D9864 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		AFAB02452142745F000D9864 /* ContactsMapProxy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsMapProxy.swift; sourceTree = "<group>"; };
+		AFAB024721447BB1000D9864 /* Contacts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Contacts.framework; path = System/Library/Frameworks/Contacts.framework; sourceTree = SDKROOT; };
 		AFAF103B213F3706009DDA82 /* ShowAppPrivilegesSetupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowAppPrivilegesSetupViewController.swift; sourceTree = "<group>"; };
 		AFAF103E2140523F009DDA82 /* ShowImagesDownloadViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowImagesDownloadViewController.swift; sourceTree = "<group>"; };
 		AFAF8B131BF3B91E009D92F6 /* ImageAttachmentCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageAttachmentCell.swift; sourceTree = "<group>"; };
@@ -106,6 +142,14 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		AFAB02282141D65B000D9864 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AFAB024821447BB1000D9864 /* Contacts.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		AFD974901BB816B5004CF8D7 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -134,6 +178,7 @@
 		35B0AF69470812EC5E751CD1 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				AFAB024721447BB1000D9864 /* Contacts.framework */,
 				2336992AB1809901AA9D8E24 /* Pods_MessagesHistoryBrowser.framework */,
 			);
 			name = Frameworks;
@@ -183,6 +228,19 @@
 			name = unused;
 			sourceTree = "<group>";
 		};
+		AFAB022C2141D65B000D9864 /* ContactsFetcher */ = {
+			isa = PBXGroup;
+			children = (
+				AFD974C91BB81885004CF8D7 /* ContactsMap.swift */,
+				AFAB023B2141D66F000D9864 /* ContactsFetcher.entitlements */,
+				AFAB023C2141D6F0000D9864 /* ContactsFetcherProtocol.swift */,
+				AFAB0240214261FD000D9864 /* ContactsFetcher.swift */,
+				AFAB024221426573000D9864 /* main.swift */,
+				AFAB02332141D65B000D9864 /* Info.plist */,
+			);
+			path = ContactsFetcher;
+			sourceTree = "<group>";
+		};
 		AFAF103D214051F9009DDA82 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
@@ -210,6 +268,7 @@
 				AFD974951BB816B5004CF8D7 /* MessagesHistoryBrowser */,
 				AFD974AA1BB816B6004CF8D7 /* MessagesHistoryBrowserTests */,
 				AFD974B51BB816B6004CF8D7 /* MessagesHistoryBrowserUITests */,
+				AFAB022C2141D65B000D9864 /* ContactsFetcher */,
 				AFD974941BB816B5004CF8D7 /* Products */,
 				EB9DF8F0FA471DFB38E36325 /* Pods */,
 				35B0AF69470812EC5E751CD1 /* Frameworks */,
@@ -222,6 +281,7 @@
 				AFD974931BB816B5004CF8D7 /* MessagesHistoryBrowser.app */,
 				AFD974A71BB816B6004CF8D7 /* MessagesHistoryBrowserTests.xctest */,
 				AFD974B21BB816B6004CF8D7 /* MessagesHistoryBrowserUITests.xctest */,
+				AFAB022B2141D65B000D9864 /* ContactsFetcher.xpc */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -235,8 +295,8 @@
 				AFE9B8051BD3A2EE007FC376 /* MessageFormatter.swift */,
 				AFAF103D214051F9009DDA82 /* ViewControllers */,
 				AF424CD91BC965FF006EE8D2 /* CoreData */,
-				AFD974C91BB81885004CF8D7 /* ContactsMap.swift */,
 				AF2B2DEE1BC18BE1000B8293 /* ChatsDatabase.swift */,
+				AFAB02452142745F000D9864 /* ContactsMapProxy.swift */,
 				AF55D3261C543357000377DD /* LabelToImage.swift */,
 				AF8003B91C2C8040008A1D64 /* Attachments Collection View */,
 				AFD974961BB816B5004CF8D7 /* AppDelegate.swift */,
@@ -281,6 +341,23 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		AFAB022A2141D65B000D9864 /* ContactsFetcher */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AFAB02392141D65B000D9864 /* Build configuration list for PBXNativeTarget "ContactsFetcher" */;
+			buildPhases = (
+				AFAB02272141D65B000D9864 /* Sources */,
+				AFAB02282141D65B000D9864 /* Frameworks */,
+				AFAB02292141D65B000D9864 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ContactsFetcher;
+			productName = ContactsFetcher;
+			productReference = AFAB022B2141D65B000D9864 /* ContactsFetcher.xpc */;
+			productType = "com.apple.product-type.xpc-service";
+		};
 		AFD974921BB816B5004CF8D7 /* MessagesHistoryBrowser */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = AFD974BB1BB816B6004CF8D7 /* Build configuration list for PBXNativeTarget "MessagesHistoryBrowser" */;
@@ -290,10 +367,12 @@
 				AFD974901BB816B5004CF8D7 /* Frameworks */,
 				AFD974911BB816B5004CF8D7 /* Resources */,
 				EE821D9E53F83750E5D9F2D9 /* [CP] Embed Pods Frameworks */,
+				AFAB023A2141D65B000D9864 /* Embed XPC Services */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				AFAB02352141D65B000D9864 /* PBXTargetDependency */,
 			);
 			name = MessagesHistoryBrowser;
 			productName = MessagesHistoryBrowser;
@@ -345,6 +424,17 @@
 				LastUpgradeCheck = 1000;
 				ORGANIZATIONNAME = "Guillaume Laurent";
 				TargetAttributes = {
+					AFAB022A2141D65B000D9864 = {
+						CreatedOnToolsVersion = 10.0;
+						DevelopmentTeam = 6YMA3EN78R;
+						LastSwiftMigration = 1000;
+						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.Sandbox = {
+								enabled = 1;
+							};
+						};
+					};
 					AFD974921BB816B5004CF8D7 = {
 						CreatedOnToolsVersion = 7.0;
 						DevelopmentTeam = 6YMA3EN78R;
@@ -352,7 +442,7 @@
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.Sandbox = {
-								enabled = 1;
+								enabled = 0;
 							};
 						};
 					};
@@ -386,11 +476,19 @@
 				AFD974921BB816B5004CF8D7 /* MessagesHistoryBrowser */,
 				AFD974A61BB816B6004CF8D7 /* MessagesHistoryBrowserTests */,
 				AFD974B11BB816B6004CF8D7 /* MessagesHistoryBrowserUITests */,
+				AFAB022A2141D65B000D9864 /* ContactsFetcher */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		AFAB02292141D65B000D9864 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		AFD974911BB816B5004CF8D7 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -461,17 +559,29 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		AFAB02272141D65B000D9864 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AFAB0241214261FD000D9864 /* ContactsFetcher.swift in Sources */,
+				AFAB024321426573000D9864 /* main.swift in Sources */,
+				AFAB023E21426093000D9864 /* ContactsMap.swift in Sources */,
+				AFAB023D2141D6F0000D9864 /* ContactsFetcherProtocol.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		AFD9748F1BB816B5004CF8D7 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AFAB02462142745F000D9864 /* ContactsMapProxy.swift in Sources */,
 				AFAF8B141BF3B91E009D92F6 /* ImageAttachmentCell.swift in Sources */,
 				AF8003BF1C357A0E008A1D64 /* ChatItemsFetcher.swift in Sources */,
+				AFAB024921452C1D000D9864 /* LabelToImage.swift in Sources */,
 				AF2B2DF11BC19BAE000B8293 /* ChatMessage.swift in Sources */,
 				AFD9749C1BB816B5004CF8D7 /* MessagesHistoryBrowser.xcdatamodeld in Sources */,
 				AF82EDB51C23708B00F8132D /* AttachmentsCollectionView.swift in Sources */,
 				AF2B2DEF1BC18BE1000B8293 /* ChatsDatabase.swift in Sources */,
-				AFD974CB1BB81885004CF8D7 /* ContactsMap.swift in Sources */,
 				AFBF11451BE77E6E00D3D596 /* ChatItem.swift in Sources */,
 				AF2B2DF31BC19E81000B8293 /* MessagesListViewController.swift in Sources */,
 				AF424CD61BC9609D006EE8D2 /* ChatAttachment.swift in Sources */,
@@ -484,8 +594,8 @@
 				AFD974991BB816B5004CF8D7 /* ViewController.swift in Sources */,
 				AFD974971BB816B5004CF8D7 /* AppDelegate.swift in Sources */,
 				AFE9B8061BD3A2EE007FC376 /* MessageFormatter.swift in Sources */,
-				AF55D3271C543357000377DD /* LabelToImage.swift in Sources */,
 				AF8003C11C4A6545008A1D64 /* RoundImage.swift in Sources */,
+				AFAB0244214273DC000D9864 /* ContactsFetcherProtocol.swift in Sources */,
 				AFAF103C213F3707009DDA82 /* ShowAppPrivilegesSetupViewController.swift in Sources */,
 				AF47D8771BDCDD20002CDF4B /* ChatTableViewController.swift in Sources */,
 				AFAF103F2140523F009DDA82 /* ShowImagesDownloadViewController.swift in Sources */,
@@ -511,6 +621,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		AFAB02352141D65B000D9864 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = AFAB022A2141D65B000D9864 /* ContactsFetcher */;
+			targetProxy = AFAB02342141D65B000D9864 /* PBXContainerItemProxy */;
+		};
 		AFD974A91BB816B6004CF8D7 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = AFD974921BB816B5004CF8D7 /* MessagesHistoryBrowser */;
@@ -535,6 +650,64 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		AFAB02372141D65B000D9864 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_ENTITLEMENTS = ContactsFetcher/ContactsFetcher.entitlements;
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 6YMA3EN78R;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = ContactsFetcher/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks @loader_path/../../../../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "org.telegraph-road.MessagesHistoryBrowser.ContactsFetcher";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 4.2;
+			};
+			name = Debug;
+		};
+		AFAB02382141D65B000D9864 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_ENTITLEMENTS = ContactsFetcher/ContactsFetcher.entitlements;
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 6YMA3EN78R;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = ContactsFetcher/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks @loader_path/../../../../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "org.telegraph-road.MessagesHistoryBrowser.ContactsFetcher";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 4.2;
+			};
+			name = Release;
+		};
 		AFD974B91BB816B6004CF8D7 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -642,8 +815,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 9226CB04737EBB6E974F761C /* Pods-MessagesHistoryBrowser.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = MessagesHistoryBrowser/MessagesHistoryBrowser.entitlements;
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = 6YMA3EN78R;
@@ -664,8 +837,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 06B41BFE43415391B628446C /* Pods-MessagesHistoryBrowser.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = MessagesHistoryBrowser/MessagesHistoryBrowser.entitlements;
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = 6YMA3EN78R;
@@ -745,6 +918,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		AFAB02392141D65B000D9864 /* Build configuration list for PBXNativeTarget "ContactsFetcher" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AFAB02372141D65B000D9864 /* Debug */,
+				AFAB02382141D65B000D9864 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		AFD9748E1BB816B5004CF8D7 /* Build configuration list for PBXProject "MessagesHistoryBrowser" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

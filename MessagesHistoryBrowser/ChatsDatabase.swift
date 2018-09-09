@@ -17,7 +17,7 @@ class ChatsDatabase {
 
 //    let chatsDBPath = "/Users/glaurent/tmp/chat.db"
 
-    var contactsPhoneNumber:ContactsMap! // want delayed init
+    var contactsPhoneNumber:ContactsMapProxy! // want delayed init
 
     var allChats:[Chat] {
         get {
@@ -29,7 +29,7 @@ class ChatsDatabase {
 
     init(chatsDBPath:String) throws {
 
-        contactsPhoneNumber = ContactsMap.sharedInstance
+        contactsPhoneNumber = ContactsMapProxy.sharedInstance
 
         do {
 
@@ -47,9 +47,12 @@ class ChatsDatabase {
     {
         contactsPhoneNumber.populate()
 
-        let workerContext = MOCController.sharedInstance.workerContext()
+//        let workerContext = MOCController.sharedInstance.workerContext()
 
-        workerContext.perform({ () -> Void in
+        let appDelegate = NSApp.delegate as! AppDelegate
+        let persistentContainer = appDelegate.persistentContainer
+
+        persistentContainer.performBackgroundTask { (workerContext) in
 
             if Chat.numberOfChatsInContext(workerContext) == 0 {
 
@@ -67,7 +70,7 @@ class ChatsDatabase {
 
             do {
                 try workerContext.save()
-                MOCController.sharedInstance.save()
+//                MOCController.sharedInstance.save()
             } catch let error as NSError {
                 NSLog("\(#function) : worker context save fail : \(error)")
             }
@@ -76,11 +79,12 @@ class ChatsDatabase {
             //
             DispatchQueue.main.async(execute: { () -> Void in
 
+//                MOCController.sharedInstance.save()
                 completion()
 
             })
 
-        })
+        }
 
     }
 
@@ -113,16 +117,33 @@ class ChatsDatabase {
                 let identifier = chatData[chatIdentifierColumn]
                 let serviceName = chatData[serviceNameColumn]
 
-                let chatContact = contactForIdentifier(identifier, service:serviceName, inContext: localContext)
+                NSLog("\(#function) contact identifier \(identifier)")
 
-                let _ = Chat(managedObjectContext:localContext, withContact:chatContact, withServiceName:serviceName,  withGUID: guid, andRowID: rowID)
-            
+                var chatContact:ChatContact?
+
+                // this is really a synchronous call
+                //
+                contactForIdentifier(identifier, service:serviceName, inContext: localContext) { replyChatContact in
+
+                    chatContact = replyChatContact
+//                    NSLog("\(#function) creating chat for contact \(chatContact.name)")
+//                    let _ = Chat(managedObjectContext:localContext, withContact:chatContact, withServiceName:serviceName,  withGUID: guid, andRowID: rowID)
+
+//                    DispatchQueue.main.async { taskProgress.completedUnitCount = rowIndex }
+//
+//                    rowIndex += 1
+
+                }
 //            NSLog("chat : %@ \tcontact : %@\trowId: %d", guid, chatContact.name, rowID)
+                NSLog("\(#function) creating chat for contact \(String(describing: chatContact?.name))")
+                if let chatContact = chatContact {
+                    let _ = Chat(managedObjectContext:localContext, withContact:chatContact, withServiceName:serviceName,  withGUID: guid, andRowID: rowID)
+                }
+                
+                DispatchQueue.main.async { taskProgress.completedUnitCount = rowIndex }
+                rowIndex += 1
 
-            DispatchQueue.main.async { taskProgress.completedUnitCount = rowIndex }
-
-            rowIndex += 1
-        }
+            }
 
             do {
                 try localContext.save()
@@ -136,48 +157,80 @@ class ChatsDatabase {
     }
 
 
-    func contactForIdentifier(_ identifier:String, service serviceName:String, inContext context:NSManagedObjectContext) -> ChatContact
+    func contactForIdentifier(_ identifier:String, service serviceName:String, inContext context:NSManagedObjectContext, completion : @escaping (ChatContact) -> Void)
     {
-        var contactName = identifier
-        var contactIsKnown = false
-        var contactCNIdentifier = ""
+//        var contactName = identifier
+//        var contactIsKnown = false
+//        var contactCNIdentifier = ""
 
-        if serviceName == "AIM" || serviceName == "Jabber" {
+//        if serviceName == "AIM" || serviceName == "Jabber" {
+//
+//            contactsPhoneNumber.nameForInstantMessageAddress(identifier) { (nameCNIdentifierPair) in
+//
+//                if let nameCNIdentifierPair = nameCNIdentifierPair {
+//
+//                    contactIsKnown = true
+//                    contactName = nameCNIdentifierPair.0
+//                    contactCNIdentifier = nameCNIdentifierPair.1
+//
+//                } else {
+//                    contactIsKnown = false
+//                    NSLog("\(#function) : no contact name found for identifier \(identifier)")
+//                }
+//
+//            }
+//
+//        } else if serviceName == "iMessage" || serviceName == "SMS" {
+//
+//            // check if identifier is an email adress or a phone number
+//            //
+//            if identifier.contains("@") {
+//
+//                contactsPhoneNumber.nameForEmailAddress(identifier) { (chatContactNameIdentifierPair) in
+//                    if let chatContactNameIdentifierPair = chatContactNameIdentifierPair {
+//                        contactName = chatContactNameIdentifierPair.0
+//                        contactCNIdentifier = chatContactNameIdentifierPair.1
+//                        contactIsKnown = true
+//                    }
+//                }
+//
+//            } else {
+//
+//                contactsPhoneNumber.nameForPhoneNumber(identifier) { (chatContactNameIdentifierPair) in
+//                    if let chatContactNameIdentifierPair = chatContactNameIdentifierPair {
+//                        contactName = chatContactNameIdentifierPair.0
+//                        contactCNIdentifier = chatContactNameIdentifierPair.1
+//                        contactIsKnown = true
+//                    } else {
+//                        contactName = identifier
+//                        contactIsKnown = false
+//                    }
+//                }
+//
+//            }
+//        } else { // other kind of serviceName - shouldn't happen now that Messages only supports iMessages and no other IM protocols
+//            contactName = identifier
+//            contactIsKnown = false
+//        }
 
-            if let chatContactNameIdentifierPair = contactsPhoneNumber.nameForInstantMessageAddress(identifier) {
-                contactName = chatContactNameIdentifierPair.0
-                contactCNIdentifier = chatContactNameIdentifierPair.1
-                contactIsKnown = true
-            } else {
-                contactIsKnown = false
-                NSLog("\(#function) : no contact name found for identifier \(identifier)")
+        contactsPhoneNumber.nameAndCNIdentifierFromChatIdentifier(identifier, serviceName: serviceName) { (contactAndCNIdentifierPair, contactIsKnown) in
+            var contactName = identifier
+            var contactCNIdentifier = ""
+
+            if let contactAndCNIdentifierPair = contactAndCNIdentifierPair {
+                contactName = contactAndCNIdentifierPair.0
+                contactCNIdentifier = contactAndCNIdentifierPair.1
             }
 
-        } else if serviceName == "iMessage" || serviceName == "SMS" {
+            let contact = ChatContact.contactIn(context, named: contactName, withIdentifier: contactCNIdentifier)
+            contact.known = contactIsKnown
 
-            // check if identifier contains a '@'
-            if identifier.contains("@") {
-                if let chatContactNameIdentifierPair = contactsPhoneNumber.nameForEmailAddress(identifier) {
-                    contactName = chatContactNameIdentifierPair.0
-                    contactCNIdentifier = chatContactNameIdentifierPair.1
-                    contactIsKnown = true
-                }
-            } else if let chatContactNameIdentifierPair = contactsPhoneNumber.nameForPhoneNumber(identifier) {
-                contactName = chatContactNameIdentifierPair.0
-                contactCNIdentifier = chatContactNameIdentifierPair.1
-                contactIsKnown = true
-            } else {
-                contactName = identifier
-                contactIsKnown = false
-            }
-        } else {
-            contactName = identifier
-            contactIsKnown = false
+            completion(contact)
         }
 
-        let contact = ChatContact.contactIn(context, named: contactName, withIdentifier: contactCNIdentifier)
-        contact.known = contactIsKnown
-        return contact
+//        let contact = ChatContact.contactIn(context, named: contactName, withIdentifier: contactCNIdentifier)
+//        contact.known = contactIsKnown
+//        return contact
     }
 
     func messagesForChat(_ chat:Chat) -> ([ChatMessage], [ChatAttachment])
@@ -319,7 +372,7 @@ class ChatsDatabase {
 
                     do {
                         try workerContext.save()
-                        MOCController.sharedInstance.save()
+//                        MOCController.sharedInstance.save()
                     } catch let error as NSError {
                         print("ChatsDatabase.collectAllMessagesFromAllChats : worker context save fail : \(error)")
                     }

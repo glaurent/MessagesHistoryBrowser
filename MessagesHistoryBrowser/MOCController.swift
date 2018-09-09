@@ -34,7 +34,7 @@ class MOCController: NSObject {
 //            managedObjectContext.delete(contact)
 //        }
 
-        let contactsFetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Contact")
+        let contactsFetchRequest = ChatContact.fetchRequest() // NSFetchRequest<NSFetchRequestResult>(entityName: "Contact")
 
         let deleteContactsRequest = NSBatchDeleteRequest(fetchRequest: contactsFetchRequest)
 

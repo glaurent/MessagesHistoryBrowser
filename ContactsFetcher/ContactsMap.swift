@@ -198,7 +198,7 @@ class ContactsMap : NSObject {
 
     }
 
-    func contactName(_ contact:CNContact) -> String {
+    private func contactName(_ contact:CNContact) -> String {
         if contact.nickname != "" {
             return contact.nickname
         }
@@ -208,34 +208,42 @@ class ContactsMap : NSObject {
         return "\(firstName) \(lastName)"
     }
 
-    func contactImage(_ contactIdentifier:String) -> NSImage? {
+    // returns contact image or pair of initials if no image is found, or nil if contact is unknown
+    //
+    func contactImage(_ contactIdentifier:String) -> (NSImage?, (String, String)?) {
         do {
             let contact = try contactStore.unifiedContact(withIdentifier: contactIdentifier, keysToFetch:[CNContactImageDataKey as CNKeyDescriptor, CNContactThumbnailImageDataKey as CNKeyDescriptor, CNContactGivenNameKey as CNKeyDescriptor, CNContactFamilyNameKey as CNKeyDescriptor])
             if let imageData = contact.imageData {
-                return NSImage(data: imageData) // thumbnailImageData is nil, why ?
-            } else { // get a bitmap of the contact's initials (like in Contacts.app)
-                let firstName = contact.givenName
-                let lastName = contact.familyName
+                return (NSImage(data: imageData), nil) // thumbnailImageData is nil, why ?
+            } else {
 
-                var initials = ""
+                let firstNameInitial = String(contact.givenName.first ?? Character(" "))
+                let lastNameInitial = String(contact.familyName.first ?? Character(" "))
+                return (nil, (firstNameInitial, lastNameInitial))
 
-                if firstName.count > 0 {
-                    initials = initials + "\(firstName.first!)"
-                }
-                if lastName.count > 0 {
-                    initials = initials + "\(lastName.first!)"
-                }
-
-                if let imageLabel = LabelToImage.stringToImage(initials) {
-                    return imageLabel
-                }
+//                // get a bitmap of the contact's initials (like in Contacts.app)
+//                let firstName = contact.givenName
+//                let lastName = contact.familyName
+//
+//                var initials = ""
+//
+//                if firstName.count > 0 {
+//                    initials = initials + "\(firstName.first!)"
+//                }
+//                if lastName.count > 0 {
+//                    initials = initials + "\(lastName.first!)"
+//                }
+//
+//                if let imageLabel = LabelToImage.stringToImage(initials) {
+//                    return imageLabel
+//                }
             }
         } catch {
             NSLog("\(#function) : Couldn't get contact with identifier \"\(contactIdentifier)\"")
-            return LabelToImage.stringToImage("?")
+            return (nil, nil)
+//            return LabelToImage.stringToImage("?")
         }
 
-        return nil
     }
     
 }

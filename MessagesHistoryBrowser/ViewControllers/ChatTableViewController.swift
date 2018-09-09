@@ -48,6 +48,10 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
         super.viewDidLoad()
         // Do view setup here.
 
+        // first connect to the Messages.app chats DB, and terminate if we can't
+        //
+        setupChatDatabase()
+
         let moc = MOCController.sharedInstance.managedObjectContext
 
         let appDelegate = NSApp.delegate as! AppDelegate
@@ -95,6 +99,8 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
         showChatsFromUnknown = appDelegate.showChatsFromUnknown
         tableView.reloadData()
     }
+
+
 
     func contactForRow(_ row:Int) -> ChatContact?
     {
@@ -144,15 +150,30 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
 
         if let contact = contactForRow(row) {
             cellView.textField?.stringValue = contact.name
-            if let cellImageView = cellView.imageView, let thumbnailImage = ContactsMap.sharedInstance.contactImage(contact.identifier) {
-                let roundedThumbnailImage = roundCorners(thumbnailImage)
-                cellImageView.image = roundedThumbnailImage
-//              cellImageView.image = thumbnailImage
-            } else {
-                // contact unknown for this cell
-                cellView.imageView?.image = nil
+            if let cellImageView = cellView.imageView {
+
+                ContactsMapProxy.sharedInstance.contactImage(contact.identifier) { (thumbnailImage, initialsPair) in
+                    if let thumbnailImage = thumbnailImage {
+                        let roundedThumbnailImage = roundCorners(thumbnailImage)
+                        DispatchQueue.main.async { cellImageView.image = roundedThumbnailImage }
+                    } else if let initialsPair = initialsPair {
+                        // contact unknown for this cell, use initials to generate an image
+
+                        let initials = "\(initialsPair.0)\(initialsPair.1)"
+
+                        if let imageLabel = LabelToImage.stringToImage(initials) {
+                            let roundImageLabel = roundCorners(imageLabel)
+                            DispatchQueue.main.async { cellImageView.image = roundImageLabel }
+                        }
+                    } else {
+                        DispatchQueue.main.async { cellImageView.image = nil }
+                    }
+                }
+
             }
-        } else { // shouldn't happen
+
+        } else { // no contact for this row ? shouldn't happen
+            NSLog("WARNING : no contact found for row \(row)")
             cellView.textField?.stringValue = "unknown"
             cellView.imageView?.image = nil
         }
@@ -372,7 +393,7 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
         chatsDatabase.populate(progress, completion:{ () -> Void in
 
             self.completeImport()
-            MOCController.sharedInstance.save()
+//            MOCController.sharedInstance.save()
             appDelegate.isRefreshingHistory = false
         })
     }
@@ -421,7 +442,7 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
         chatsDatabase.populate(progress, completion:{ () -> Void in
             
             self.completeImport()
-            MOCController.sharedInstance.save()
+//            MOCController.sharedInstance.save()
             appDelegate.isRefreshingHistory = false
         })
 
@@ -434,14 +455,36 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
 //            print("observeValueForKeyPath on NSUserDefaults : no new value found")
 //        }
 
-        let currentCountryPhonePrefix = ContactsMap.sharedInstance.countryPhonePrefix.dropFirst() // ContactsMap adds a leading "+"
-
-        if let newValue = change?[NSKeyValueChangeKey.newKey] as? String {
-            if currentCountryPhonePrefix != newValue {
-                refreshChatHistory()
-            }
-        }
-
+        refreshChatHistory()
     }
 
+    func setupChatDatabase() {
+
+        let appDelegate = NSApp.delegate as! AppDelegate
+        let chatsDBPath = appDelegate.chatsDBPath
+
+        do {
+            try appDelegate.chatsDatabase = ChatsDatabase(chatsDBPath:chatsDBPath)
+        } catch let error {
+            NSLog("DB init error : \(error)")
+
+            if #available(OSX 10.14, *) {
+
+                let showAppPrivilegesSetupWindowController = NSStoryboard.main?.instantiateController(withIdentifier: "AccessPrivilegesDialog") as! NSWindowController
+
+                NSApp.mainWindow?.beginSheet(showAppPrivilegesSetupWindowController.window!, completionHandler: { (_) in
+                    NSApp.terminate(nil)
+                })
+
+            } else {
+                let alert = NSAlert()
+                alert.messageText = String(format:NSLocalizedString("Couldn't open Messages.app database in\n%@", comment: ""), chatsDBPath)
+                alert.informativeText = NSLocalizedString("Application can't run. Check if the database is accessible", comment: "")
+                alert.alertStyle = .critical
+                alert.addButton(withTitle: NSLocalizedString("Quit", comment: ""))
+                let _ = alert.runModal()
+                NSApp.terminate(nil)
+            }
+        }
+    }
 }

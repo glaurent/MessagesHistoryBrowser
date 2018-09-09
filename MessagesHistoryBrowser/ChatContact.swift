@@ -18,7 +18,6 @@ class ChatContact: NSManagedObject {
     @NSManaged var messages:NSSet
     @NSManaged var attachments:NSSet
 
-//    static let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Contact")
     static let sortDescriptor = NSSortDescriptor(key: "name", ascending: true)
 
 
@@ -30,12 +29,6 @@ class ChatContact: NSManagedObject {
         name = aName
         identifier = anIdentifier
     }
-
-//    class func setupFetchRequest() {
-//        if (ChatContact.fetchRequest().sortDescriptors == nil) {
-//            ChatContact.fetchRequest().sortDescriptors = [ChatContact.sortDescriptor]
-//        }
-//    }
 
 //    class func allContactsInContext(managedObjectContext:NSManagedObjectContext) -> [ChatContact] {
 //
@@ -65,12 +58,10 @@ class ChatContact: NSManagedObject {
 
         var allContacts = [ChatContact]()
 
-        guard let appDelegate = NSApp.delegate as? AppDelegate else { return [ChatContact]() }
-
         managedObjectContext.performAndWait { () -> Void in
 
             do {
-                let contactFetchRequest:NSFetchRequest<NSFetchRequestResult> = fetchRequest()
+                let contactFetchRequest = ChatContact.fetchRequest() // NSFetchRequest<NSFetchRequestResult>(entityName: "Contact")
                 contactFetchRequest.predicate = predicate
                 contactFetchRequest.sortDescriptors = [ChatContact.sortDescriptor]
                 
@@ -89,7 +80,7 @@ class ChatContact: NSManagedObject {
     }
 
     class func contactIn(_ managedObjectContext:NSManagedObjectContext, named name:String, withIdentifier identifier:String) -> ChatContact {
-        let contactNamedFetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Contact")
+        let contactNamedFetchRequest = ChatContact.fetchRequest() // NSFetchRequest<NSFetchRequestResult>(entityName: "Contact")
         let namePredicate = NSPredicate(format: "name == %@", name)
         contactNamedFetchRequest.predicate = namePredicate
 

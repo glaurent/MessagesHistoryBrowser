@@ -46,29 +46,31 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         // Insert code here to initialize your application
 
-        do {
-            try chatsDatabase = ChatsDatabase(chatsDBPath:chatsDBPath)
-        } catch let error {
-            NSLog("DB init error : \(error)")
-
-            if #available(OSX 10.14, *) {
-
-                let showAppPrivilegesSetupWindowController = NSStoryboard.main?.instantiateController(withIdentifier: "AccessPrivilegesDialog") as! NSWindowController
-
-                NSApp.mainWindow?.beginSheet(showAppPrivilegesSetupWindowController.window!, completionHandler: { (_) in
-                    NSApp.terminate(nil)
-                })
-
-            } else {
-                let alert = NSAlert()
-                alert.messageText = String(format:NSLocalizedString("Couldn't open Messages.app database in\n%@", comment: ""), chatsDBPath)
-                alert.informativeText = NSLocalizedString("Application can't run. Check if the database is accessible", comment: "")
-                alert.alertStyle = .critical
-                alert.addButton(withTitle: NSLocalizedString("Quit", comment: ""))
-                let _ = alert.runModal()
-                NSApp.terminate(nil)
-            }
-        }
+        // moved to ChatTableViewController.setupChatDatabase()
+        //
+//        do {
+//            try chatsDatabase = ChatsDatabase(chatsDBPath:chatsDBPath)
+//        } catch let error {
+//            NSLog("DB init error : \(error)")
+//
+//            if #available(OSX 10.14, *) {
+//
+//                let showAppPrivilegesSetupWindowController = NSStoryboard.main?.instantiateController(withIdentifier: "AccessPrivilegesDialog") as! NSWindowController
+//
+//                NSApp.mainWindow?.beginSheet(showAppPrivilegesSetupWindowController.window!, completionHandler: { (_) in
+//                    NSApp.terminate(nil)
+//                })
+//
+//            } else {
+//                let alert = NSAlert()
+//                alert.messageText = String(format:NSLocalizedString("Couldn't open Messages.app database in\n%@", comment: ""), chatsDBPath)
+//                alert.informativeText = NSLocalizedString("Application can't run. Check if the database is accessible", comment: "")
+//                alert.alertStyle = .critical
+//                alert.addButton(withTitle: NSLocalizedString("Quit", comment: ""))
+//                let _ = alert.runModal()
+//                NSApp.terminate(nil)
+//            }
+//        }
 
     }
 
