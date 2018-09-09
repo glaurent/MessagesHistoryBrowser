@@ -29,6 +29,11 @@ class AttachmentsCollectionViewItem: NSCollectionViewItem {
         view.layer?.cornerRadius = 5.0
     }
 
+    override func prepareForReuse() {
+        imageView?.image = NSImage(named: "icloud icon")
+        textField?.stringValue = ""
+    }
+
     @IBAction func showInFinder(_ sender:AnyObject)
     {
         if let delegate = collectionView?.delegate as? AttachmentsCollectionViewDelegate {

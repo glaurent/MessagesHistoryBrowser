@@ -108,6 +108,7 @@ class MessagesListViewController: NSViewController, NSCollectionViewDataSource, 
             }
             item.textField?.stringValue = dateFormatter.string(from: attachment.date as Date)
         } else {
+            item.imageView?.image = NSImage(named: "icloud icon")
             item.textField?.stringValue = "unknown"
         }
 
