@@ -34,6 +34,8 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
     var searchedMessages:[ChatMessage]?
     var searchTermHasChanged = false
 
+    var setupDBSucceeded = false
+
     @objc dynamic var beforeDateEnabled = false
     @objc dynamic var afterDateEnabled = false
     
@@ -50,7 +52,7 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
 
         // first connect to the Messages.app chats DB, and terminate if we can't
         //
-        setupChatDatabase()
+        setupDBSucceeded = setupChatDatabase()
 
         let moc = MOCController.sharedInstance.managedObjectContext
 
@@ -90,6 +92,35 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
 
 
         ChatItemsFetcher.sharedInstance.completion = displayChats
+
+    }
+
+    override func viewDidAppear() {
+
+        if !setupDBSucceeded {
+
+
+            if #available(OSX 10.14, *) {
+
+                let showAppPrivilegesSetupWindowController = NSStoryboard.main?.instantiateController(withIdentifier: "AccessPrivilegesDialog") as! NSWindowController
+
+                NSApp.mainWindow?.beginSheet(showAppPrivilegesSetupWindowController.window!, completionHandler: { (_) in
+                    NSApp.terminate(nil)
+                })
+
+            } else {
+                let appDelegate = NSApp.delegate as! AppDelegate
+                let chatsDBPath = appDelegate.chatsDBPath
+
+                let alert = NSAlert()
+                alert.messageText = String(format:NSLocalizedString("Couldn't open Messages.app database in\n%@", comment: ""), chatsDBPath)
+                alert.informativeText = NSLocalizedString("Application can't run. Check if the database is accessible", comment: "")
+                alert.alertStyle = .critical
+                alert.addButton(withTitle: NSLocalizedString("Quit", comment: ""))
+                let _ = alert.runModal()
+                NSApp.terminate(nil)
+            }
+        }
 
     }
 
@@ -461,7 +492,7 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
 //        refreshChatHistory()
     }
 
-    func setupChatDatabase() {
+    func setupChatDatabase() -> Bool {
 
         let appDelegate = NSApp.delegate as! AppDelegate
         let chatsDBPath = appDelegate.chatsDBPath
@@ -470,24 +501,9 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
             try appDelegate.chatsDatabase = ChatsDatabase(chatsDBPath:chatsDBPath)
         } catch let error {
             NSLog("DB init error : \(error)")
-
-            if #available(OSX 10.14, *) {
-
-                let showAppPrivilegesSetupWindowController = NSStoryboard.main?.instantiateController(withIdentifier: "AccessPrivilegesDialog") as! NSWindowController
-
-                NSApp.mainWindow?.beginSheet(showAppPrivilegesSetupWindowController.window!, completionHandler: { (_) in
-                    NSApp.terminate(nil)
-                })
-
-            } else {
-                let alert = NSAlert()
-                alert.messageText = String(format:NSLocalizedString("Couldn't open Messages.app database in\n%@", comment: ""), chatsDBPath)
-                alert.informativeText = NSLocalizedString("Application can't run. Check if the database is accessible", comment: "")
-                alert.alertStyle = .critical
-                alert.addButton(withTitle: NSLocalizedString("Quit", comment: ""))
-                let _ = alert.runModal()
-                NSApp.terminate(nil)
-            }
+            return false
         }
+
+        return true
     }
 }
