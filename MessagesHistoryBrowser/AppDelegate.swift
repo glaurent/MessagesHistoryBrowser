@@ -72,6 +72,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 //            }
 //        }
 
+        UserDefaults.standard.register(defaults: [ShowDetailedSenderUserDefaultsKey : false, ShowTerseTimeUserDefaultsKey : true])
     }
 
     func applicationWillTerminate(_ aNotification: Notification) {

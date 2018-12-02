@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="14313.13.2" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14313.13.2"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14460.31"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -592,10 +592,22 @@
                                                 <action selector="runToolbarCustomizationPalette:" target="Ady-hI-5gd" id="pQI-g3-MTW"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Display unknown contacts" id="UI5-I8-ylv">
+                                        <menuItem title="Display Unknown Contacts" id="UI5-I8-ylv">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
                                                 <binding destination="Voe-Tx-rLC" name="value" keyPath="self.showChatsFromUnknown" id="lcA-NO-jNw"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Show Detailed Sender" id="T1l-Eg-T8H">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <binding destination="BUy-Jk-h6w" name="value" keyPath="values.ShowDetailedSender" id="ytQ-fR-ZHi"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Show Terse Time" id="L4D-T7-w1J">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <binding destination="BUy-Jk-h6w" name="value" keyPath="values.ShowTerseTime" id="94i-jE-Qqu"/>
                                             </connections>
                                         </menuItem>
                                     </items>
@@ -647,6 +659,7 @@
                 <customObject id="Voe-Tx-rLC" customClass="AppDelegate" customModule="MessagesHistoryBrowser" customModuleProvider="target"/>
                 <customObject id="Ady-hI-5gd" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
                 <customObject id="3FU-uH-YNH" customClass="SUUpdater"/>
+                <userDefaultsController id="BUy-Jk-h6w" userLabel="Shared User Defaults Controller"/>
             </objects>
             <point key="canvasLocation" x="75" y="-236"/>
         </scene>
@@ -700,7 +713,7 @@
         <!--Preferences-->
         <scene sceneID="ZrA-Yq-GBj">
             <objects>
-                <windowController id="gm6-k5-ZEv" userLabel="Preferences" sceneMemberID="viewController">
+                <windowController showSeguePresentationStyle="single" id="gm6-k5-ZEv" userLabel="Preferences" sceneMemberID="viewController">
                     <window key="window" title="Preferences" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" id="fCU-aS-7xX">
                         <windowStyleMask key="styleMask" titled="YES" closable="YES"/>
                         <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
@@ -752,13 +765,11 @@
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Il7-ZV-4Ou">
-                                <rect key="frame" x="18" y="20" width="356" height="306"/>
+                                <rect key="frame" x="18" y="20" width="356" height="284"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <textFieldCell key="cell" controlSize="mini" sendsActionOnEndEditing="YES" placeholderString="" id="X3D-Rv-nBJ">
                                     <font key="font" metaFont="system"/>
-                                    <string key="title">Messages History Browser
-
-(c) Guillaume Laurent 2015-2016
+                                    <string key="title">(c) Guillaume Laurent 2015-2018
 
 Initial Messages DB info from 
 Matthieu Riegler https://github.com/kyro38/MiscStuff/blob/master/OSXStuff/iMessageBackup.sh
@@ -773,6 +784,24 @@ Florent Pillet : https://github.com/fpillet
 Jean-Marie Lafon : http://www.lafon.mobi</string>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="71a-do-0aS">
+                                <rect key="frame" x="18" y="312" width="189" height="18"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <textFieldCell key="cell" controlSize="mini" lineBreakMode="clipping" title="Messages History Browser" id="hCN-Rv-ZeI">
+                                    <font key="font" metaFont="systemBold" size="14"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Cho-v9-8l2">
+                                <rect key="frame" x="211" y="312" width="23" height="17"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <textFieldCell key="cell" controlSize="mini" lineBreakMode="clipping" title="1.0" id="xWM-7p-3ET">
+                                    <font key="font" metaFont="systemSemibold" size="13"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
                         </subviews>
@@ -791,7 +820,7 @@ Jean-Marie Lafon : http://www.lafon.mobi</string>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="uMf-Kl-sOw">
-                                <rect key="frame" x="39" y="63" width="90" height="17"/>
+                                <rect key="frame" x="18" y="83" width="90" height="17"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Phone prefix" id="n3D-UD-KS3">
                                     <font key="font" metaFont="system"/>
@@ -800,7 +829,7 @@ Jean-Marie Lafon : http://www.lafon.mobi</string>
                                 </textFieldCell>
                             </textField>
                             <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="RCV-lh-Ol4">
-                                <rect key="frame" x="128" y="60" width="96" height="22"/>
+                                <rect key="frame" x="107" y="80" width="96" height="22"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" placeholderString="01" drawsBackground="YES" id="nfM-8N-ott">
                                     <font key="font" metaFont="system"/>
@@ -808,18 +837,36 @@ Jean-Marie Lafon : http://www.lafon.mobi</string>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                                 <connections>
-                                    <binding destination="zxD-yx-eig" name="value" keyPath="values.CountryPhonePrefix" id="BTL-Ks-IE2">
-                                        <dictionary key="options">
-                                            <bool key="NSValidatesImmediately" value="YES"/>
-                                        </dictionary>
-                                    </binding>
+                                    <binding destination="zkX-3j-15Q" name="value" keyPath="values.CountryPhonePrefix" id="dfH-xP-aQj"/>
                                 </connections>
                             </textField>
+                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="GCS-Le-E6f">
+                                <rect key="frame" x="18" y="49" width="153" height="18"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <buttonCell key="cell" type="check" title="Show detailed sender" bezelStyle="regularSquare" imagePosition="left" inset="2" id="Dv0-AF-cMX">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <binding destination="zkX-3j-15Q" name="value" keyPath="values.ShowDetailedSender" id="aOu-tm-eW6"/>
+                                </connections>
+                            </button>
+                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="aVl-4X-Qjv">
+                                <rect key="frame" x="18" y="29" width="153" height="18"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <buttonCell key="cell" type="check" title="Show abreviated time" bezelStyle="regularSquare" imagePosition="left" inset="2" id="hxk-eX-b3i">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <binding destination="zkX-3j-15Q" name="value" keyPath="values.ShowTerseTime" id="hJ8-XU-23A"/>
+                                </connections>
+                            </button>
                         </subviews>
                     </view>
                 </viewController>
                 <customObject id="EdF-NP-dkF" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
-                <userDefaultsController id="zxD-yx-eig"/>
+                <userDefaultsController id="zkX-3j-15Q"/>
             </objects>
             <point key="canvasLocation" x="1635.5" y="-106.5"/>
         </scene>
@@ -1073,7 +1120,6 @@ Jean-Marie Lafon : http://www.lafon.mobi</string>
                     </connections>
                 </viewController>
                 <customObject id="3Ou-aK-krf" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
-                <userDefaultsController representsSharedInstance="YES" id="0Bu-Sd-3Ld"/>
             </objects>
             <point key="canvasLocation" x="1302.5" y="323"/>
         </scene>

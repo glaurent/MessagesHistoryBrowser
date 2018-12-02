@@ -8,6 +8,11 @@
 
 import Cocoa
 
+struct DisplayedMessages {
+    var chatItems:[ChatItem]
+    var highlightTerm:String?
+}
+
 class MessagesListViewController: NSViewController, NSCollectionViewDataSource, AttachmentsCollectionViewDelegate {
 
     let collectionViewItemID = "AttachmentsCollectionViewItem"
@@ -25,19 +30,23 @@ class MessagesListViewController: NSViewController, NSCollectionViewDataSource, 
 
     let messageFormatter = MessageFormatter()
 
+    var currentDisplayedMessages:DisplayedMessages?
+
     // if two messages are seperated by a time interval longer than this, add a time tag in between
     //
     let delayBetweenChatsInSeconds = TimeInterval(24 * 3600)
     
-    var terseTimeMode = true {
+    var showTerseTime = true {
         didSet {
-            messageFormatter.terseTimeMode = terseTimeMode
+            messageFormatter.ShowTerseTime = showTerseTime
+            refreshDisplayedMessages()
         }
     }
 
-    var detailedSender = false {
+    var showDetailedSender = false {
         didSet {
-            messageFormatter.detailedSender = detailedSender
+            messageFormatter.showDetailedSender = showDetailedSender
+            refreshDisplayedMessages()
         }
     }
 
@@ -190,9 +199,17 @@ class MessagesListViewController: NSViewController, NSCollectionViewDataSource, 
     {
         messagesTextView.string = ""
     }
-    
+
+    func refreshDisplayedMessages()
+    {
+        guard let currentDisplayedMessages = currentDisplayedMessages else { return }
+        showMessages(currentDisplayedMessages.chatItems, withHighlightTerm: currentDisplayedMessages.highlightTerm)
+    }
+
     func showMessages(_ chatItems:[ChatItem], withHighlightTerm highlightTerm:String? = nil)
     {
+        currentDisplayedMessages = DisplayedMessages(chatItems: chatItems, highlightTerm: highlightTerm)
+
         let allMatchingMessages = NSMutableAttributedString()
 
         var lastShownDate:Date?
@@ -203,7 +220,7 @@ class MessagesListViewController: NSViewController, NSCollectionViewDataSource, 
 
         for chatItem in chatItems {
 
-            if terseTimeMode {
+            if showTerseTime {
                 if lastShownDate == nil || chatItem.date.timeIntervalSince(lastShownDate!) > delayBetweenChatsInSeconds {
                     let highlightedDate = messageFormatter.formatMessageDate(chatItem.date)
                     allMatchingMessages.append(highlightedDate)

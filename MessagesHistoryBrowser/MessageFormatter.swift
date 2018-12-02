@@ -17,13 +17,13 @@ class MessageFormatter {
     let meString = "me"
     let unknownContact = "<unknown>"
 
-    var terseTimeMode:Bool {
+    var ShowTerseTime:Bool = true {
         didSet {
-            dateFormatter.dateStyle = terseTimeMode ? .none : .short
+            dateFormatter.dateStyle = ShowTerseTime ? .none : .short
         }
     }
 
-    var detailedSender = false
+    var showDetailedSender = false
 
     let dateParagraphStyle = NSMutableParagraphStyle()
     let contactNameParagraphStyle = NSMutableParagraphStyle()
@@ -40,7 +40,7 @@ class MessageFormatter {
         fullDateFormatter.timeStyle = .long
         fullDateFormatter.dateStyle = .long
 
-        terseTimeMode = true
+//        ShowTerseTime = true
 
         dateParagraphStyle.alignment = .center
 //        dateParagraphStyle.lineSpacing = 15
@@ -73,7 +73,7 @@ class MessageFormatter {
         guard let messageContent = message.content else { return nil }
         guard messageContent != "" else { return nil }
 
-        let result = formatMessagePreamble(message, detailed: detailedSender)
+        let result = formatMessagePreamble(message, detailed: showDetailedSender)
 
         // highlight message content
         //

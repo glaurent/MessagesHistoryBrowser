@@ -8,6 +8,10 @@
 
 import Cocoa
 
+let CountryPhonePrefixUserDefaultsKey = "CountryPhonePrefix"
+let ShowDetailedSenderUserDefaultsKey = "ShowDetailedSender"
+let ShowTerseTimeUserDefaultsKey = "ShowTerseTime"
+
 class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableViewDelegate {
 
     @IBOutlet weak var tableView: NSTableView!
@@ -46,6 +50,10 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
         get { return tableView != nil && tableView.selectedRow >= 0 }
     }
 
+    var showDetailedSenderUserDefault:Bool {
+        return UserDefaults.standard.bool(forKey: ShowDetailedSenderUserDefaultsKey)
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do view setup here.
@@ -68,7 +76,9 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
         NotificationCenter.default.addObserver(self, selector: #selector(ChatTableViewController.showUnknownContactsChanged(_:)), name: NSNotification.Name(rawValue: AppDelegate.ShowChatsFromUnknownNotification), object: nil)
 //        NSNotificationCenter.defaultCenter().addObserver(self, selector: "phonePrefixChanged:", name: NSUserDefaultsDidChangeNotification, object: nil)
 
-        UserDefaults.standard.addObserver(self, forKeyPath: "CountryPhonePrefix", options: .new, context: nil)
+        UserDefaults.standard.addObserver(self, forKeyPath: CountryPhonePrefixUserDefaultsKey, options: .new, context: nil)
+        UserDefaults.standard.addObserver(self, forKeyPath: ShowDetailedSenderUserDefaultsKey, options: .new, context: nil)
+        UserDefaults.standard.addObserver(self, forKeyPath: ShowTerseTimeUserDefaultsKey, options: .new, context: nil)
 
         if Chat.numberOfChatsInContext(moc) == 0 {
 
@@ -284,7 +294,7 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
 
             ChatItemsFetcher.sharedInstance.clearSearch()
 
-            messagesListViewController?.detailedSender = false
+            messagesListViewController?.showDetailedSender = showDetailedSenderUserDefault
             messagesListViewController?.clearMessages()
             messagesListViewController?.clearAttachments()
             tableView.reloadData()
@@ -389,7 +399,11 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
         messagesListViewController?.attachmentsToDisplay = attachments
         messagesListViewController?.attachmentsCollectionView.reloadData()
 
-        messagesListViewController?.detailedSender = searchTerm != nil
+        if searchTerm != nil { // Force showing detailed sender in messages list if there's a search term
+            messagesListViewController?.showDetailedSender = true
+        } else {
+            messagesListViewController?.showDetailedSender = showDetailedSenderUserDefault
+        }
 
         if messages.count > 0 {
             messagesListViewController?.showMessages(messages, withHighlightTerm: searchTerm)
@@ -490,6 +504,15 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
         // probably not a good idea from a usability point of view to trigger a re-import on pref change
         //
 //        refreshChatHistory()
+
+        guard let newValue = change?[NSKeyValueChangeKey.newKey] as? Bool else { return }
+
+        if keyPath == ShowDetailedSenderUserDefaultsKey {
+            messagesListViewController?.showDetailedSender = newValue
+        } else if keyPath == ShowTerseTimeUserDefaultsKey {
+            messagesListViewController?.showTerseTime = newValue
+        }
+
     }
 
     func setupChatDatabase() -> Bool {
