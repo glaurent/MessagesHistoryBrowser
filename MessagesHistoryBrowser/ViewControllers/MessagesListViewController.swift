@@ -81,6 +81,8 @@ class MessagesListViewController: NSViewController, NSCollectionViewDataSource, 
 
     // MARK - Attachments CollectionView
 
+    let homeDir = "/Users/" + NSUserName()
+
     func collectionView(_ collectionView: NSCollectionView, numberOfItemsInSection section: Int) -> Int
     {
         guard let attachmentsToDisplay = attachmentsToDisplay else {
@@ -100,7 +102,7 @@ class MessagesListViewController: NSViewController, NSCollectionViewDataSource, 
 
         if let attachmentFileName = attachment.fileName {
 
-            let imagePath = NSString(string:attachmentFileName).standardizingPath
+            let imagePath = attachmentFileName.standardizingPath() // NSString(string:attachmentFileName).standardizingPath
 
             if !imagePath.hasSuffix(attachmentInICloudPathSuffix) { // default image set in xib is iCloud icon, don't change it if attachment is in iCloud
 
@@ -169,7 +171,7 @@ class MessagesListViewController: NSViewController, NSCollectionViewDataSource, 
     {
         if let attachment = attachmentsToDisplay?[indexPath.item], let attachmentFileName = attachment.fileName {
 
-            let imagePath = NSString(string:attachmentFileName).standardizingPath
+            let imagePath = attachmentFileName.standardizingPath()
             let imageURL = URL(fileURLWithPath: imagePath)
             NSWorkspace.shared.activateFileViewerSelecting([imageURL])
         }
@@ -179,7 +181,7 @@ class MessagesListViewController: NSViewController, NSCollectionViewDataSource, 
     {
         if let attachment = attachmentsToDisplay?[indexPath.item], let attachmentFileName = attachment.fileName {
 
-            let imagePath = NSString(string:attachmentFileName).standardizingPath
+            let imagePath = attachmentFileName.standardizingPath()
             let image = NSImage(byReferencingFile: imagePath)
             return image
         }
@@ -259,7 +261,7 @@ class MessagesListViewController: NSViewController, NSCollectionViewDataSource, 
 
                 guard let attachmentFileName = attachment.fileName else { continue }
 
-                let attachmentPath = NSString(string:attachmentFileName).standardizingPath
+                let attachmentPath = attachmentFileName.standardizingPath()
 
                 let fileExists = FileManager.default.fileExists(atPath: attachmentPath)
 

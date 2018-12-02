@@ -13,7 +13,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     static let ShowChatsFromUnknownNotification = "ShowChatsFromUnknownNotification"
 
-    let chatsDBPath = NSString(string:"~/Library/Messages/chat.db").standardizingPath
+    let chatsDBPath = "/Users/" + NSUserName() + "/Library/Messages/chat.db"  // NSString(string:"~/Library/Messages/chat.db").expandingTildeInPath // this won't work in sandboxed environment
 
     var chatsDatabase:ChatsDatabase?
 

@@ -12,6 +12,12 @@ let CountryPhonePrefixUserDefaultsKey = "CountryPhonePrefix"
 let ShowDetailedSenderUserDefaultsKey = "ShowDetailedSender"
 let ShowTerseTimeUserDefaultsKey = "ShowTerseTime"
 
+extension String {
+    func standardizingPath() -> String {
+        return self.replacingOccurrences(of: "~", with: "/Users/" + NSUserName())
+    }
+}
+
 class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableViewDelegate {
 
     @IBOutlet weak var tableView: NSTableView!
@@ -110,29 +116,56 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
         if !setupDBSucceeded {
 
 
-            if #available(OSX 10.14, *) {
+            // First, ask user to open the ~/Library/Messages folder
+            //
+            let panel = NSOpenPanel()
+            panel.canChooseFiles = false
+            panel.canChooseDirectories = true
+            panel.message = NSLocalizedString("Please allow access to your Messages archive", comment: "")
+            panel.directoryURL = URL(fileURLWithPath: String("~/Library/Messages/").standardizingPath(), isDirectory: true)
 
-                let showAppPrivilegesSetupWindowController = NSStoryboard.main?.instantiateController(withIdentifier: "AccessPrivilegesDialog") as! NSWindowController
+            panel.begin() { (response:NSApplication.ModalResponse) in
+                if response.rawValue == NSFileHandlingPanelOKButton {
+                    NSLog("Access granted")
 
-                NSApp.mainWindow?.beginSheet(showAppPrivilegesSetupWindowController.window!, completionHandler: { (_) in
-                    NSApp.terminate(nil)
-                })
+                    self.setupDBSucceeded = self.setupChatDatabase()
 
-            } else {
-                let appDelegate = NSApp.delegate as! AppDelegate
-                let chatsDBPath = appDelegate.chatsDBPath
-
-                let alert = NSAlert()
-                alert.messageText = String(format:NSLocalizedString("Couldn't open Messages.app database in\n%@", comment: ""), chatsDBPath)
-                alert.informativeText = NSLocalizedString("Application can't run. Check if the database is accessible", comment: "")
-                alert.alertStyle = .critical
-                alert.addButton(withTitle: NSLocalizedString("Quit", comment: ""))
-                let _ = alert.runModal()
-                NSApp.terminate(nil)
+                    if !self.setupDBSucceeded {
+                        self.showPrivilegesDialogAndQuit()
+                    }
+                } else {
+                    self.showPrivilegesDialogAndQuit()
+                }
             }
-        }
 
+        }
     }
+
+    private func showPrivilegesDialogAndQuit() {
+
+        if #available(OSX 10.14, *) {
+
+            let showAppPrivilegesSetupWindowController = NSStoryboard.main?.instantiateController(withIdentifier: "AccessPrivilegesDialog") as! NSWindowController
+
+            NSApp.mainWindow?.beginSheet(showAppPrivilegesSetupWindowController.window!, completionHandler: { (_) in
+                NSApp.terminate(nil)
+            })
+
+        } else {
+            let appDelegate = NSApp.delegate as! AppDelegate
+            let chatsDBPath = appDelegate.chatsDBPath
+
+            let alert = NSAlert()
+            alert.messageText = String(format:NSLocalizedString("Couldn't open Messages.app database in\n%@", comment: ""), chatsDBPath)
+            alert.informativeText = NSLocalizedString("Application can't run. Check if the database is accessible", comment: "")
+            alert.alertStyle = .critical
+            alert.addButton(withTitle: NSLocalizedString("Quit", comment: ""))
+            let _ = alert.runModal()
+            NSApp.terminate(nil)
+        }
+    }
+
+
 
     @objc func showUnknownContactsChanged(_ notification:Notification)
     {
