@@ -226,24 +226,23 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
             cellView.textField?.stringValue = contact.name
             if let cellImageView = cellView.imageView {
 
-                ContactsMapProxy.sharedInstance.contactImage(contact.identifier) { (thumbnailImage, initialsPair) in
-                    if let thumbnailImage = thumbnailImage {
-                        let roundedThumbnailImage = roundCorners(thumbnailImage)
-                        DispatchQueue.main.async { cellImageView.image = roundedThumbnailImage }
-                    } else if let initialsPair = initialsPair {
-                        // contact unknown for this cell, use initials to generate an image
+                let (thumbnailImage, initialsPair) = ContactsMap.sharedInstance.contactImage(contact.identifier)
 
-                        let initials = "\(initialsPair.0)\(initialsPair.1)"
+                if let thumbnailImage = thumbnailImage {
+                    let roundedThumbnailImage = roundCorners(thumbnailImage)
+                    DispatchQueue.main.async { cellImageView.image = roundedThumbnailImage }
+                } else if let initialsPair = initialsPair {
+                    // contact unknown for this cell, use initials to generate an image
 
-                        if let imageLabel = LabelToImage.stringToImage(initials) {
-                            let roundImageLabel = roundCorners(imageLabel)
-                            DispatchQueue.main.async { cellImageView.image = roundImageLabel }
-                        }
-                    } else {
-                        DispatchQueue.main.async { cellImageView.image = nil }
+                    let initials = "\(initialsPair.0)\(initialsPair.1)"
+
+                    if let imageLabel = LabelToImage.stringToImage(initials) {
+                        let roundImageLabel = roundCorners(imageLabel)
+                        DispatchQueue.main.async { cellImageView.image = roundImageLabel }
                     }
+                } else {
+                    DispatchQueue.main.async { cellImageView.image = nil }
                 }
-
             }
 
         } else { // no contact for this row ? shouldn't happen
