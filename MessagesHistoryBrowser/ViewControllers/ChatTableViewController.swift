@@ -492,16 +492,20 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
     //
     func completeImport()
     {
-        if let currentProgress = Progress.current() {
-            currentProgress.resignCurrent()
-        }
-        progressReportView.isHidden = true
-        tableView.isHidden = false
-        messagesListViewController?.view.isHidden = false
+        DispatchQueue.main.async {
 
-        allKnownContacts = ChatContact.allKnownContacts(MOCController.sharedInstance.managedObjectContext)
-        allUnknownContacts = ChatContact.allUnknownContacts(MOCController.sharedInstance.managedObjectContext)
-        tableView.reloadData()
+            if let currentProgress = Progress.current() {
+                currentProgress.resignCurrent()
+            }
+            self.progressReportView.isHidden = true
+            self.tableView.isHidden = false
+            self.messagesListViewController?.view.isHidden = false
+
+            self.allKnownContacts = ChatContact.allKnownContacts(MOCController.sharedInstance.managedObjectContext)
+            self.allUnknownContacts = ChatContact.allUnknownContacts(MOCController.sharedInstance.managedObjectContext)
+            self.tableView.reloadData()
+        }
+
     }
 
     func importMessagesFromOSXApp()

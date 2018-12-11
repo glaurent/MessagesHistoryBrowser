@@ -57,15 +57,22 @@ class ChatsDatabase {
 
             if Chat.numberOfChatsInContext(workerContext) == 0 {
 
-                progress.localizedDescription = NSLocalizedString("Importing chats...", comment: "")
-                progress.localizedAdditionalDescription = ""
+                DispatchQueue.main.async {
+                    progress.localizedDescription = NSLocalizedString("Importing chats...", comment: "")
+                    progress.localizedAdditionalDescription = ""
+                }
                 progress.becomeCurrent(withPendingUnitCount: 2)
-                self.importAllChatsFromDB(workerContext)
-                progress.resignCurrent()
 
-                progress.localizedDescription = NSLocalizedString("Importing chat messages...", comment: "")
+                self.importAllChatsFromDB(workerContext)
+
+                progress.resignCurrent()
+                DispatchQueue.main.async {
+                    progress.localizedDescription = NSLocalizedString("Importing chat messages...", comment: "")
+                }
                 progress.becomeCurrent(withPendingUnitCount: 8) // must be a total 10 units - see init of Progress in ChatTableViewController.setupProgressBeforeImport()
+
                 self.collectAllMessagesFromAllChats(workerContext)
+
                 progress.resignCurrent()
             }
 
@@ -126,7 +133,9 @@ class ChatsDatabase {
 
 //            NSLog("chat : %@ \tcontact : %@\trowId: %d", guid, chatContact.name, rowID)
 
-                DispatchQueue.main.async { taskProgress.completedUnitCount = rowIndex }
+                DispatchQueue.main.async {
+                    taskProgress.completedUnitCount = rowIndex
+                }
                 rowIndex += 1
 
             }
@@ -332,7 +341,11 @@ class ChatsDatabase {
 
         for contact in allContacts {
 
-            Progress.current()?.localizedAdditionalDescription = contact.name
+            if let currentProgress = Progress.current() {
+                DispatchQueue.main.async {
+                    currentProgress.localizedAdditionalDescription = contact.name
+                }
+            }
 
             for obj in contact.chats {
                 let chat = obj as! Chat
@@ -351,9 +364,13 @@ class ChatsDatabase {
 
             indexMessagesForContact(contact)
 
-            DispatchQueue.main.async { taskProgress.completedUnitCount += 1 }
+            DispatchQueue.main.async {
+                taskProgress.completedUnitCount += 1
+            }
             
         }
+
+//        DispatchQueue.main.async { Progress.current()?.resignCurrent() }
     }
 
     func indexMessagesForContact(_ contact:ChatContact)
