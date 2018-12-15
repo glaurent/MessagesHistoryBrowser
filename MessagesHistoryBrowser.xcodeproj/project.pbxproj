@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		8133F945D8099994BDC50671 /* Pods_MessagesHistoryBrowser.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2336992AB1809901AA9D8E24 /* Pods_MessagesHistoryBrowser.framework */; };
 		AF029C441C4D746100B1A950 /* phone country codes.json in Resources */ = {isa = PBXBuildFile; fileRef = AF029C431C4D746100B1A950 /* phone country codes.json */; };
+		AF2832DE21C413A000F8DD58 /* ContactTableCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF2832DD21C413A000F8DD58 /* ContactTableCellView.swift */; };
 		AF2B2DEF1BC18BE1000B8293 /* ChatsDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF2B2DEE1BC18BE1000B8293 /* ChatsDatabase.swift */; };
 		AF2B2DF11BC19BAE000B8293 /* ChatMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF2B2DF01BC19BAE000B8293 /* ChatMessage.swift */; };
 		AF2B2DF31BC19E81000B8293 /* MessagesListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF2B2DF21BC19E81000B8293 /* MessagesListViewController.swift */; };
@@ -23,7 +24,6 @@
 		AF8003C11C4A6545008A1D64 /* RoundImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF8003C01C4A6545008A1D64 /* RoundImage.swift */; };
 		AF82EDB51C23708B00F8132D /* AttachmentsCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF82EDB41C23708B00F8132D /* AttachmentsCollectionView.swift */; };
 		AF82EDB71C23723F00F8132D /* AttachmentsCollectionViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF82EDB61C23723F00F8132D /* AttachmentsCollectionViewDelegate.swift */; };
-		AFAB024921452C1D000D9864 /* LabelToImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF55D3261C543357000377DD /* LabelToImage.swift */; };
 		AFAF103C213F3707009DDA82 /* ShowAppPrivilegesSetupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFAF103B213F3706009DDA82 /* ShowAppPrivilegesSetupViewController.swift */; };
 		AFAF103F2140523F009DDA82 /* ShowImagesDownloadViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFAF103E2140523F009DDA82 /* ShowImagesDownloadViewController.swift */; };
 		AFAF8B141BF3B91E009D92F6 /* ImageAttachmentCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFAF8B131BF3B91E009D92F6 /* ImageAttachmentCell.swift */; };
@@ -78,13 +78,13 @@
 		9226CB04737EBB6E974F761C /* Pods-MessagesHistoryBrowser.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MessagesHistoryBrowser.debug.xcconfig"; path = "Pods/Target Support Files/Pods-MessagesHistoryBrowser/Pods-MessagesHistoryBrowser.debug.xcconfig"; sourceTree = "<group>"; };
 		AF01B05C1EA13C9A0039A46F /* MessagesHistoryBrowser.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MessagesHistoryBrowser.entitlements; sourceTree = "<group>"; };
 		AF029C431C4D746100B1A950 /* phone country codes.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "phone country codes.json"; sourceTree = "<group>"; };
+		AF2832DD21C413A000F8DD58 /* ContactTableCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactTableCellView.swift; sourceTree = "<group>"; };
 		AF2B2DEE1BC18BE1000B8293 /* ChatsDatabase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatsDatabase.swift; sourceTree = "<group>"; };
 		AF2B2DF01BC19BAE000B8293 /* ChatMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatMessage.swift; sourceTree = "<group>"; };
 		AF2B2DF21BC19E81000B8293 /* MessagesListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessagesListViewController.swift; sourceTree = "<group>"; };
 		AF424CD51BC9609D006EE8D2 /* ChatAttachment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatAttachment.swift; sourceTree = "<group>"; };
 		AF424CD71BC963E4006EE8D2 /* ChatContact.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatContact.swift; sourceTree = "<group>"; };
 		AF47D8761BDCDD20002CDF4B /* ChatTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatTableViewController.swift; sourceTree = "<group>"; };
-		AF55D3261C543357000377DD /* LabelToImage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LabelToImage.swift; sourceTree = "<group>"; };
 		AF67203E21B53C3300C41616 /* AboutViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutViewController.swift; sourceTree = "<group>"; };
 		AF6F10E81BB81D5900A93152 /* SQLite.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SQLite.framework; path = Carthage/Build/Mac/SQLite.framework; sourceTree = "<group>"; };
 		AF8003B71C273838008A1D64 /* ImageAttachmentDisplayViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageAttachmentDisplayViewController.swift; sourceTree = "<group>"; };
@@ -255,6 +255,7 @@
 		AFD974951BB816B5004CF8D7 /* MessagesHistoryBrowser */ = {
 			isa = PBXGroup;
 			children = (
+				AF2832DD21C413A000F8DD58 /* ContactTableCellView.swift */,
 				AF01B05C1EA13C9A0039A46F /* MessagesHistoryBrowser.entitlements */,
 				AF8003BE1C357A0E008A1D64 /* ChatItemsFetcher.swift */,
 				AF8003C01C4A6545008A1D64 /* RoundImage.swift */,
@@ -263,7 +264,6 @@
 				AF424CD91BC965FF006EE8D2 /* CoreData */,
 				AF2B2DEE1BC18BE1000B8293 /* ChatsDatabase.swift */,
 				AFD974C91BB81885004CF8D7 /* ContactsMap.swift */,
-				AF55D3261C543357000377DD /* LabelToImage.swift */,
 				AF8003B91C2C8040008A1D64 /* Attachments Collection View */,
 				AFD974961BB816B5004CF8D7 /* AppDelegate.swift */,
 				AFD974981BB816B5004CF8D7 /* ViewController.swift */,
@@ -378,6 +378,9 @@
 						LastSwiftMigration = 1000;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
+							com.apple.HardenedRuntime = {
+								enabled = 1;
+							};
 							com.apple.Sandbox = {
 								enabled = 1;
 							};
@@ -494,7 +497,6 @@
 			files = (
 				AFAF8B141BF3B91E009D92F6 /* ImageAttachmentCell.swift in Sources */,
 				AF8003BF1C357A0E008A1D64 /* ChatItemsFetcher.swift in Sources */,
-				AFAB024921452C1D000D9864 /* LabelToImage.swift in Sources */,
 				AF2B2DF11BC19BAE000B8293 /* ChatMessage.swift in Sources */,
 				AFD9749C1BB816B5004CF8D7 /* MessagesHistoryBrowser.xcdatamodeld in Sources */,
 				AF82EDB51C23708B00F8132D /* AttachmentsCollectionView.swift in Sources */,
@@ -502,6 +504,7 @@
 				AFBF11451BE77E6E00D3D596 /* ChatItem.swift in Sources */,
 				AF2B2DF31BC19E81000B8293 /* MessagesListViewController.swift in Sources */,
 				AF424CD61BC9609D006EE8D2 /* ChatAttachment.swift in Sources */,
+				AF2832DE21C413A000F8DD58 /* ContactTableCellView.swift in Sources */,
 				AF82EDB71C23723F00F8132D /* AttachmentsCollectionViewDelegate.swift in Sources */,
 				AFD974CA1BB81885004CF8D7 /* Chat.swift in Sources */,
 				AF8003B81C273838008A1D64 /* ImageAttachmentDisplayViewController.swift in Sources */,
@@ -676,6 +679,7 @@
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = 6YMA3EN78R;
+				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -699,6 +703,7 @@
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = 6YMA3EN78R;
+				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",

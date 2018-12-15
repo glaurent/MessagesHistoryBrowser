@@ -220,7 +220,7 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
     {
         guard let tableColumn = tableColumn else { return nil }
 
-        let cellView = tableView.makeView(withIdentifier: tableColumn.identifier, owner: self) as! NSTableCellView
+        let cellView = tableView.makeView(withIdentifier: tableColumn.identifier, owner: self) as! ContactTableCellView
 
         if let contact = contactForRow(row) {
             cellView.textField?.stringValue = contact.name
@@ -230,18 +230,25 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
 
                 if let thumbnailImage = thumbnailImage {
                     let roundedThumbnailImage = roundCorners(thumbnailImage)
-                    DispatchQueue.main.async { cellImageView.image = roundedThumbnailImage }
+                    DispatchQueue.main.async {
+                        cellImageView.image = roundedThumbnailImage
+                        cellView.showImage()
+                    }
                 } else if let initialsPair = initialsPair {
                     // contact unknown for this cell, use initials to generate an image
 
                     let initials = "\(initialsPair.0)\(initialsPair.1)"
 
-                    if let imageLabel = LabelToImage.stringToImage(initials) {
-                        let roundImageLabel = roundCorners(imageLabel)
-                        DispatchQueue.main.async { cellImageView.image = roundImageLabel }
+                    DispatchQueue.main.async {
+                        cellView.contactInitialsLabel.stringValue = initials
+//                        cellView.createCircleLayer()
+                        cellView.showLabel()
                     }
                 } else {
-                    DispatchQueue.main.async { cellImageView.image = nil }
+                    DispatchQueue.main.async {
+                        cellImageView.image = nil
+                        cellView.showImage()
+                    }
                 }
             }
 
@@ -249,6 +256,8 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
             NSLog("WARNING : no contact found for row \(row)")
             cellView.textField?.stringValue = "unknown"
             cellView.imageView?.image = nil
+            cellView.contactInitialsLabel.stringValue = ""
+            cellView.showLabel()
         }
         return cellView
     }
