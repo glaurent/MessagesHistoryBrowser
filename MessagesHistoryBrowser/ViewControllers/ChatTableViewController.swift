@@ -44,7 +44,16 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
     var searchedMessages:[ChatMessage]?
     var searchTermHasChanged = false
 
+    let dbPathBookmarkFileName = "DBPathBookmarkData"
+    lazy var bookmarkDataFileURL:URL = {
+        let appSupportURL = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
+        let bookmarkDataFileURL = URL(fileURLWithPath: dbPathBookmarkFileName, relativeTo: appSupportURL)
+
+        return bookmarkDataFileURL
+    }()
+    var dbPathBookmarkData: NSData?
     var setupDBSucceeded = false
+    var messagesFolderURL:URL?
 
     @objc dynamic var beforeDateEnabled = false
     @objc dynamic var afterDateEnabled = false
@@ -121,12 +130,27 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
             let panel = NSOpenPanel()
             panel.canChooseFiles = false
             panel.canChooseDirectories = true
+            panel.allowsMultipleSelection = false
             panel.message = NSLocalizedString("Please allow access to your Messages archive", comment: "")
             panel.directoryURL = URL(fileURLWithPath: String("~/Library/Messages/").standardizingPath(), isDirectory: true)
 
             panel.begin() { (response:NSApplication.ModalResponse) in
                 if response.rawValue == NSFileHandlingPanelOKButton {
                     NSLog("Access granted")
+
+                    // create bookmark to selected folder
+                    //
+                    do {
+                        if let bookmarkData = try panel.url?.bookmarkData(options: URL.BookmarkCreationOptions.withSecurityScope, includingResourceValuesForKeys: nil, relativeTo: nil) {
+
+                            let appSupportURL = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
+                            let bookmarkDataFileURL = URL(fileURLWithPath: self.dbPathBookmarkFileName, relativeTo: appSupportURL)
+
+                            try bookmarkData.write(to: bookmarkDataFileURL)
+                        }
+                        } catch (let error) {
+                            NSLog("Couldn't write bookmark data : \(error)")
+                        }
 
                     self.setupDBSucceeded = self.setupChatDatabase()
 
@@ -141,17 +165,21 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
         }
     }
 
+    override func viewWillDisappear() {
+        messagesFolderURL?.stopAccessingSecurityScopedResource()
+    }
+
     private func showPrivilegesDialogAndQuit() {
 
-        if #available(OSX 10.14, *) {
-
-            let showAppPrivilegesSetupWindowController = NSStoryboard.main?.instantiateController(withIdentifier: "AccessPrivilegesDialog") as! NSWindowController
-
-            NSApp.mainWindow?.beginSheet(showAppPrivilegesSetupWindowController.window!, completionHandler: { (_) in
-                NSApp.terminate(nil)
-            })
-
-        } else {
+//        if #available(OSX 10.14, *) {
+//
+//            let showAppPrivilegesSetupWindowController = NSStoryboard.main?.instantiateController(withIdentifier: "AccessPrivilegesDialog") as! NSWindowController
+//
+//            NSApp.mainWindow?.beginSheet(showAppPrivilegesSetupWindowController.window!, completionHandler: { (_) in
+//                NSApp.terminate(nil)
+//            })
+//
+//        } else {
             let appDelegate = NSApp.delegate as! AppDelegate
             let chatsDBPath = appDelegate.chatsDBPath
 
@@ -162,7 +190,7 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
             alert.addButton(withTitle: NSLocalizedString("Quit", comment: ""))
             let _ = alert.runModal()
             NSApp.terminate(nil)
-        }
+//        }
     }
 
 
@@ -389,7 +417,9 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
     {
         do {
 
-            let messages = contact.messages.sorted(by: ChatItemsFetcher.sharedInstance.messageDateSort as! (NSFastEnumerationIterator.Element, NSFastEnumerationIterator.Element) -> Bool) as! [ChatMessage]
+            let sortedMessages = contact.messages.sorted(by: ChatItemsFetcher.sharedInstance.messageEnumIteratorDateSort)
+
+            let messages = sortedMessages as! [ChatMessage]
 
             let reducer = { (currentValue:String, message:ChatMessage) -> String in
                 return currentValue + "\n" + self.messageFormatter.formatMessageAsString(message)
@@ -565,13 +595,37 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
         let appDelegate = NSApp.delegate as! AppDelegate
         let chatsDBPath = appDelegate.chatsDBPath
 
-        do {
-            try appDelegate.chatsDatabase = ChatsDatabase(chatsDBPath:chatsDBPath)
-        } catch let error {
-            NSLog("DB init error : \(error)")
+        NSLog("bookmarkDataFileURL : \(bookmarkDataFileURL)")
+        if let urlData = try? Data(contentsOf: bookmarkDataFileURL) {
+            var isStale = false
+            messagesFolderURL = try? URL(resolvingBookmarkData:urlData, options:.withSecurityScope, bookmarkDataIsStale:&isStale)
+
+            if let messagesFolderURL = messagesFolderURL {
+
+                if messagesFolderURL.startAccessingSecurityScopedResource() {
+
+                    let chatDBURL = messagesFolderURL.appendingPathComponent("chat.db")
+
+                    do {
+                        try appDelegate.chatsDatabase = ChatsDatabase(chatsDBPath:chatDBURL.path)
+                        return true
+                    } catch let error {
+                        NSLog("DB init error : \(error)")
+                        return false
+                    }
+                } else {
+                    NSLog("No access to \(messagesFolderURL)")
+                    return false
+                }
+            } else {
+                NSLog("Couldn't resolve bookmark data")
+                return false
+            }
+
+        } else {
+            NSLog("No bookmarkedURL data file")
             return false
         }
-
-        return true
     }
+
 }

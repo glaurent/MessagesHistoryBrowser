@@ -59,19 +59,6 @@
 		};
 /* End PBXContainerItemProxy section */
 
-/* Begin PBXCopyFilesBuildPhase section */
-		AFAB023A2141D65B000D9864 /* Embed XPC Services */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "$(CONTENTS_FOLDER_PATH)/XPCServices";
-			dstSubfolderSpec = 16;
-			files = (
-			);
-			name = "Embed XPC Services";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
-
 /* Begin PBXFileReference section */
 		06B41BFE43415391B628446C /* Pods-MessagesHistoryBrowser.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MessagesHistoryBrowser.release.xcconfig"; path = "Pods/Target Support Files/Pods-MessagesHistoryBrowser/Pods-MessagesHistoryBrowser.release.xcconfig"; sourceTree = "<group>"; };
 		2336992AB1809901AA9D8E24 /* Pods_MessagesHistoryBrowser.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MessagesHistoryBrowser.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -316,7 +303,7 @@
 				AFD974901BB816B5004CF8D7 /* Frameworks */,
 				AFD974911BB816B5004CF8D7 /* Resources */,
 				EE821D9E53F83750E5D9F2D9 /* [CP] Embed Pods Frameworks */,
-				AFAB023A2141D65B000D9864 /* Embed XPC Services */,
+				AF2832FD21C6561600F8DD58 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -450,6 +437,23 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		AF2832FD21C6561600F8DD58 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Taken from https://github.com/sparkle-project/Sparkle/issues/1266\n#\nLOCATION=\"${BUILT_PRODUCTS_DIR}\"/\"${FRAMEWORKS_FOLDER_PATH}\"\n\n# By default, use the configured code signing identity for the project/target\nIDENTITY=\"${CODE_SIGN_IDENTITY}\"\nif [ \"$IDENTITY\" == \"\" ]\nthen\n# If a code signing identity is not specified, use ad hoc signing\nIDENTITY=\"-\"\nfi\ncodesign --verbose --force --deep -o runtime --sign \"$IDENTITY\" \"$LOCATION/Sparkle.framework/Versions/A/Resources/AutoUpdate.app\"\ncodesign --verbose --force -o runtime --sign \"$IDENTITY\" \"$LOCATION/Sparkle.framework/Versions/A\"\n\n";
+		};
 		B73606C5BC3A8B0CB4E20E4B /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
