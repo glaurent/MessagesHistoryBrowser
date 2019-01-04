@@ -593,7 +593,6 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
     func setupChatDatabase() -> Bool {
 
         let appDelegate = NSApp.delegate as! AppDelegate
-        let chatsDBPath = appDelegate.chatsDBPath
 
         NSLog("bookmarkDataFileURL : \(bookmarkDataFileURL)")
         if let urlData = try? Data(contentsOf: bookmarkDataFileURL) {
