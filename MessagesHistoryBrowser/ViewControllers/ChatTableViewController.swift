@@ -7,6 +7,7 @@
 //
 
 import Cocoa
+import Contacts
 
 let CountryPhonePrefixUserDefaultsKey = "CountryPhonePrefix"
 let ShowDetailedSenderUserDefaultsKey = "ShowDetailedSender"
@@ -38,6 +39,7 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
     var messageFormatter = MessageFormatter()
 
     var showChatsFromUnknown = false
+    var contactAccessChecked = false
 
     var searchTerm:String?
     var searchedContacts:[ChatContact]?
@@ -122,8 +124,35 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
 
     override func viewDidAppear() {
 
-        if !setupDBSucceeded {
+        // Check contacts authorization
+        //
+        if !contactAccessChecked {
 
+            let contactStore = CNContactStore()
+            contactStore.requestAccess(for: .contacts) { (authorized, error) in
+                NSLog("ContactStore requestAccess result : \(authorized) - \(error)")
+
+                if !authorized {
+                    DispatchQueue.main.async {
+
+                        if let appDelegate = NSApp.delegate as? AppDelegate {
+                            appDelegate.showChatsFromUnknown = true
+                        }
+
+                        let alert = NSAlert()
+                        alert.messageText = NSLocalizedString("No access to contacts", comment: "")
+                        alert.informativeText = "access to contacts is denied - chat list will be displayed with phone numbers instead of contact names"
+                        alert.alertStyle = .warning
+                        alert.addButton(withTitle: NSLocalizedString("OK", comment: ""))
+                        let _ = alert.runModal()
+                    }
+                }
+            }
+
+            contactAccessChecked = true
+        }
+
+        if !setupDBSucceeded {
 
             // First, ask user to open the ~/Library/Messages folder
             //
@@ -148,9 +177,9 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
 
                             try bookmarkData.write(to: bookmarkDataFileURL)
                         }
-                        } catch (let error) {
-                            NSLog("Couldn't write bookmark data : \(error)")
-                        }
+                    } catch (let error) {
+                        NSLog("Couldn't write bookmark data : \(error)")
+                    }
 
                     self.setupDBSucceeded = self.setupChatDatabase()
 

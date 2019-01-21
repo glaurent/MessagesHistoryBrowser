@@ -16,23 +16,36 @@ class ContactsMap {
 
     static let sharedInstance = ContactsMap()
 
-    var phoneNumbersMap = [String : CNContact]()
+    var phoneNumbersMap = [String : String]() // maps contact phone numbers (as found in Messages.app chats) to contact identifiers (as used by the Contacts framework)
 
     let contactStore = CNContactStore()
 
-    let contactIMFetchRequest = CNContactFetchRequest(keysToFetch: [CNContactFamilyNameKey as CNKeyDescriptor, CNContactGivenNameKey as CNKeyDescriptor, CNContactNicknameKey as CNKeyDescriptor, CNContactInstantMessageAddressesKey as CNKeyDescriptor])
+    let contactIMFetchRequest = CNContactFetchRequest(keysToFetch: [CNContactFamilyNameKey, CNContactGivenNameKey, CNContactNicknameKey, CNContactInstantMessageAddressesKey] as [CNKeyDescriptor])
 
-    let contactEmailFetchRequest = CNContactFetchRequest(keysToFetch: [CNContactFamilyNameKey as CNKeyDescriptor, CNContactGivenNameKey as CNKeyDescriptor, CNContactNicknameKey as CNKeyDescriptor, CNContactEmailAddressesKey as CNKeyDescriptor])
+    let contactEmailFetchRequest = CNContactFetchRequest(keysToFetch: [CNContactFamilyNameKey, CNContactGivenNameKey, CNContactNicknameKey, CNContactEmailAddressesKey] as [CNKeyDescriptor])
 
     var progress:Progress?
 
+    let contactFormatter = CNContactFormatter()
+
     init() {
         countryPhonePrefix = "+1"
+        contactFormatter.style = .fullName
     }
 
-    func populate(withCountryPhonePrefix phonePrefix:String) {
+    func populate(withCountryPhonePrefix phonePrefix:String) -> Bool {
 
-        countryPhonePrefix = phonePrefix
+        guard CNContactStore.authorizationStatus(for: .contacts) == .authorized else {
+            return false
+        }
+
+        // ensure countryPhonePrefix has a leading "+"
+        //
+        if phonePrefix.first != "+" {
+            countryPhonePrefix = "+" + phonePrefix
+        } else {
+            countryPhonePrefix = phonePrefix
+        }
 
         // get number of contacts so we can set the totalUnitCount of this NSProgress
         //
@@ -42,9 +55,10 @@ class ContactsMap {
 //            NSLog("\(#function) : nb of contacts : \(allContactsForCount.count)")
         }
 
-//        DispatchQueue.global(qos: .background).sync { () -> Void in
+        DispatchQueue.global(qos: .background).sync { () -> Void in
 
-            let contactFetchRequest = CNContactFetchRequest(keysToFetch: [CNContactPhoneNumbersKey as CNKeyDescriptor, CNContactFamilyNameKey as CNKeyDescriptor, CNContactGivenNameKey as CNKeyDescriptor, CNContactNicknameKey as CNKeyDescriptor])
+            let keysToFetch = [CNContactPhoneNumbersKey, CNContactFamilyNameKey, CNContactGivenNameKey, CNContactNicknameKey] as [CNKeyDescriptor]
+            let contactFetchRequest = CNContactFetchRequest(keysToFetch: keysToFetch)
 
             do {
 
@@ -56,8 +70,8 @@ class ContactsMap {
                         for index in 0..<phoneNumbers.count {
                             let phoneNb = phoneNumbers[index].value 
                             let canonPhoneNb = self.canonicalizePhoneNumber(phoneNb.stringValue)
-                            // NSLog("\(#function) phoneNb : %@", canonPhoneNb)
-                            self.phoneNumbersMap[canonPhoneNb] = contact
+                            NSLog("\(#function) phoneNb : \(canonPhoneNb) for contact \(contact.givenName)")
+                            self.phoneNumbersMap[canonPhoneNb] = contact.identifier
                             DispatchQueue.main.async {
                                 self.progress?.completedUnitCount = Int64(index)
                             }
@@ -70,10 +84,11 @@ class ContactsMap {
                 NSLog("\(#function) error while enumerating contacts : \(e)")
             }
 
-//        }
+        }
 
         self.progress = nil
 
+        return true
     }
 
     func canonicalizePhoneNumber(_ rawPhoneNumber:String) -> String {
@@ -103,8 +118,13 @@ class ContactsMap {
 
     func nameForPhoneNumber(_ phoneNumber:String) -> (String, String)? {
 
-        if let contact = phoneNumbersMap[phoneNumber] as CNContact? {
-            return (contactName(contact), contact.identifier)
+        if let contactIdentifier = phoneNumbersMap[phoneNumber] {
+
+            let contactName = formattedContactName(contactIdentifier) ?? "<unknown> \(phoneNumber)"
+
+            return (contactName, contactIdentifier)
+
+//            return (contactName(contactIdentifier), contact.identifier)
         }
 
         return nil
@@ -125,7 +145,7 @@ class ContactsMap {
                 for labeledValue in imAddresses {
                     let imAddress = labeledValue.value 
                     if imAddress.username == imAddressToSearch {
-                        res = (self.contactName(contact), contact.identifier)
+                        res = (self.formattedContactName(contact.identifier) ?? imAddressToSearch, contact.identifier)
                         stop.pointee = true
                     }
                 }
@@ -151,27 +171,34 @@ class ContactsMap {
                 for labeledValue in emailAddresses {
                     let emailAddress = labeledValue.value as String
                     if emailAddress == emailAddressToSearch {
-                        res = (self.contactName(contact), contact.identifier)
+                        res = (self.formattedContactName(contact.identifier) ?? emailAddressToSearch, contact.identifier)
                         stop.pointee = true
                     }
                 }
             }
         } catch {
-            
+
         }
         
         return res
 
     }
 
-    private func contactName(_ contact:CNContact) -> String {
-        if contact.nickname != "" {
-            return contact.nickname
+    private func formattedContactName(_ contactIdentifier:String) -> String? {
+
+        if let contact = try? contactStore.unifiedContact(withIdentifier: contactIdentifier, keysToFetch: [CNContactFormatter.descriptorForRequiredKeys(for: .fullName), CNContactNicknameKey as CNKeyDescriptor]) {
+
+            if contact.nickname != "" {
+                return contact.nickname
+            }
+            return contactFormatter.string(from: contact)
+        } else {
+            return nil
         }
-        
-        let firstName = contact.givenName
-        let lastName = contact.familyName
-        return "\(firstName) \(lastName)"
+
+//        let firstName = contact.givenName
+//        let lastName = contact.familyName
+//        return "\(firstName) \(lastName)"
     }
 
     // returns contact image or pair of initials if no image is found, or nil if contact is unknown

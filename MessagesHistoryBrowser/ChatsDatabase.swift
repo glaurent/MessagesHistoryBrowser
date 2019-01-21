@@ -17,7 +17,7 @@ class ChatsDatabase {
 
 //    let chatsDBPath = "/Users/glaurent/tmp/chat.db"
 
-    var contactsPhoneNumber:ContactsMap! // want delayed init
+    var contactsPhoneNumberMap:ContactsMap! // want delayed init
 
     var allChats:[Chat] {
         get {
@@ -29,7 +29,7 @@ class ChatsDatabase {
 
     init(chatsDBPath:String) throws {
 
-        contactsPhoneNumber = ContactsMap.sharedInstance
+        contactsPhoneNumberMap = ContactsMap.sharedInstance
 
         do {
 
@@ -46,7 +46,7 @@ class ChatsDatabase {
     func populate(_ progress:Progress, completion:@escaping () -> Void)
     {
         let defaultCountryPhonePrefix = UserDefaults.standard.string(forKey: CountryPhonePrefixUserDefaultsKey) ?? "+33"
-        contactsPhoneNumber.populate(withCountryPhonePrefix: defaultCountryPhonePrefix)
+        contactsPhoneNumberMap.populate(withCountryPhonePrefix: defaultCountryPhonePrefix)
 
 //        let workerContext = MOCController.sharedInstance.workerContext()
 
@@ -122,12 +122,12 @@ class ChatsDatabase {
 
                 let guid = chatData[chatGUIDColumn]
                 let rowID = chatData[chatRowIDColumn]
-                let identifier = chatData[chatIdentifierColumn]
+                let chatIdentifier = chatData[chatIdentifierColumn]
                 let serviceName = chatData[serviceNameColumn]
 
-                NSLog("\(#function) contact identifier \(identifier)")
+                NSLog("\(#function) contact chat identifier \(chatIdentifier)")
 
-                let chatContact = contactForIdentifier(identifier, service:serviceName, inContext: localContext)
+                let chatContact = contactForChatIdentifier(chatIdentifier, service:serviceName, inContext: localContext)
 
                 let _ = Chat(managedObjectContext:localContext, withContact:chatContact, withServiceName:serviceName,  withGUID: guid, andRowID: rowID)
 
@@ -152,42 +152,42 @@ class ChatsDatabase {
     }
 
 
-    func contactForIdentifier(_ identifier:String, service serviceName:String, inContext context:NSManagedObjectContext) -> ChatContact
+    func contactForChatIdentifier(_ chatIdentifier:String, service serviceName:String, inContext context:NSManagedObjectContext) -> ChatContact
     {
-        var contactName = identifier
+        var contactName = chatIdentifier // use chatIdentifier as default name
         var contactIsKnown = false
         var contactCNIdentifier = ""
 
         if serviceName == "AIM" || serviceName == "Jabber" {
 
-            if let chatContactNameIdentifierPair = contactsPhoneNumber.nameForInstantMessageAddress(identifier) {
+            if let chatContactNameIdentifierPair = contactsPhoneNumberMap.nameForInstantMessageAddress(chatIdentifier) {
                 contactName = chatContactNameIdentifierPair.0
                 contactCNIdentifier = chatContactNameIdentifierPair.1
                 contactIsKnown = true
             } else {
                 contactIsKnown = false
-                NSLog("\(#function) : no contact name found for identifier \(identifier)")
+                NSLog("\(#function) : no contact name found for identifier \(chatIdentifier)")
             }
 
         } else if serviceName == "iMessage" || serviceName == "SMS" {
 
             // check if identifier contains a '@'
-            if identifier.contains("@") {
-                if let chatContactNameIdentifierPair = contactsPhoneNumber.nameForEmailAddress(identifier) {
+            if chatIdentifier.contains("@") {
+                if let chatContactNameIdentifierPair = contactsPhoneNumberMap.nameForEmailAddress(chatIdentifier) {
                     contactName = chatContactNameIdentifierPair.0
                     contactCNIdentifier = chatContactNameIdentifierPair.1
                     contactIsKnown = true
                 }
-            } else if let chatContactNameIdentifierPair = contactsPhoneNumber.nameForPhoneNumber(identifier) {
+            } else if let chatContactNameIdentifierPair = contactsPhoneNumberMap.nameForPhoneNumber(chatIdentifier) {
                 contactName = chatContactNameIdentifierPair.0
                 contactCNIdentifier = chatContactNameIdentifierPair.1
                 contactIsKnown = true
             } else {
-                contactName = identifier
+                contactName = chatIdentifier
                 contactIsKnown = false
             }
         } else {
-            contactName = identifier
+            contactName = chatIdentifier
             contactIsKnown = false
         }
 
