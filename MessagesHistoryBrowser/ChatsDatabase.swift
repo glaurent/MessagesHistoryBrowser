@@ -292,6 +292,7 @@ class ChatsDatabase {
             let attachments = Table("attachment")
             let filenameColumn = Expression<String?>("filename")
             let attachmentIdColumn = Expression<Int>("attachment_id")
+            let isOutgoingColumn = Expression<Bool>("is_outgoing")
             let cacheHasAttachmentColumn = Expression<Bool>("cache_has_attachments")
 
             let messagesWithAttachmentsROWIDsQuery = try db.prepare(messagesTable.select(rowIDColumn, cacheHasAttachmentColumn, handleIdColumn).filter(allHandleIDs.contains(handleIdColumn) && cacheHasAttachmentColumn == true))
@@ -313,7 +314,7 @@ class ChatsDatabase {
 
             let attachmentDateColumn = Expression<Int>("created_date")
 
-            let attachmentDataQuery = try db.prepare(attachments.select(rowIDColumn, filenameColumn, attachmentDateColumn).filter(allAttachmentIDs.contains(rowIDColumn)))
+            let attachmentDataQuery = try db.prepare(attachments.select(rowIDColumn, filenameColumn, attachmentDateColumn, isOutgoingColumn).filter(allAttachmentIDs.contains(rowIDColumn)))
 
             for attachmentData in attachmentDataQuery {
                 let attachmentFileName:String? = attachmentData[filenameColumn]
@@ -322,7 +323,8 @@ class ChatsDatabase {
                 let attachmentDate = Date(timeIntervalSinceReferenceDate: attachmentTimeInterval)
 
                 if let attachmentFileName = attachmentFileName {
-                    let _ = ChatAttachment(managedObjectContext: chat.managedObjectContext!, withFileName: attachmentFileName, withDate: attachmentDate as Date, inChat:chat)
+                    let chatAttachment = ChatAttachment(managedObjectContext: chat.managedObjectContext!, withFileName: attachmentFileName, withDate: attachmentDate as Date, inChat:chat)
+                    chatAttachment.isFromMe = attachmentData[isOutgoingColumn]
                 }
             }
             

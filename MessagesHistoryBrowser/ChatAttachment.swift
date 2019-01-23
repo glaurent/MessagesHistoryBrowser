@@ -15,6 +15,10 @@ class ChatAttachment: ChatItem {
     @NSManaged var chat:Chat
     @NSManaged var contact:ChatContact
 
+    var standardizedFileName:String? {
+        return fileName?.standardizingPath()
+    }
+
     var associatedRange:NSRange?
 
     convenience init(managedObjectContext:NSManagedObjectContext, withFileName aFileName:String, withDate aDate:Date, inChat aChat:Chat) {

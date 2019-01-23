@@ -241,8 +241,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 <!DOCTYPE html>
 <html>
 <head>
-<link rel="stylesheet" href="messagesStyle.css">
-<title>Chat with \(contact.name)</title>
+    <link rel="stylesheet" href="messagesStyle.css">
+    <meta charset="UTF-8">
+    <title>Chat with \(contact.name)</title>
 </head>
 <body>
 """
@@ -284,8 +285,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                     let chatAttachments = chatItems.filter { $0 is ChatAttachment } as! [ChatAttachment]
 
                     for chatAttachment in chatAttachments {
-                        guard let attachmentFileName = chatAttachment.fileName else { continue }
-                        let originURL = URL(fileURLWithPath: attachmentFileName.standardizingPath())
+                        guard let attachmentFileName = chatAttachment.standardizedFileName else { continue }
+                        let originURL = URL(fileURLWithPath: attachmentFileName)
 
                         NSLog("HTMLExport : copying \(attachmentFileName) to \(attachmentsFolderURL)")
                         do {

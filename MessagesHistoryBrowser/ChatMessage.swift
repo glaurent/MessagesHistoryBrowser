@@ -30,7 +30,6 @@ class ChatMessage : ChatItem {
     }
 
     @NSManaged var content:String?
-    @NSManaged var isFromMe:Bool
 
     @NSManaged var chat:Chat
     @NSManaged var contact:ChatContact

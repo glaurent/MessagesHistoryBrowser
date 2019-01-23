@@ -1,9 +1,12 @@
-.message {
-    text-align: center;
-    color: red;
+body {
+    font: "Arial", sans-serif;
 }
 
-.date {
+.message {
+    text-align: left;
+}
+
+.date, .dateFromMe {
     color: grey;
 }
 
@@ -11,10 +14,14 @@
     color: black;
 }
 
+.messageTextFromMe {
+    color: darkgrey;
+}
+
 .image {
 
 }
 
 .attachment {
-    
+
 }

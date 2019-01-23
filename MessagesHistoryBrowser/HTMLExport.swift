@@ -30,7 +30,11 @@ extension ChatMessage : HTMLExportable {
 
         let nonEmptyContent = content ?? "<empty>"
 
-        let res = "<div class=\"message\"><span class=\"date\">\(HTMLDateFormatter.shared.dateFormatter.string(from: date))</span> : <span class=\"messageText\">\(nonEmptyContent)</span></div>\n"
+        let messageSpanClass = isFromMe ? "messageTextFromMe" : "messageText"
+
+        let dateSpanClass = isFromMe ? "dateFromMe" : "date"
+
+        let res = "<div class=\"message\"><span class=\"\(dateSpanClass)\">\(HTMLDateFormatter.shared.dateFormatter.string(from: date))</span> : <span class=\"\(messageSpanClass)\">\(nonEmptyContent)</span></div>\n"
 
         return res
     }
@@ -38,21 +42,31 @@ extension ChatMessage : HTMLExportable {
 
 extension ChatAttachment : HTMLExportable {
 
+    // name of folder in which attachments will be stored in HTML export
+    //
+    static let attachmentsFolderName = "attachments"
+
     func htmlString() -> String {
 
         let res:String
 
-        if let fileName = fileName {
+        let dateSpanClass = isFromMe ? "dateFromMe" : "date"
+
+        if let fileName = standardizedFileName {
+
+            let attachmentFileURL = URL(fileURLWithPath: fileName)
+
+            let exportedAttachmentPath = ChatAttachment.attachmentsFolderName + "/" + attachmentFileURL.lastPathComponent
 
             if isImage() {
-                res = "<div class=\"image\"><span class=\"date\">\(HTMLDateFormatter.shared.dateFormatter.string(from: date))</span><img src=\"\(fileName)\"></div>\n"
+                res = "<div class=\"image\"><span class=\"\(dateSpanClass)\">\(HTMLDateFormatter.shared.dateFormatter.string(from: date))</span><img src=\"\(exportedAttachmentPath)\"></div>\n"
             } else {
-                res = "<div class=\"attachment\"><span class=\"date\">\(HTMLDateFormatter.shared.dateFormatter.string(from: date))</span><a href=\"file://\(fileName)\">\(fileName)</a></div>\n"
+                res = "<div class=\"attachment\"><span class=\"\(dateSpanClass)\">\(HTMLDateFormatter.shared.dateFormatter.string(from: date))</span><a href=\"file://\(exportedAttachmentPath)\">\(exportedAttachmentPath)</a></div>\n"
             }
 
         } else {
 
-            res = "<div class=\"attachment\"><span class=\"date\">\(HTMLDateFormatter.shared.dateFormatter.string(from: date))</span> : empty attachment</div>\n"
+            res = "<div class=\"attachment\"><span class=\"\(dateSpanClass)\">\(HTMLDateFormatter.shared.dateFormatter.string(from: date))</span> : empty attachment</div>\n"
 
         }
 
@@ -60,12 +74,14 @@ extension ChatAttachment : HTMLExportable {
     }
 
     func isImage() -> Bool {
-        guard let fileName = fileName else { return false }
+        guard let fileName = standardizedFileName else { return false }
 
         do {
             let type = try NSWorkspace.shared.type(ofFile: fileName)
-            return NSWorkspace.shared.type(type, conformsToType: String(kUTTypeImage))
-        } catch {
+            let res = NSWorkspace.shared.type(type, conformsToType: String(kUTTypeImage))
+            return res
+        } catch let error {
+            NSLog("isImage : error \(error.localizedDescription)")
             return false
         }
 
