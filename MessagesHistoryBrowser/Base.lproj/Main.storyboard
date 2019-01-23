@@ -88,6 +88,13 @@
                                                 <binding destination="Voe-Tx-rLC" name="enabled" keyPath="self.isChatSelected" id="8P2-3J-imZ"/>
                                             </connections>
                                         </menuItem>
+                                        <menuItem title="Export Chat to HTML" id="sIg-JH-Ul6">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="exportSelectedChatToHTML:" target="Voe-Tx-rLC" id="MfL-mj-d2d"/>
+                                                <binding destination="Voe-Tx-rLC" name="enabled" keyPath="self.isChatSelected" id="tpc-pc-d7X"/>
+                                            </connections>
+                                        </menuItem>
                                         <menuItem isSeparatorItem="YES" id="m54-Is-iLE"/>
                                         <menuItem title="Close" keyEquivalent="w" id="DVo-aG-piG">
                                             <connections>

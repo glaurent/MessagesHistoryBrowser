@@ -26,5 +26,5 @@ class ChatAttachment: ChatItem {
         chat = aChat
         contact = aChat.contact
     }
-    
+
 }

@@ -24,6 +24,8 @@
 		AF8003C11C4A6545008A1D64 /* RoundImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF8003C01C4A6545008A1D64 /* RoundImage.swift */; };
 		AF82EDB51C23708B00F8132D /* AttachmentsCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF82EDB41C23708B00F8132D /* AttachmentsCollectionView.swift */; };
 		AF82EDB71C23723F00F8132D /* AttachmentsCollectionViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF82EDB61C23723F00F8132D /* AttachmentsCollectionViewDelegate.swift */; };
+		AF986F0621F7D1C100CA5EB1 /* HTMLExport.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF986F0521F7D1C100CA5EB1 /* HTMLExport.swift */; };
+		AF986F0821F8F4B600CA5EB1 /* messagesStyle.css in Resources */ = {isa = PBXBuildFile; fileRef = AF986F0721F8F4B600CA5EB1 /* messagesStyle.css */; };
 		AFAF103C213F3707009DDA82 /* ShowAppPrivilegesSetupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFAF103B213F3706009DDA82 /* ShowAppPrivilegesSetupViewController.swift */; };
 		AFAF103F2140523F009DDA82 /* ShowImagesDownloadViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFAF103E2140523F009DDA82 /* ShowImagesDownloadViewController.swift */; };
 		AFAF8B141BF3B91E009D92F6 /* ImageAttachmentCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFAF8B131BF3B91E009D92F6 /* ImageAttachmentCell.swift */; };
@@ -80,6 +82,8 @@
 		AF8003C01C4A6545008A1D64 /* RoundImage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RoundImage.swift; sourceTree = "<group>"; };
 		AF82EDB41C23708B00F8132D /* AttachmentsCollectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttachmentsCollectionView.swift; sourceTree = "<group>"; };
 		AF82EDB61C23723F00F8132D /* AttachmentsCollectionViewDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttachmentsCollectionViewDelegate.swift; sourceTree = "<group>"; };
+		AF986F0521F7D1C100CA5EB1 /* HTMLExport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTMLExport.swift; sourceTree = "<group>"; };
+		AF986F0721F8F4B600CA5EB1 /* messagesStyle.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = messagesStyle.css; sourceTree = "<group>"; };
 		AFAB024721447BB1000D9864 /* Contacts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Contacts.framework; path = System/Library/Frameworks/Contacts.framework; sourceTree = SDKROOT; };
 		AFAF103B213F3706009DDA82 /* ShowAppPrivilegesSetupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowAppPrivilegesSetupViewController.swift; sourceTree = "<group>"; };
 		AFAF103E2140523F009DDA82 /* ShowImagesDownloadViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowImagesDownloadViewController.swift; sourceTree = "<group>"; };
@@ -242,6 +246,8 @@
 		AFD974951BB816B5004CF8D7 /* MessagesHistoryBrowser */ = {
 			isa = PBXGroup;
 			children = (
+				AF986F0721F8F4B600CA5EB1 /* messagesStyle.css */,
+				AF986F0521F7D1C100CA5EB1 /* HTMLExport.swift */,
 				AF2832DD21C413A000F8DD58 /* ContactTableCellView.swift */,
 				AF01B05C1EA13C9A0039A46F /* MessagesHistoryBrowser.entitlements */,
 				AF8003BE1C357A0E008A1D64 /* ChatItemsFetcher.swift */,
@@ -415,6 +421,7 @@
 				AFC38AB91C9A1913008910A1 /* dsa_pub.pem in Resources */,
 				AF029C441C4D746100B1A950 /* phone country codes.json in Resources */,
 				AFD9749E1BB816B5004CF8D7 /* Assets.xcassets in Resources */,
+				AF986F0821F8F4B600CA5EB1 /* messagesStyle.css in Resources */,
 				AFE9B8041BCB088A007FC376 /* AttachmentsCollectionViewItem.xib in Resources */,
 				AFD974A11BB816B6004CF8D7 /* Main.storyboard in Resources */,
 			);
@@ -499,6 +506,7 @@
 			files = (
 				AFAF8B141BF3B91E009D92F6 /* ImageAttachmentCell.swift in Sources */,
 				AF8003BF1C357A0E008A1D64 /* ChatItemsFetcher.swift in Sources */,
+				AF986F0621F7D1C100CA5EB1 /* HTMLExport.swift in Sources */,
 				AF2B2DF11BC19BAE000B8293 /* ChatMessage.swift in Sources */,
 				AFD9749C1BB816B5004CF8D7 /* MessagesHistoryBrowser.xcdatamodeld in Sources */,
 				AF82EDB51C23708B00F8132D /* AttachmentsCollectionView.swift in Sources */,

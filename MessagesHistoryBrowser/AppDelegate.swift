@@ -211,5 +211,113 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
+    @IBAction func exportSelectedChatToHTML(_ sender: AnyObject) {
+
+        guard let (contact, chatItems) = chatTableViewController?.orderedChatItemsForSelectedRow() else { return }
+
+        let savePanel = NSSavePanel()
+
+        savePanel.nameFieldStringValue = contact.name
+
+        if let mainWindow = NSApplication.shared.mainWindow {
+
+            savePanel.beginSheetModal(for: mainWindow, completionHandler: { (action) in
+                guard action.rawValue == NSFileHandlingPanelOKButton else { return }
+                guard let baseFolderURL = savePanel.url else { return }
+
+                do {
+
+                    // create main folder
+                    //
+                    try FileManager.default.createDirectory(at: baseFolderURL, withIntermediateDirectories: false, attributes: nil)
+
+                    let indexFileURL = baseFolderURL.appendingPathComponent("index.html")
+
+                    var data = Data()
+
+                    // open HTML
+                    //
+                    let htmlPreamble = """
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="messagesStyle.css">
+<title>Chat with \(contact.name)</title>
+</head>
+<body>
+"""
+
+                    data.append(htmlPreamble.data(using: .utf8)!)
+
+                    // append chat items
+                    //
+                    for chatItem in chatItems {
+
+                        guard let htmlExportable = chatItem as? HTMLExportable else { continue }
+
+                        if let htmlData = htmlExportable.htmlString().data(using: .utf8) {
+
+                            data.append(htmlData)
+                        }
+                    }
+
+                    // append HTML close
+                    //
+                    let htmlClose = """
+</body>
+</html>
+"""
+                    data.append(htmlClose.data(using: .utf8)!)
+
+                    // write HTML data to index file
+                    //
+                    try data.write(to: indexFileURL)
+
+
+                    // create attachments folder
+                    //
+                    let attachmentsFolderURL = baseFolderURL.appendingPathComponent("attachments")
+                    try FileManager.default.createDirectory(at: attachmentsFolderURL, withIntermediateDirectories: false, attributes: nil)
+
+                    // copy attachments
+                    //
+                    let chatAttachments = chatItems.filter { $0 is ChatAttachment } as! [ChatAttachment]
+
+                    for chatAttachment in chatAttachments {
+                        guard let attachmentFileName = chatAttachment.fileName else { continue }
+                        let originURL = URL(fileURLWithPath: attachmentFileName.standardizingPath())
+
+                        NSLog("HTMLExport : copying \(attachmentFileName) to \(attachmentsFolderURL)")
+                        do {
+                            let destinationURL = attachmentsFolderURL.appendingPathComponent(originURL.lastPathComponent)
+                            try FileManager.default.copyItem(at: originURL, to: destinationURL)
+                        } catch let error {
+                            NSLog("HTMLExport : couldn't copy \(attachmentFileName) : \(error.localizedDescription)")
+                        }
+                    }
+
+                    // copy CSS
+                    //
+                    if let cssURLInBundle = Bundle.main.url(forResource: "messagesStyle", withExtension: "css") {
+                        NSLog("HTMLExport : copy CSS from \(cssURLInBundle) to \(baseFolderURL)")
+                        let destinationURL = baseFolderURL.appendingPathComponent(cssURLInBundle.lastPathComponent)
+                        try FileManager.default.copyItem(at: cssURLInBundle, to: destinationURL)
+                    } else  {
+                        NSLog("HTMLExport : ERROR couldn't find CSS in bundle")
+                    }
+
+
+
+                } catch let error {
+                    NSLog("error while exporting to HTML : " + error.localizedDescription)
+                }
+
+
+            })
+
+        }
+    }
+
+
 }
 

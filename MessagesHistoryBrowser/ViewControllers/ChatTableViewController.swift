@@ -358,6 +358,8 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
 
         let allContactChats = selectedContact.chats.allObjects as! [Chat]
 
+        // get all messages from this contact
+        //
         let allContactMessageArrays = allContactChats.compactMap { (chat) -> [ChatMessage]? in
             return chat.messages.allObjects as? [ChatMessage]
         }
@@ -373,6 +375,32 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
         }
 
         return (selectedContact, allContactSortedMessages)
+
+    }
+
+    func orderedChatItemsForSelectedRow() -> (ChatContact, [ChatItem])?
+    {
+        guard tableView.selectedRow >= 0 else { return nil }
+
+        let index = tableView.selectedRow
+
+        guard let selectedContact = contactForRow(index) else { return nil }
+
+        let allContactChats = selectedContact.chats.allObjects as! [Chat]
+
+        // get all chat items for this contact
+        //
+        let allContactChatItemArrays = allContactChats.compactMap { (chat) -> [ChatItem]? in
+            return (chat.messages.allObjects + chat.attachments.allObjects) as? [ChatItem]
+        }
+
+        let allContactChatItems = allContactChatItemArrays.reduce([ChatItem](), +)
+
+        let allContactSortedChatItems = allContactChatItems.sorted { (itemA, itemB) -> Bool in
+            return itemA.date < itemB.date
+        }
+
+        return (selectedContact, allContactSortedChatItems)
 
     }
 
