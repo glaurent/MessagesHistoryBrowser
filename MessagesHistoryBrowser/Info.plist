@@ -34,5 +34,7 @@
 	<string>https://telegraph-road.org/MessagesHistoryBrowser/appcast.xml</string>
 	<key>SUPublicDSAKeyFile</key>
 	<string>dsa_pub.pem</string>
+	<key>NSContactsUsageDescription</key>
+	<string>This lets the app display contact names instead of phone numbers for chats with your contacts</string>
 </dict>
 </plist>
