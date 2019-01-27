@@ -1,27 +1,81 @@
 body {
-    font: "Arial", sans-serif;
+  font-family: "Liberation Sans", Tahoma, Geneva, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: small;
+  margin: 1em auto;
+  width: 960px;
 }
 
 .message {
-    text-align: left;
+  text-align: left;
+  margin-bottom: 0.5em;
 }
 
 .date, .dateFromMe {
-    color: grey;
+  color: #007aff;
 }
 
 .messageText {
-    color: black;
+  background-color: #F2F2F2;
+  color: #000;
+  border-radius: 5px;
+  display: inline-block;
+  padding: 10px 18px;
+  position: relative;
+  vertical-align: top;
+  clear: both;
+  margin: 5px 45px 5px 20px;
+  max-width: 600px;
+}
+
+.messageText::before {
+  background-color: #F2F2F2;
+  content: "\00a0";
+  display: block;
+  height: 16px;
+  position: absolute;
+  top: 11px;
+  transform: rotate( 29deg) skew( -35deg);
+  -moz-transform: rotate( 29deg) skew( -35deg);
+  -ms-transform: rotate( 29deg) skew( -35deg);
+  -o-transform: rotate( 29deg) skew( -35deg);
+  -webkit-transform: rotate( 29deg) skew( -35deg);
+  width: 20px;
+  left: -9px;
 }
 
 .messageTextFromMe {
-    color: darkgrey;
+  background-color: rgb(76, 217, 100);
+  color: #000;
+  border-radius: 5px;
+  display: inline-block;
+  padding: 10px 18px;
+  position: relative;
+  vertical-align: top;
+  clear: both;
+  margin: 5px 45px 5px 20px;
+  max-width: 600px;
 }
 
-.image {
-
+.messageTextFromMe::before {
+  background-color: rgb(76, 217, 100);
+  content: "\00a0";
+  display: block;
+  height: 16px;
+  position: absolute;
+  top: 11px;
+  transform: rotate( 29deg) skew( -35deg);
+  -moz-transform: rotate( 29deg) skew( -35deg);
+  -ms-transform: rotate( 29deg) skew( -35deg);
+  -o-transform: rotate( 29deg) skew( -35deg);
+  -webkit-transform: rotate( 29deg) skew( -35deg);
+  width: 20px;
+  left: -9px;
 }
 
-.attachment {
-
+.image IMG {
+  border: 1px solid black;
+  box-shadow: 10px 10px 5px #656565;
+  margin: 2em;
 }
+
+.attachment {}
