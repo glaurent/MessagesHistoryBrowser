@@ -211,6 +211,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
+    static let iCloudStoredAttachmentExtension = "pluginPayloadAttachment"
+
     @IBAction func exportSelectedChatToHTML(_ sender: AnyObject) {
 
         guard let (contact, chatItems) = chatTableViewController?.orderedChatItemsForSelectedRow() else { return }
@@ -225,11 +227,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 guard action.rawValue == NSFileHandlingPanelOKButton else { return }
                 guard let baseFolderURL = savePanel.url else { return }
 
+                var hasICloudStoredAttachments = false
+                var missingAttachments = [String]()
+
+
                 do {
 
                     // create main folder
                     //
-                    try FileManager.default.createDirectory(at: baseFolderURL, withIntermediateDirectories: false, attributes: nil)
+                    try? FileManager.default.createDirectory(at: baseFolderURL, withIntermediateDirectories: false, attributes: nil)
 
                     let indexFileURL = baseFolderURL.appendingPathComponent("index.html")
 
@@ -278,13 +284,18 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                     // create attachments folder
                     //
                     let attachmentsFolderURL = baseFolderURL.appendingPathComponent("attachments")
-                    try FileManager.default.createDirectory(at: attachmentsFolderURL, withIntermediateDirectories: false, attributes: nil)
+                    try? FileManager.default.createDirectory(at: attachmentsFolderURL, withIntermediateDirectories: false, attributes: nil)
 
                     // copy attachments
                     //
                     let chatAttachments = chatItems.filter { $0 is ChatAttachment } as! [ChatAttachment]
 
                     for chatAttachment in chatAttachments {
+
+                        if chatAttachment.fileName?.hasSuffix(AppDelegate.iCloudStoredAttachmentExtension) ?? false {
+                            hasICloudStoredAttachments = true
+                        }
+
                         guard let attachmentFileName = chatAttachment.standardizedFileName else { continue }
                         let originURL = URL(fileURLWithPath: attachmentFileName)
 
@@ -294,6 +305,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                             try FileManager.default.copyItem(at: originURL, to: destinationURL)
                         } catch let error {
                             NSLog("HTMLExport : couldn't copy \(attachmentFileName) : \(error.localizedDescription)")
+                            missingAttachments.append(attachmentFileName)
                         }
                     }
 
@@ -302,6 +314,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                     if let cssURLInBundle = Bundle.main.url(forResource: "messagesStyle", withExtension: "css") {
                         NSLog("HTMLExport : copy CSS from \(cssURLInBundle) to \(baseFolderURL)")
                         let destinationURL = baseFolderURL.appendingPathComponent(cssURLInBundle.lastPathComponent)
+                        try? FileManager.default.removeItem(at: destinationURL) // delete any previous copy of the CSS in the destination folder - this in case the same export folder is reused
+
                         try FileManager.default.copyItem(at: cssURLInBundle, to: destinationURL)
                     } else  {
                         NSLog("HTMLExport : ERROR couldn't find CSS in bundle")
@@ -311,14 +325,80 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
                 } catch let error {
                     NSLog("error while exporting to HTML : " + error.localizedDescription)
+
+                    DispatchQueue.main.async {
+
+                        let alert = NSAlert()
+
+                        alert.alertStyle = .warning
+                        alert.addButton(withTitle: NSLocalizedString("OK", comment: ""))
+
+                        alert.messageText = NSLocalizedString("Error while exporting to HTML", comment: "")
+                        alert.informativeText = "\(error.localizedDescription)"
+
+                        let _ = alert.runModal()
+                    }
+
+                }
+
+                // Tell the user if some attachments are missing from the export or if some are stored in iCloud
+                //
+                if missingAttachments.count > 0 || hasICloudStoredAttachments {
+
+                    self.displayAlertAboutMissingAttachments(missingAttachments, attachmentsInICloud: hasICloudStoredAttachments)
+
                 }
 
 
-            })
+            }) // end savePanel
 
         }
     }
 
+    func displayAlertAboutMissingAttachments(_ missingAttachments:[String], attachmentsInICloud:Bool) {
+
+        DispatchQueue.main.async {
+
+            let alert = NSAlert()
+
+            alert.alertStyle = .warning
+            alert.addButton(withTitle: NSLocalizedString("OK", comment: ""))
+
+            alert.messageText = NSLocalizedString("Missing chat attachments", comment: "")
+
+            if attachmentsInICloud {
+                alert.informativeText = NSLocalizedString("Some attachments are stored in iCloud. You will need to request their download from the Messages.app to view them properly", comment: "")
+            } else {
+                alert.informativeText = NSLocalizedString("The following attachments were not found", comment: "")
+            }
+
+
+            let scrollView = NSScrollView(frame: NSRect(x: 0, y: 0, width: 350, height: 250))
+
+            let textView = NSTextView(frame: NSRect(x: 0, y: 0, width: scrollView.frame.width, height: scrollView.frame.height))
+            textView.isEditable = false
+            textView.isRichText = false
+            textView.textContainer?.containerSize = NSSize(width: scrollView.frame.width * 2.0, height: CGFloat.greatestFiniteMagnitude)
+            textView.textContainer?.widthTracksTextView = true
+
+            scrollView.documentView = textView
+            scrollView.hasVerticalScroller = true
+            scrollView.hasHorizontalScroller = true
+
+            let allMissingAttachments = missingAttachments.reduce("") { (result:String, item:String) -> String in
+                return result + "\n" + item
+            }
+
+            textView.string = allMissingAttachments
+
+            alert.accessoryView = scrollView
+            alert.layout()
+
+            let _ = alert.runModal()
+        }
+
+
+    }
 
 }
 

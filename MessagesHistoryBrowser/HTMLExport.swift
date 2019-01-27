@@ -79,6 +79,7 @@ extension ChatAttachment : HTMLExportable {
         do {
             let type = try NSWorkspace.shared.type(ofFile: fileName)
             let res = NSWorkspace.shared.type(type, conformsToType: String(kUTTypeImage))
+            NSLog("isImage : \(fileName) - \(res)")
             return res
         } catch let error {
             NSLog("isImage : error \(error.localizedDescription)")
