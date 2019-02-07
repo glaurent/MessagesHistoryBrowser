@@ -39,6 +39,11 @@ class ContactsMap {
             return false
         }
 
+        if #available(OSX 10.13, *) {
+            NSLog("\(#function) macOS >10.13 detected - no need to populate the ContactsMap, using Contacts framework phone number search instead")
+            return true
+        }
+
         // ensure countryPhonePrefix has a leading "+"
         //
         if phonePrefix.first != "+" {
@@ -118,16 +123,69 @@ class ContactsMap {
 
     func nameForPhoneNumber(_ phoneNumber:String) -> (String, String)? {
 
-        if let contactIdentifier = phoneNumbersMap[phoneNumber] {
+        if #available(OSX 10.13, *) {
 
-            let contactName = formattedContactName(contactIdentifier) ?? "<unknown> \(phoneNumber)"
+            let cnPhoneNumber = CNPhoneNumber(stringValue: phoneNumber)
+            let predicateForPhoneNumber = CNContact.predicateForContacts(matching: cnPhoneNumber)
+            let keyDescriptors = [CNContactPhoneNumbersKey, CNContactFamilyNameKey, CNContactGivenNameKey, CNContactNicknameKey] as [CNKeyDescriptor]
 
-            return (contactName, contactIdentifier)
+            do {
 
-//            return (contactName(contactIdentifier), contact.identifier)
+                let contacts = try contactStore.unifiedContacts(matching: predicateForPhoneNumber, keysToFetch: keyDescriptors)
+
+                if let contact = contacts.first {
+                    let contactIdentifier = contact.identifier
+                    let contactName = formattedContactName(contactIdentifier) ?? "<unknown> \(phoneNumber)"
+                    return (contactName, contactIdentifier)
+                } else {
+                    NSLog("\(#function) : couldn't find contact for this phone number \(phoneNumber))")
+                    return nil
+                }
+
+            } catch let error {
+                NSLog("\(#function) : error while searching for \(phoneNumber)) - error \(error.localizedDescription)")
+                return nil
+            }
+
+        } else {
+            // Fallback on earlier versions
+
+            if let contactIdentifier = phoneNumbersMap[phoneNumber] {
+
+                let contactName = formattedContactName(contactIdentifier) ?? "<unknown> \(phoneNumber)"
+
+                return (contactName, contactIdentifier)
+
+                //            return (contactName(contactIdentifier), contact.identifier)
+
+            } else { // try matching the last 5 digits of the phone number
+
+                let phoneNumberLength = phoneNumber.count
+                let tailMatchLength = min(5, phoneNumberLength - 1) // match the last 5 nb or (length - 1) if less than 5 chars
+                let tailStartIndex = phoneNumber.index(phoneNumber.endIndex, offsetBy: -tailMatchLength)
+                let numberLast5Dgits = phoneNumber[tailStartIndex...]
+
+                // get the contacts whose phone number match the last 5 digits of the input phone number
+                //
+                let contactPhoneNumberMatchingLast5Digits = phoneNumbersMap.filter { (key:String, value:String) -> Bool in
+                    guard key.count > tailMatchLength else { return false }
+                    let keyTailStartIndex = key.index(key.endIndex, offsetBy: -tailMatchLength)
+                    let keyTail = key[keyTailStartIndex...]
+                    return keyTail == numberLast5Dgits
+                }
+
+                if let firstPair = contactPhoneNumberMatchingLast5Digits.first {
+                    let contactIdentifier = firstPair.value
+                    let contactName = formattedContactName(contactIdentifier) ?? "<unknown> \(phoneNumber)"
+                    return (contactName, contactIdentifier)
+                } else {
+                    return nil
+                }
+
+            }
         }
 
-        return nil
+//        return nil
 
     }
 
