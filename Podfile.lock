@@ -1,22 +1,22 @@
 PODS:
-  - Sparkle (1.21.2)
-  - SQLite.swift (0.11.5):
-    - SQLite.swift/standard (= 0.11.5)
-  - SQLite.swift/standard (0.11.5)
+  - Sparkle (1.22.0)
+  - SQLite.swift (0.12.2):
+    - SQLite.swift/standard (= 0.12.2)
+  - SQLite.swift/standard (0.12.2)
 
 DEPENDENCIES:
   - Sparkle
   - SQLite.swift
 
 SPEC REPOS:
-  https://github.com/cocoapods/specs.git:
+  trunk:
     - Sparkle
     - SQLite.swift
 
 SPEC CHECKSUMS:
-  Sparkle: 1678d4707e7665960c7d1b43aca125e6392d11c4
-  SQLite.swift: 6e5356850bb1791459f8c16d6ee9195b28714a2e
+  Sparkle: 593ac2e677c07bcb6c3b22d621240e7cbedaab57
+  SQLite.swift: d2b4642190917051ce6bd1d49aab565fe794eea3
 
 PODFILE CHECKSUM: 25618fe46d4c7ace8a7bb7291c22aad2e38409b9
 
-COCOAPODS: 1.5.3
+COCOAPODS: 1.8.4

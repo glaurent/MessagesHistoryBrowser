@@ -16,7 +16,6 @@
 		AF424CD61BC9609D006EE8D2 /* ChatAttachment.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF424CD51BC9609D006EE8D2 /* ChatAttachment.swift */; };
 		AF424CD81BC963E4006EE8D2 /* ChatContact.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF424CD71BC963E4006EE8D2 /* ChatContact.swift */; };
 		AF47D8771BDCDD20002CDF4B /* ChatTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF47D8761BDCDD20002CDF4B /* ChatTableViewController.swift */; };
-		AF4DDF8321FB777800697837 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = AFD974A21BB816B6004CF8D7 /* Info.plist */; };
 		AF67203D21B5313E00C41616 /* ContactsMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFD974C91BB81885004CF8D7 /* ContactsMap.swift */; };
 		AF67203F21B53C3300C41616 /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF67203E21B53C3300C41616 /* AboutViewController.swift */; };
 		AF8003B81C273838008A1D64 /* ImageAttachmentDisplayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF8003B71C273838008A1D64 /* ImageAttachmentDisplayViewController.swift */; };
@@ -363,7 +362,7 @@
 		AFD9748B1BB816B5004CF8D7 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1000;
+				LastUpgradeCheck = 1120;
 				ORGANIZATIONNAME = "Guillaume Laurent";
 				TargetAttributes = {
 					AFD974921BB816B5004CF8D7 = {
@@ -396,7 +395,7 @@
 			};
 			buildConfigurationList = AFD9748E1BB816B5004CF8D7 /* Build configuration list for PBXProject "MessagesHistoryBrowser" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
@@ -425,7 +424,6 @@
 				AF986F0821F8F4B600CA5EB1 /* messagesStyle.css in Resources */,
 				AFE9B8041BCB088A007FC376 /* AttachmentsCollectionViewItem.xib in Resources */,
 				AFD974A11BB816B6004CF8D7 /* Main.storyboard in Resources */,
-				AF4DDF8321FB777800697837 /* Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -483,7 +481,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-MessagesHistoryBrowser/Pods-MessagesHistoryBrowser-frameworks.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-MessagesHistoryBrowser/Pods-MessagesHistoryBrowser-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/SQLite.swift/SQLite.framework",
 				"${PODS_ROOT}/Sparkle/Sparkle.framework",
 				"${PODS_ROOT}/Sparkle/Sparkle.framework.dSYM",
@@ -496,7 +494,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-MessagesHistoryBrowser/Pods-MessagesHistoryBrowser-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-MessagesHistoryBrowser/Pods-MessagesHistoryBrowser-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -582,6 +580,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -637,6 +636,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -703,7 +703,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "org.telegraph-road.MessagesHistoryBrowser";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
@@ -729,7 +729,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "org.telegraph-road.MessagesHistoryBrowser";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
 		};
