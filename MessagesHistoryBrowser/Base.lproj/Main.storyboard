@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="17701" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14460.31"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="17701"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -814,11 +814,11 @@ Jean-Marie Lafon : http://www.lafon.mobi</string>
                             <scrollView wantsLayer="YES" fixedFrame="YES" borderType="none" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0dr-kF-0Cs">
                                 <rect key="frame" x="20" y="20" width="352" height="284"/>
                                 <autoresizingMask key="autoresizingMask"/>
-                                <clipView key="contentView" ambiguous="YES" drawsBackground="NO" copiesOnScroll="NO" id="tpX-o3-rc3">
+                                <clipView key="contentView" drawsBackground="NO" copiesOnScroll="NO" id="tpX-o3-rc3">
                                     <rect key="frame" x="0.0" y="0.0" width="352" height="284"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
-                                        <textView ambiguous="YES" editable="NO" importsGraphics="NO" verticallyResizable="YES" allowsCharacterPickerTouchBarItem="NO" linkDetection="YES" textCompletion="NO" id="M6X-R3-LZW">
+                                        <textView editable="NO" importsGraphics="NO" verticallyResizable="YES" allowsCharacterPickerTouchBarItem="NO" linkDetection="YES" textCompletion="NO" id="M6X-R3-LZW">
                                             <rect key="frame" x="0.0" y="0.0" width="352" height="284"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
@@ -833,14 +833,14 @@ Initial Messages DB info from
 Matthieu Riegler </string>
                                                     <attributes>
                                                         <color key="NSColor" name="textColor" catalog="System" colorSpace="catalog"/>
-                                                        <font key="NSFont" size="12" name="Helvetica"/>
+                                                        <font key="NSFont" usesAppearanceFont="YES"/>
                                                         <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0" allowsDefaultTighteningForTruncation="NO"/>
                                                     </attributes>
                                                 </fragment>
                                                 <fragment content="https://github.com/kyro38/MiscStuff/blob/master/OSXStuff/iMessageBackup.sh">
                                                     <attributes>
                                                         <color key="NSColor" name="textColor" catalog="System" colorSpace="catalog"/>
-                                                        <font key="NSFont" size="12" name="Helvetica"/>
+                                                        <font key="NSFont" usesAppearanceFont="YES"/>
                                                         <url key="NSLink" string="https://github.com/kyro38/MiscStuff/blob/master/OSXStuff/iMessageBackup.sh"/>
                                                         <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0" allowsDefaultTighteningForTruncation="NO"/>
                                                     </attributes>
@@ -851,14 +851,14 @@ Matthieu Riegler </string>
 and Noah Slater : </string>
                                                     <attributes>
                                                         <color key="NSColor" name="textColor" catalog="System" colorSpace="catalog"/>
-                                                        <font key="NSFont" size="12" name="Helvetica"/>
+                                                        <font key="NSFont" usesAppearanceFont="YES"/>
                                                         <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0" allowsDefaultTighteningForTruncation="NO"/>
                                                     </attributes>
                                                 </fragment>
                                                 <fragment content="https://gist.github.com/nslater/b3cbc894ad2c2516dd02">
                                                     <attributes>
                                                         <color key="NSColor" name="textColor" catalog="System" colorSpace="catalog"/>
-                                                        <font key="NSFont" size="12" name="Helvetica"/>
+                                                        <font key="NSFont" usesAppearanceFont="YES"/>
                                                         <url key="NSLink" string="https://gist.github.com/nslater/b3cbc894ad2c2516dd02"/>
                                                         <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0" allowsDefaultTighteningForTruncation="NO"/>
                                                     </attributes>
@@ -869,14 +869,14 @@ and Noah Slater : </string>
 Uses SQLite Swift </string>
                                                     <attributes>
                                                         <color key="NSColor" name="textColor" catalog="System" colorSpace="catalog"/>
-                                                        <font key="NSFont" size="12" name="Helvetica"/>
+                                                        <font key="NSFont" usesAppearanceFont="YES"/>
                                                         <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0" allowsDefaultTighteningForTruncation="NO"/>
                                                     </attributes>
                                                 </fragment>
                                                 <fragment content="https://github.com/stephencelis/SQLite.swift">
                                                     <attributes>
                                                         <color key="NSColor" name="textColor" catalog="System" colorSpace="catalog"/>
-                                                        <font key="NSFont" size="12" name="Helvetica"/>
+                                                        <font key="NSFont" usesAppearanceFont="YES"/>
                                                         <url key="NSLink" string="https://github.com/stephencelis/SQLite.swift"/>
                                                         <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0" allowsDefaultTighteningForTruncation="NO"/>
                                                     </attributes>
@@ -889,14 +889,14 @@ Special thanks :
 Florent Pillet : </string>
                                                     <attributes>
                                                         <color key="NSColor" name="textColor" catalog="System" colorSpace="catalog"/>
-                                                        <font key="NSFont" size="12" name="Helvetica"/>
+                                                        <font key="NSFont" usesAppearanceFont="YES"/>
                                                         <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0" allowsDefaultTighteningForTruncation="NO"/>
                                                     </attributes>
                                                 </fragment>
                                                 <fragment content="https://github.com/fpillet">
                                                     <attributes>
                                                         <color key="NSColor" name="textColor" catalog="System" colorSpace="catalog"/>
-                                                        <font key="NSFont" size="12" name="Helvetica"/>
+                                                        <font key="NSFont" usesAppearanceFont="YES"/>
                                                         <url key="NSLink" string="https://github.com/fpillet"/>
                                                         <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0" allowsDefaultTighteningForTruncation="NO"/>
                                                     </attributes>
@@ -906,14 +906,14 @@ Florent Pillet : </string>
 Jean-Marie Lafon : </string>
                                                     <attributes>
                                                         <color key="NSColor" name="textColor" catalog="System" colorSpace="catalog"/>
-                                                        <font key="NSFont" size="12" name="Helvetica"/>
+                                                        <font key="NSFont" usesAppearanceFont="YES"/>
                                                         <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0" allowsDefaultTighteningForTruncation="NO"/>
                                                     </attributes>
                                                 </fragment>
                                                 <fragment content="http://www.lafon.mobi">
                                                     <attributes>
                                                         <color key="NSColor" name="textColor" catalog="System" colorSpace="catalog"/>
-                                                        <font key="NSFont" size="12" name="Helvetica"/>
+                                                        <font key="NSFont" usesAppearanceFont="YES"/>
                                                         <url key="NSLink" string="http://www.lafon.mobi"/>
                                                         <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0" allowsDefaultTighteningForTruncation="NO"/>
                                                     </attributes>
@@ -923,6 +923,10 @@ Jean-Marie Lafon : </string>
                                         </textView>
                                     </subviews>
                                 </clipView>
+                                <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="nwn-im-GnE">
+                                    <rect key="frame" x="-100" y="-100" width="352" height="16"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </scroller>
                                 <scroller key="verticalScroller" wantsLayer="YES" verticalHuggingPriority="750" horizontal="NO" id="wQ0-hb-m9f">
                                     <rect key="frame" x="336" y="0.0" width="16" height="284"/>
                                     <autoresizingMask key="autoresizingMask"/>
@@ -1001,15 +1005,15 @@ Jean-Marie Lafon : </string>
         <scene sceneID="c9m-QU-7Of">
             <objects>
                 <viewController id="c6g-xc-DOK" customClass="ChatTableViewController" customModule="MessagesHistoryBrowser" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" id="1Kq-np-puo">
-                        <rect key="frame" x="0.0" y="0.0" width="505" height="300"/>
+                    <view key="view" misplaced="YES" id="1Kq-np-puo">
+                        <rect key="frame" x="0.0" y="0.0" width="505" height="276"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <customView translatesAutoresizingMaskIntoConstraints="NO" id="hWC-Hd-nlg" userLabel="Search and Date Filters">
-                                <rect key="frame" x="0.0" y="180" width="505" height="120"/>
+                                <rect key="frame" x="0.0" y="87" width="496" height="120"/>
                                 <subviews>
                                     <searchField wantsLayer="YES" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="cWC-s3-YlP">
-                                        <rect key="frame" x="20" y="78" width="465" height="22"/>
+                                        <rect key="frame" x="20" y="78" width="456" height="22"/>
                                         <searchFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" borderStyle="bezel" usesSingleLineMode="YES" bezelStyle="round" id="gBh-7T-Jv6">
                                             <font key="font" metaFont="system"/>
                                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -1020,7 +1024,7 @@ Jean-Marie Lafon : </string>
                                         </connections>
                                     </searchField>
                                     <button translatesAutoresizingMaskIntoConstraints="NO" id="CXs-ND-wjJ">
-                                        <rect key="frame" x="18" y="49" width="51" height="18"/>
+                                        <rect key="frame" x="18" y="48" width="55" height="18"/>
                                         <buttonCell key="cell" type="check" title="after" bezelStyle="regularSquare" imagePosition="left" inset="2" id="bux-MY-WHX">
                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                             <font key="font" metaFont="system"/>
@@ -1031,7 +1035,7 @@ Jean-Marie Lafon : </string>
                                         </connections>
                                     </button>
                                     <datePicker verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="lou-wM-eNy">
-                                        <rect key="frame" x="87" y="47" width="100" height="27"/>
+                                        <rect key="frame" x="93" y="45" width="97" height="28"/>
                                         <datePickerCell key="cell" borderStyle="bezel" alignment="left" id="kXc-qA-xvl">
                                             <font key="font" metaFont="system"/>
                                             <date key="date" timeIntervalSinceReferenceDate="-595929600">
@@ -1046,7 +1050,7 @@ Jean-Marie Lafon : </string>
                                         </connections>
                                     </datePicker>
                                     <button translatesAutoresizingMaskIntoConstraints="NO" id="3cB-ks-e81">
-                                        <rect key="frame" x="18" y="18" width="62" height="18"/>
+                                        <rect key="frame" x="18" y="15" width="66" height="18"/>
                                         <buttonCell key="cell" type="check" title="before" bezelStyle="regularSquare" imagePosition="left" inset="2" id="FC4-rx-l4p">
                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                             <font key="font" metaFont="system"/>
@@ -1057,7 +1061,7 @@ Jean-Marie Lafon : </string>
                                         </connections>
                                     </button>
                                     <datePicker verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="JJY-fj-bdz">
-                                        <rect key="frame" x="87" y="16" width="100" height="27"/>
+                                        <rect key="frame" x="93" y="12" width="97" height="28"/>
                                         <datePickerCell key="cell" borderStyle="bezel" alignment="left" id="5UX-CT-Hnh">
                                             <font key="font" metaFont="system"/>
                                             <date key="date" timeIntervalSinceReferenceDate="-595929600">
@@ -1089,21 +1093,20 @@ Jean-Marie Lafon : </string>
                                 </constraints>
                             </customView>
                             <scrollView wantsLayer="YES" autohidesScrollers="YES" horizontalLineScroll="52" horizontalPageScroll="10" verticalLineScroll="52" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7dD-SL-gUk">
-                                <rect key="frame" x="0.0" y="0.0" width="505" height="180"/>
+                                <rect key="frame" x="0.0" y="0.0" width="496" height="87"/>
                                 <clipView key="contentView" id="8Ke-ny-68A">
-                                    <rect key="frame" x="1" y="0.0" width="503" height="179"/>
+                                    <rect key="frame" x="1" y="1" width="494" height="85"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="firstColumnOnly" columnReordering="NO" multipleSelection="NO" autosaveColumns="NO" rowHeight="50" headerView="nSq-37-0ca" viewBased="YES" id="yQc-Jz-Fx4">
-                                            <rect key="frame" x="0.0" y="0.0" width="503" height="156"/>
-                                            <autoresizingMask key="autoresizingMask"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="494" height="62"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <size key="intercellSpacing" width="3" height="2"/>
                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                             <tableColumns>
                                                 <tableColumn identifier="ContactsCellView" editable="NO" width="343" minWidth="40" maxWidth="1000" id="84V-3h-jFY">
                                                     <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" title="Contacts">
-                                                        <font key="font" metaFont="smallSystem"/>
                                                         <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                         <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
                                                     </tableHeaderCell>
@@ -1115,11 +1118,11 @@ Jean-Marie Lafon : </string>
                                                     <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                     <prototypeCellViews>
                                                         <tableCellView wantsLayer="YES" id="IBY-Xa-2nC" customClass="ContactTableCellView" customModule="MessagesHistoryBrowser" customModuleProvider="target">
-                                                            <rect key="frame" x="1" y="1" width="343" height="50"/>
+                                                            <rect key="frame" x="1" y="1" width="352" height="50"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
                                                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="bAS-Yf-TNr">
-                                                                    <rect key="frame" x="52" y="17" width="239" height="17"/>
+                                                                    <rect key="frame" x="52" y="17" width="248" height="16"/>
                                                                     <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Contact Name" id="Pm0-Bb-anq">
                                                                         <font key="font" metaFont="system"/>
                                                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -1174,16 +1177,16 @@ Jean-Marie Lafon : </string>
                                     <rect key="frame" x="224" y="17" width="15" height="102"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
-                                <tableHeaderView key="headerView" id="nSq-37-0ca">
-                                    <rect key="frame" x="0.0" y="0.0" width="503" height="23"/>
+                                <tableHeaderView key="headerView" wantsLayer="YES" id="nSq-37-0ca">
+                                    <rect key="frame" x="0.0" y="0.0" width="494" height="23"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </tableHeaderView>
                             </scrollView>
                             <customView hidden="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="PId-FV-l0o" userLabel="ProgressReportView">
-                                <rect key="frame" x="0.0" y="-290" width="505" height="280"/>
+                                <rect key="frame" x="0.0" y="-314" width="505" height="280"/>
                                 <subviews>
-                                    <progressIndicator wantsLayer="YES" canDrawConcurrently="YES" maxValue="1" style="bar" translatesAutoresizingMaskIntoConstraints="NO" id="LcQ-1Y-GBm">
-                                        <rect key="frame" x="92" y="130" width="322" height="20"/>
+                                    <progressIndicator wantsLayer="YES" maxValue="1" style="bar" translatesAutoresizingMaskIntoConstraints="NO" id="LcQ-1Y-GBm">
+                                        <rect key="frame" x="87" y="84" width="322" height="20"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="322" id="do5-qG-93O"/>
                                             <constraint firstAttribute="height" constant="18" id="tjQ-of-yef"/>
@@ -1197,7 +1200,7 @@ Jean-Marie Lafon : </string>
                                         </connections>
                                     </progressIndicator>
                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="G2L-Mo-7yd">
-                                        <rect key="frame" x="90" y="106" width="326" height="17"/>
+                                        <rect key="frame" x="85" y="61" width="326" height="16"/>
                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="progress report" id="jdD-9y-Tp5">
                                             <font key="font" metaFont="system"/>
                                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -1212,7 +1215,7 @@ Jean-Marie Lafon : </string>
                                         </connections>
                                     </textField>
                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="rXY-5L-Tvu">
-                                        <rect key="frame" x="90" y="81" width="162" height="17"/>
+                                        <rect key="frame" x="85" y="37" width="162" height="16"/>
                                         <textFieldCell key="cell" lineBreakMode="clipping" title="additional progress report" id="3Fs-Pb-8i2">
                                             <font key="font" metaFont="system"/>
                                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -1265,26 +1268,25 @@ Jean-Marie Lafon : </string>
         <scene sceneID="PTC-yc-z6U">
             <objects>
                 <viewController id="xCf-SV-vLb" customClass="ChatListViewController" customModule="MessagesHistoryBrowser" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" id="L4Y-7o-HeO">
-                        <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
+                    <view key="view" misplaced="YES" id="L4Y-7o-HeO">
+                        <rect key="frame" x="0.0" y="0.0" width="450" height="277"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <scrollView autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SIe-7G-mOj">
-                                <rect key="frame" x="0.0" y="0.0" width="450" height="280"/>
+                                <rect key="frame" x="0.0" y="0.0" width="441" height="185"/>
                                 <clipView key="contentView" id="5UP-Rb-svn">
-                                    <rect key="frame" x="1" y="0.0" width="448" height="279"/>
+                                    <rect key="frame" x="1" y="1" width="439" height="183"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <outlineView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" headerView="3aX-Ac-jqc" viewBased="YES" indentationPerLevel="16" autoresizesOutlineColumn="YES" outlineTableColumn="nj9-qk-QXq" id="kQB-4V-BsW">
-                                            <rect key="frame" x="0.0" y="0.0" width="448" height="256"/>
-                                            <autoresizingMask key="autoresizingMask"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="439" height="160"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <size key="intercellSpacing" width="3" height="2"/>
                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                             <tableColumns>
                                                 <tableColumn identifier="Chats" width="300" minWidth="300" maxWidth="1000" id="nj9-qk-QXq">
                                                     <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" title="Chats">
-                                                        <font key="font" metaFont="smallSystem"/>
                                                         <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                         <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
                                                     </tableHeaderCell>
@@ -1296,12 +1298,12 @@ Jean-Marie Lafon : </string>
                                                     <sortDescriptor key="sortDescriptorPrototype" selector="compare:" sortKey="key"/>
                                                     <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                     <prototypeCellViews>
-                                                        <tableCellView id="AaN-Kx-d2c">
-                                                            <rect key="frame" x="1" y="1" width="300" height="17"/>
+                                                        <tableCellView misplaced="YES" id="AaN-Kx-d2c">
+                                                            <rect key="frame" x="1" y="1" width="309" height="17"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
                                                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="aQW-We-IgM">
-                                                                    <rect key="frame" x="0.0" y="0.0" width="300" height="17"/>
+                                                                    <rect key="frame" x="0.0" y="0.0" width="309" height="16"/>
                                                                     <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="0Tr-op-FK1">
                                                                         <font key="font" metaFont="system"/>
                                                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -1337,13 +1339,13 @@ Jean-Marie Lafon : </string>
                                     <rect key="frame" x="-15" y="23" width="16" height="0.0"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
-                                <tableHeaderView key="headerView" id="3aX-Ac-jqc">
-                                    <rect key="frame" x="0.0" y="0.0" width="448" height="23"/>
+                                <tableHeaderView key="headerView" wantsLayer="YES" id="3aX-Ac-jqc">
+                                    <rect key="frame" x="0.0" y="0.0" width="439" height="23"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </tableHeaderView>
                             </scrollView>
                             <searchField wantsLayer="YES" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="jJb-m6-5rx">
-                                <rect key="frame" x="0.0" y="278" width="450" height="22"/>
+                                <rect key="frame" x="0.0" y="183" width="441" height="22"/>
                                 <searchFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" borderStyle="bezel" usesSingleLineMode="YES" bezelStyle="round" id="aaJ-KT-rlv">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -1367,7 +1369,7 @@ Jean-Marie Lafon : </string>
                     <attributedString key="userComments">
                         <fragment content="not used anymore, kept around just in case">
                             <attributes>
-                                <font key="NSFont" metaFont="smallSystem"/>
+                                <font key="NSFont" metaFont="message" size="11"/>
                                 <paragraphStyle key="NSParagraphStyle" alignment="natural" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
                             </attributes>
                         </fragment>
@@ -1432,7 +1434,7 @@ Jean-Marie Lafon : </string>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="MMx-K4-LS6">
-                                <rect key="frame" x="71" y="59" width="390" height="342"/>
+                                <rect key="frame" x="71" y="62" width="390" height="342"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="342" id="Avx-Sv-jhn"/>
                                     <constraint firstAttribute="width" constant="390" id="enx-Ze-JTH"/>
@@ -1440,7 +1442,7 @@ Jean-Marie Lafon : </string>
                                 <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="icloud_images_download" id="nzE-Cc-05j"/>
                             </imageView>
                             <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="zVM-2a-edc">
-                                <rect key="frame" x="18" y="417" width="496" height="51"/>
+                                <rect key="frame" x="18" y="420" width="496" height="48"/>
                                 <textFieldCell key="cell" selectable="YES" alignment="left" id="mA4-Au-hVq">
                                     <font key="font" metaFont="system"/>
                                     <string key="title">You have enabled iCloud Messages synchronisation. Some images for this chat appear to be stored in iCloud. To view them here, please download them locally from the Messages app, then do a re-import.</string>
@@ -1449,7 +1451,7 @@ Jean-Marie Lafon : </string>
                                 </textFieldCell>
                             </textField>
                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="IYZ-fP-x1X">
-                                <rect key="frame" x="459" y="13" width="59" height="32"/>
+                                <rect key="frame" x="466" y="13" width="53" height="32"/>
                                 <buttonCell key="cell" type="push" title="OK" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="aIG-tD-Rum">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="system"/>
@@ -1462,7 +1464,7 @@ DQ
                                 </connections>
                             </button>
                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Ptd-FN-eX6">
-                                <rect key="frame" x="18" y="22" width="126" height="18"/>
+                                <rect key="frame" x="18" y="22" width="131" height="18"/>
                                 <buttonCell key="cell" type="check" title="Don't show again" bezelStyle="regularSquare" imagePosition="left" inset="2" id="Zqf-X7-HuL">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
@@ -1498,7 +1500,7 @@ DQ
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="uNn-Co-aUA">
-                                <rect key="frame" x="81" y="49" width="390" height="342"/>
+                                <rect key="frame" x="81" y="51" width="390" height="342"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="342" id="hlU-3v-Vg4"/>
                                     <constraint firstAttribute="width" constant="390" id="wdP-gB-KoC"/>
@@ -1506,7 +1508,7 @@ DQ
                                 <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="security_setup" id="7K8-xZ-ExO"/>
                             </imageView>
                             <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="EmY-B0-Omt">
-                                <rect key="frame" x="18" y="407" width="516" height="34"/>
+                                <rect key="frame" x="18" y="409" width="516" height="32"/>
                                 <textFieldCell key="cell" selectable="YES" alignment="left" id="p5e-Yh-NAf">
                                     <font key="font" metaFont="system"/>
                                     <string key="title">Please grant Full Disk Access privileges to application. It is required to access your Messages database and the messages attachments.</string>
@@ -1515,7 +1517,7 @@ DQ
                                 </textFieldCell>
                             </textField>
                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="g2t-Cg-vNB">
-                                <rect key="frame" x="459" y="13" width="66" height="32"/>
+                                <rect key="frame" x="466" y="13" width="60" height="32"/>
                                 <buttonCell key="cell" type="push" title="Quit" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="EuM-7H-aQd">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="system"/>
@@ -1708,7 +1710,7 @@ DQ
         </scene>
     </scenes>
     <resources>
-        <image name="icloud_images_download" width="602" height="498"/>
-        <image name="security_setup" width="780" height="685"/>
+        <image name="icloud_images_download" width="301" height="249"/>
+        <image name="security_setup" width="390" height="342.5"/>
     </resources>
 </document>

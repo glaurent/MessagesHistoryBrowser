@@ -194,7 +194,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         if let mainWindow = NSApplication.shared.mainWindow {
 
             savePanel.beginSheetModal(for: mainWindow, completionHandler: { (action) in
-                guard action.rawValue == NSFileHandlingPanelOKButton else { return }
+                guard action == NSApplication.ModalResponse.OK else { return }
                 guard let fileURL = savePanel.url else { return }
 
                 do {
@@ -224,7 +224,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         if let mainWindow = NSApplication.shared.mainWindow {
 
             savePanel.beginSheetModal(for: mainWindow, completionHandler: { (action) in
-                guard action.rawValue == NSFileHandlingPanelOKButton else { return }
+                guard action == NSApplication.ModalResponse.OK else { return }
                 guard let baseFolderURL = savePanel.url else { return }
 
                 var hasICloudStoredAttachments = false
