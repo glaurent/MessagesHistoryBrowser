@@ -362,7 +362,7 @@
 		AFD9748B1BB816B5004CF8D7 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1120;
+				LastUpgradeCheck = 1250;
 				ORGANIZATIONNAME = "Guillaume Laurent";
 				TargetAttributes = {
 					AFD974921BB816B5004CF8D7 = {
@@ -382,13 +382,13 @@
 					AFD974A61BB816B6004CF8D7 = {
 						CreatedOnToolsVersion = 7.0;
 						DevelopmentTeam = 6YMA3EN78R;
-						LastSwiftMigration = 0920;
+						LastSwiftMigration = 1250;
 						TestTargetID = AFD974921BB816B5004CF8D7;
 					};
 					AFD974B11BB816B6004CF8D7 = {
 						CreatedOnToolsVersion = 7.0;
 						DevelopmentTeam = 6YMA3EN78R;
-						LastSwiftMigration = 0920;
+						LastSwiftMigration = 1250;
 						TestTargetID = AFD974921BB816B5004CF8D7;
 					};
 				};
@@ -484,13 +484,11 @@
 				"${PODS_ROOT}/Target Support Files/Pods-MessagesHistoryBrowser/Pods-MessagesHistoryBrowser-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/SQLite.swift/SQLite.framework",
 				"${PODS_ROOT}/Sparkle/Sparkle.framework",
-				"${PODS_ROOT}/Sparkle/Sparkle.framework.dSYM",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SQLite.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Sparkle.framework",
-				"${DWARF_DSYM_FOLDER_PATH}/Sparkle.framework.dSYM",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -599,6 +597,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -655,6 +654,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;

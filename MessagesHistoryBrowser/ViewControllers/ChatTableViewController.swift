@@ -130,7 +130,7 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
 
             let contactStore = CNContactStore()
             contactStore.requestAccess(for: .contacts) { (authorized, error) in
-                NSLog("ContactStore requestAccess result : \(authorized) - \(error)")
+                NSLog("ContactStore requestAccess result : \(authorized) - \(String(describing: error))")
 
                 if !authorized {
                     DispatchQueue.main.async {
@@ -164,7 +164,7 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
             panel.directoryURL = URL(fileURLWithPath: String("~/Library/Messages/").standardizingPath(), isDirectory: true)
 
             panel.begin() { (response:NSApplication.ModalResponse) in
-                if response.rawValue == NSFileHandlingPanelOKButton {
+                if response == NSApplication.ModalResponse.OK {
                     NSLog("Access granted")
 
                     // create bookmark to selected folder

@@ -1,5 +1,5 @@
 PODS:
-  - Sparkle (1.23.0)
+  - Sparkle (1.26.0)
   - SQLite.swift (0.12.2):
     - SQLite.swift/standard (= 0.12.2)
   - SQLite.swift/standard (0.12.2)
@@ -14,9 +14,9 @@ SPEC REPOS:
     - SQLite.swift
 
 SPEC CHECKSUMS:
-  Sparkle: 55b1a87ba69d56913375a281546b7c82dec95bb0
+  Sparkle: d56d028f4b0c123577825f5d1004f6140d77f90e
   SQLite.swift: d2b4642190917051ce6bd1d49aab565fe794eea3
 
 PODFILE CHECKSUM: 25618fe46d4c7ace8a7bb7291c22aad2e38409b9
 
-COCOAPODS: 1.9.1
+COCOAPODS: 1.10.1

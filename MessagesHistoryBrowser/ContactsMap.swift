@@ -163,7 +163,7 @@ class ContactsMap {
                 let phoneNumberLength = phoneNumber.count
                 let tailMatchLength = min(5, phoneNumberLength - 1) // match the last 5 nb or (length - 1) if less than 5 chars
                 let tailStartIndex = phoneNumber.index(phoneNumber.endIndex, offsetBy: -tailMatchLength)
-                let numberLast5Dgits = phoneNumber[tailStartIndex...]
+                let numberLast5Digits = phoneNumber[tailStartIndex...]
 
                 // get the contacts whose phone number match the last 5 digits of the input phone number
                 //
@@ -171,7 +171,7 @@ class ContactsMap {
                     guard key.count > tailMatchLength else { return false }
                     let keyTailStartIndex = key.index(key.endIndex, offsetBy: -tailMatchLength)
                     let keyTail = key[keyTailStartIndex...]
-                    return keyTail == numberLast5Dgits
+                    return keyTail == numberLast5Digits
                 }
 
                 if let firstPair = contactPhoneNumberMatchingLast5Digits.first {
