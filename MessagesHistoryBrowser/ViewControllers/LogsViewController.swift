@@ -10,9 +10,13 @@ import Cocoa
 
 class LogsViewController: NSViewController {
 
+    @IBOutlet var textView: NSTextView!
+
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do view setup here.
+
+        textView.string = ImportLogsContainer.allLogs()
     }
     
 }

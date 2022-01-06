@@ -17,6 +17,7 @@
 		AF424CD81BC963E4006EE8D2 /* ChatContact.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF424CD71BC963E4006EE8D2 /* ChatContact.swift */; };
 		AF47D8771BDCDD20002CDF4B /* ChatTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF47D8761BDCDD20002CDF4B /* ChatTableViewController.swift */; };
 		AF5D9A152779E2B20026B850 /* LogsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF5D9A142779E2B20026B850 /* LogsViewController.swift */; };
+		AF5D9A1C278762BE0026B850 /* ImportLogsContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF5D9A1B278762BE0026B850 /* ImportLogsContainer.swift */; };
 		AF67203D21B5313E00C41616 /* ContactsMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFD974C91BB81885004CF8D7 /* ContactsMap.swift */; };
 		AF67203F21B53C3300C41616 /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF67203E21B53C3300C41616 /* AboutViewController.swift */; };
 		AF8003B81C273838008A1D64 /* ImageAttachmentDisplayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF8003B71C273838008A1D64 /* ImageAttachmentDisplayViewController.swift */; };
@@ -76,6 +77,7 @@
 		AF424CD71BC963E4006EE8D2 /* ChatContact.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatContact.swift; sourceTree = "<group>"; };
 		AF47D8761BDCDD20002CDF4B /* ChatTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatTableViewController.swift; sourceTree = "<group>"; };
 		AF5D9A142779E2B20026B850 /* LogsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogsViewController.swift; sourceTree = "<group>"; };
+		AF5D9A1B278762BE0026B850 /* ImportLogsContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportLogsContainer.swift; sourceTree = "<group>"; };
 		AF67203E21B53C3300C41616 /* AboutViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutViewController.swift; sourceTree = "<group>"; };
 		AF6F10E81BB81D5900A93152 /* SQLite.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SQLite.framework; path = Carthage/Build/Mac/SQLite.framework; sourceTree = "<group>"; };
 		AF8003B71C273838008A1D64 /* ImageAttachmentDisplayViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageAttachmentDisplayViewController.swift; sourceTree = "<group>"; };
@@ -262,6 +264,7 @@
 				AFD974C91BB81885004CF8D7 /* ContactsMap.swift */,
 				AF8003B91C2C8040008A1D64 /* Attachments Collection View */,
 				AFD974961BB816B5004CF8D7 /* AppDelegate.swift */,
+				AF5D9A1B278762BE0026B850 /* ImportLogsContainer.swift */,
 				AFD974981BB816B5004CF8D7 /* ViewController.swift */,
 				AFD9749D1BB816B5004CF8D7 /* Assets.xcassets */,
 				AFD9749F1BB816B6004CF8D7 /* Main.storyboard */,
@@ -528,6 +531,7 @@
 				AF67203F21B53C3300C41616 /* AboutViewController.swift in Sources */,
 				AFD974971BB816B5004CF8D7 /* AppDelegate.swift in Sources */,
 				AFE9B8061BD3A2EE007FC376 /* MessageFormatter.swift in Sources */,
+				AF5D9A1C278762BE0026B850 /* ImportLogsContainer.swift in Sources */,
 				AF8003C11C4A6545008A1D64 /* RoundImage.swift in Sources */,
 				AFAF103C213F3707009DDA82 /* ShowAppPrivilegesSetupViewController.swift in Sources */,
 				AF47D8771BDCDD20002CDF4B /* ChatTableViewController.swift in Sources */,

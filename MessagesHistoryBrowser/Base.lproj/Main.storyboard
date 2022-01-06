@@ -813,6 +813,9 @@
                             <constraint firstAttribute="bottom" secondItem="McY-1g-WsU" secondAttribute="bottom" id="rY4-Z6-Dma"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="textView" destination="x9Z-hV-hG9" id="GnH-Ys-N8W"/>
+                    </connections>
                 </viewController>
                 <customObject id="C2Q-UP-vcs" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
@@ -1088,7 +1091,7 @@ Jean-Marie Lafon : </string>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <customView translatesAutoresizingMaskIntoConstraints="NO" id="hWC-Hd-nlg" userLabel="Search and Date Filters">
-                                <rect key="frame" x="0.0" y="31" width="496" height="120"/>
+                                <rect key="frame" x="0.0" y="87" width="496" height="120"/>
                                 <subviews>
                                     <searchField wantsLayer="YES" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="cWC-s3-YlP">
                                         <rect key="frame" x="20" y="78" width="456" height="22"/>
@@ -1171,13 +1174,13 @@ Jean-Marie Lafon : </string>
                                 </constraints>
                             </customView>
                             <scrollView wantsLayer="YES" autohidesScrollers="YES" horizontalLineScroll="52" horizontalPageScroll="10" verticalLineScroll="52" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7dD-SL-gUk">
-                                <rect key="frame" x="0.0" y="0.0" width="496" height="31"/>
+                                <rect key="frame" x="0.0" y="0.0" width="496" height="87"/>
                                 <clipView key="contentView" id="8Ke-ny-68A">
-                                    <rect key="frame" x="1" y="1" width="494" height="29"/>
+                                    <rect key="frame" x="1" y="1" width="494" height="85"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="firstColumnOnly" columnReordering="NO" multipleSelection="NO" autosaveColumns="NO" rowHeight="50" headerView="nSq-37-0ca" viewBased="YES" id="yQc-Jz-Fx4">
-                                            <rect key="frame" x="0.0" y="0.0" width="494" height="52"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="494" height="62"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <size key="intercellSpacing" width="3" height="2"/>
                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -1264,7 +1267,7 @@ Jean-Marie Lafon : </string>
                                 <rect key="frame" x="0.0" y="-314" width="505" height="280"/>
                                 <subviews>
                                     <progressIndicator wantsLayer="YES" maxValue="1" style="bar" translatesAutoresizingMaskIntoConstraints="NO" id="LcQ-1Y-GBm">
-                                        <rect key="frame" x="87" y="56" width="322" height="20"/>
+                                        <rect key="frame" x="87" y="84" width="322" height="20"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="322" id="do5-qG-93O"/>
                                             <constraint firstAttribute="height" constant="18" id="tjQ-of-yef"/>
@@ -1278,7 +1281,7 @@ Jean-Marie Lafon : </string>
                                         </connections>
                                     </progressIndicator>
                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="G2L-Mo-7yd">
-                                        <rect key="frame" x="85" y="33" width="326" height="16"/>
+                                        <rect key="frame" x="85" y="61" width="326" height="16"/>
                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="progress report" id="jdD-9y-Tp5">
                                             <font key="font" metaFont="system"/>
                                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -1293,7 +1296,7 @@ Jean-Marie Lafon : </string>
                                         </connections>
                                     </textField>
                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="rXY-5L-Tvu">
-                                        <rect key="frame" x="85" y="9" width="161" height="16"/>
+                                        <rect key="frame" x="85" y="37" width="161" height="16"/>
                                         <textFieldCell key="cell" lineBreakMode="clipping" title="additional progress report" id="3Fs-Pb-8i2">
                                             <font key="font" metaFont="system"/>
                                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -1351,13 +1354,13 @@ Jean-Marie Lafon : </string>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <scrollView autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SIe-7G-mOj">
-                                <rect key="frame" x="0.0" y="0.0" width="441" height="233"/>
+                                <rect key="frame" x="0.0" y="0.0" width="441" height="137"/>
                                 <clipView key="contentView" id="5UP-Rb-svn">
-                                    <rect key="frame" x="1" y="1" width="439" height="231"/>
+                                    <rect key="frame" x="1" y="1" width="439" height="135"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <outlineView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" headerView="3aX-Ac-jqc" viewBased="YES" indentationPerLevel="16" autoresizesOutlineColumn="YES" outlineTableColumn="nj9-qk-QXq" id="kQB-4V-BsW">
-                                            <rect key="frame" x="0.0" y="0.0" width="439" height="208"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="439" height="112"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <size key="intercellSpacing" width="3" height="2"/>
                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -1423,7 +1426,7 @@ Jean-Marie Lafon : </string>
                                 </tableHeaderView>
                             </scrollView>
                             <searchField wantsLayer="YES" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="jJb-m6-5rx">
-                                <rect key="frame" x="0.0" y="231" width="441" height="22"/>
+                                <rect key="frame" x="0.0" y="135" width="441" height="22"/>
                                 <searchFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" borderStyle="bezel" usesSingleLineMode="YES" bezelStyle="round" id="aaJ-KT-rlv">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
