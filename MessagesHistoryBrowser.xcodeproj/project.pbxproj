@@ -16,6 +16,7 @@
 		AF424CD61BC9609D006EE8D2 /* ChatAttachment.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF424CD51BC9609D006EE8D2 /* ChatAttachment.swift */; };
 		AF424CD81BC963E4006EE8D2 /* ChatContact.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF424CD71BC963E4006EE8D2 /* ChatContact.swift */; };
 		AF47D8771BDCDD20002CDF4B /* ChatTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF47D8761BDCDD20002CDF4B /* ChatTableViewController.swift */; };
+		AF5D9A152779E2B20026B850 /* LogsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF5D9A142779E2B20026B850 /* LogsViewController.swift */; };
 		AF67203D21B5313E00C41616 /* ContactsMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFD974C91BB81885004CF8D7 /* ContactsMap.swift */; };
 		AF67203F21B53C3300C41616 /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF67203E21B53C3300C41616 /* AboutViewController.swift */; };
 		AF8003B81C273838008A1D64 /* ImageAttachmentDisplayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF8003B71C273838008A1D64 /* ImageAttachmentDisplayViewController.swift */; };
@@ -74,6 +75,7 @@
 		AF424CD51BC9609D006EE8D2 /* ChatAttachment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatAttachment.swift; sourceTree = "<group>"; };
 		AF424CD71BC963E4006EE8D2 /* ChatContact.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatContact.swift; sourceTree = "<group>"; };
 		AF47D8761BDCDD20002CDF4B /* ChatTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatTableViewController.swift; sourceTree = "<group>"; };
+		AF5D9A142779E2B20026B850 /* LogsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogsViewController.swift; sourceTree = "<group>"; };
 		AF67203E21B53C3300C41616 /* AboutViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutViewController.swift; sourceTree = "<group>"; };
 		AF6F10E81BB81D5900A93152 /* SQLite.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SQLite.framework; path = Carthage/Build/Mac/SQLite.framework; sourceTree = "<group>"; };
 		AF8003B71C273838008A1D64 /* ImageAttachmentDisplayViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageAttachmentDisplayViewController.swift; sourceTree = "<group>"; };
@@ -202,6 +204,7 @@
 			isa = PBXGroup;
 			children = (
 				AF67203E21B53C3300C41616 /* AboutViewController.swift */,
+				AF5D9A142779E2B20026B850 /* LogsViewController.swift */,
 				AF47D8761BDCDD20002CDF4B /* ChatTableViewController.swift */,
 				AF8003B71C273838008A1D64 /* ImageAttachmentDisplayViewController.swift */,
 				AF2B2DF21BC19E81000B8293 /* MessagesListViewController.swift */,
@@ -513,6 +516,7 @@
 				AF2B2DF31BC19E81000B8293 /* MessagesListViewController.swift in Sources */,
 				AF424CD61BC9609D006EE8D2 /* ChatAttachment.swift in Sources */,
 				AF2832DE21C413A000F8DD58 /* ContactTableCellView.swift in Sources */,
+				AF5D9A152779E2B20026B850 /* LogsViewController.swift in Sources */,
 				AF82EDB71C23723F00F8132D /* AttachmentsCollectionViewDelegate.swift in Sources */,
 				AFD974CA1BB81885004CF8D7 /* Chat.swift in Sources */,
 				AF8003B81C273838008A1D64 /* ImageAttachmentDisplayViewController.swift in Sources */,
@@ -623,7 +627,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
@@ -674,7 +678,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = macosx;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
@@ -698,7 +702,7 @@
 				);
 				INFOPLIST_FILE = MessagesHistoryBrowser/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.telegraph-road.MessagesHistoryBrowser";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -723,7 +727,7 @@
 				);
 				INFOPLIST_FILE = MessagesHistoryBrowser/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.telegraph-road.MessagesHistoryBrowser";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="17701" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="19529" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="17701"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="19529"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -617,6 +617,12 @@
                                                 <binding destination="BUy-Jk-h6w" name="value" keyPath="values.ShowTerseTime" id="94i-jE-Qqu"/>
                                             </connections>
                                         </menuItem>
+                                        <menuItem title="Show Logs" id="87U-3C-Vfl">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <segue destination="6gQ-Ki-aUv" kind="show" id="zac-hF-USo"/>
+                                            </connections>
+                                        </menuItem>
                                     </items>
                                 </menu>
                             </menuItem>
@@ -739,6 +745,78 @@
                 <customObject id="SNC-YG-FUq" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1015" y="-99"/>
+        </scene>
+        <!--Window Controller-->
+        <scene sceneID="VXa-B4-bPF">
+            <objects>
+                <windowController id="6gQ-Ki-aUv" sceneMemberID="viewController">
+                    <window key="window" title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" id="51d-fa-YOT">
+                        <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
+                        <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
+                        <rect key="contentRect" x="425" y="462" width="480" height="270"/>
+                        <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1415"/>
+                        <view key="contentView" id="jtp-So-5at">
+                            <rect key="frame" x="0.0" y="0.0" width="480" height="270"/>
+                            <autoresizingMask key="autoresizingMask"/>
+                        </view>
+                        <connections>
+                            <outlet property="delegate" destination="6gQ-Ki-aUv" id="LJU-JO-l5O"/>
+                        </connections>
+                    </window>
+                    <connections>
+                        <segue destination="Fdo-ZT-NcS" kind="relationship" relationship="window.shadowedContentViewController" id="hku-01-gYc"/>
+                    </connections>
+                </windowController>
+                <customObject id="ppn-Rv-Mya" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1314" y="2020"/>
+        </scene>
+        <!--Logs View Controller-->
+        <scene sceneID="f9g-qh-O3w">
+            <objects>
+                <viewController id="Fdo-ZT-NcS" customClass="LogsViewController" customModule="MessagesHistoryBrowser" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" id="KaC-Bm-bFH">
+                        <rect key="frame" x="0.0" y="0.0" width="480" height="270"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <scrollView borderType="none" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" translatesAutoresizingMaskIntoConstraints="NO" id="McY-1g-WsU">
+                                <rect key="frame" x="0.0" y="0.0" width="480" height="270"/>
+                                <clipView key="contentView" drawsBackground="NO" id="VqL-7S-K9t">
+                                    <rect key="frame" x="0.0" y="0.0" width="480" height="270"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <subviews>
+                                        <textView importsGraphics="NO" richText="NO" verticallyResizable="YES" findStyle="bar" smartInsertDelete="YES" id="x9Z-hV-hG9">
+                                            <rect key="frame" x="0.0" y="0.0" width="480" height="270"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                            <size key="minSize" width="480" height="270"/>
+                                            <size key="maxSize" width="480" height="10000000"/>
+                                            <color key="insertionPointColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                        </textView>
+                                    </subviews>
+                                </clipView>
+                                <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="coh-sN-Z8y">
+                                    <rect key="frame" x="-100" y="-100" width="240" height="16"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </scroller>
+                                <scroller key="verticalScroller" wantsLayer="YES" verticalHuggingPriority="750" horizontal="NO" id="79x-Q1-u87">
+                                    <rect key="frame" x="464" y="0.0" width="16" height="270"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </scroller>
+                            </scrollView>
+                        </subviews>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="McY-1g-WsU" secondAttribute="trailing" id="HWj-wA-E0r"/>
+                            <constraint firstItem="McY-1g-WsU" firstAttribute="leading" secondItem="KaC-Bm-bFH" secondAttribute="leading" id="aRR-L8-69p"/>
+                            <constraint firstItem="McY-1g-WsU" firstAttribute="top" secondItem="KaC-Bm-bFH" secondAttribute="top" id="faC-fL-9cu"/>
+                            <constraint firstAttribute="bottom" secondItem="McY-1g-WsU" secondAttribute="bottom" id="rY4-Z6-Dma"/>
+                        </constraints>
+                    </view>
+                </viewController>
+                <customObject id="C2Q-UP-vcs" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2008" y="2010"/>
         </scene>
         <!--Window Controller-->
         <scene sceneID="ZMx-gO-QrC">
@@ -1010,7 +1088,7 @@ Jean-Marie Lafon : </string>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <customView translatesAutoresizingMaskIntoConstraints="NO" id="hWC-Hd-nlg" userLabel="Search and Date Filters">
-                                <rect key="frame" x="0.0" y="87" width="496" height="120"/>
+                                <rect key="frame" x="0.0" y="31" width="496" height="120"/>
                                 <subviews>
                                     <searchField wantsLayer="YES" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="cWC-s3-YlP">
                                         <rect key="frame" x="20" y="78" width="456" height="22"/>
@@ -1093,13 +1171,13 @@ Jean-Marie Lafon : </string>
                                 </constraints>
                             </customView>
                             <scrollView wantsLayer="YES" autohidesScrollers="YES" horizontalLineScroll="52" horizontalPageScroll="10" verticalLineScroll="52" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7dD-SL-gUk">
-                                <rect key="frame" x="0.0" y="0.0" width="496" height="87"/>
+                                <rect key="frame" x="0.0" y="0.0" width="496" height="31"/>
                                 <clipView key="contentView" id="8Ke-ny-68A">
-                                    <rect key="frame" x="1" y="1" width="494" height="85"/>
+                                    <rect key="frame" x="1" y="1" width="494" height="29"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="firstColumnOnly" columnReordering="NO" multipleSelection="NO" autosaveColumns="NO" rowHeight="50" headerView="nSq-37-0ca" viewBased="YES" id="yQc-Jz-Fx4">
-                                            <rect key="frame" x="0.0" y="0.0" width="494" height="62"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="494" height="52"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <size key="intercellSpacing" width="3" height="2"/>
                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -1186,7 +1264,7 @@ Jean-Marie Lafon : </string>
                                 <rect key="frame" x="0.0" y="-314" width="505" height="280"/>
                                 <subviews>
                                     <progressIndicator wantsLayer="YES" maxValue="1" style="bar" translatesAutoresizingMaskIntoConstraints="NO" id="LcQ-1Y-GBm">
-                                        <rect key="frame" x="87" y="84" width="322" height="20"/>
+                                        <rect key="frame" x="87" y="56" width="322" height="20"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="322" id="do5-qG-93O"/>
                                             <constraint firstAttribute="height" constant="18" id="tjQ-of-yef"/>
@@ -1200,7 +1278,7 @@ Jean-Marie Lafon : </string>
                                         </connections>
                                     </progressIndicator>
                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="G2L-Mo-7yd">
-                                        <rect key="frame" x="85" y="61" width="326" height="16"/>
+                                        <rect key="frame" x="85" y="33" width="326" height="16"/>
                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="progress report" id="jdD-9y-Tp5">
                                             <font key="font" metaFont="system"/>
                                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -1215,7 +1293,7 @@ Jean-Marie Lafon : </string>
                                         </connections>
                                     </textField>
                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="rXY-5L-Tvu">
-                                        <rect key="frame" x="85" y="37" width="162" height="16"/>
+                                        <rect key="frame" x="85" y="9" width="161" height="16"/>
                                         <textFieldCell key="cell" lineBreakMode="clipping" title="additional progress report" id="3Fs-Pb-8i2">
                                             <font key="font" metaFont="system"/>
                                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -1273,13 +1351,13 @@ Jean-Marie Lafon : </string>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <scrollView autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SIe-7G-mOj">
-                                <rect key="frame" x="0.0" y="0.0" width="441" height="185"/>
+                                <rect key="frame" x="0.0" y="0.0" width="441" height="233"/>
                                 <clipView key="contentView" id="5UP-Rb-svn">
-                                    <rect key="frame" x="1" y="1" width="439" height="183"/>
+                                    <rect key="frame" x="1" y="1" width="439" height="231"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <outlineView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" headerView="3aX-Ac-jqc" viewBased="YES" indentationPerLevel="16" autoresizesOutlineColumn="YES" outlineTableColumn="nj9-qk-QXq" id="kQB-4V-BsW">
-                                            <rect key="frame" x="0.0" y="0.0" width="439" height="160"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="439" height="208"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <size key="intercellSpacing" width="3" height="2"/>
                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -1345,7 +1423,7 @@ Jean-Marie Lafon : </string>
                                 </tableHeaderView>
                             </scrollView>
                             <searchField wantsLayer="YES" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="jJb-m6-5rx">
-                                <rect key="frame" x="0.0" y="183" width="441" height="22"/>
+                                <rect key="frame" x="0.0" y="231" width="441" height="22"/>
                                 <searchFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" borderStyle="bezel" usesSingleLineMode="YES" bezelStyle="round" id="aaJ-KT-rlv">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>

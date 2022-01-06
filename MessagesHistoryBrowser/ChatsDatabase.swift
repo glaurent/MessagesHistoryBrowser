@@ -43,14 +43,14 @@ class ChatsDatabase {
 
     }
 
-    func populate(_ progress:Progress, completion:@escaping () -> Void)
+    func populate(_ progress:Progress) async
     {
         let defaultCountryPhonePrefix = UserDefaults.standard.string(forKey: CountryPhonePrefixUserDefaultsKey) ?? "+33"
-        contactsPhoneNumberMap.populate(withCountryPhonePrefix: defaultCountryPhonePrefix)
+        _ = contactsPhoneNumberMap.populate(withCountryPhonePrefix: defaultCountryPhonePrefix)
 
 //        let workerContext = MOCController.sharedInstance.workerContext()
 
-        let appDelegate = NSApp.delegate as! AppDelegate
+        let appDelegate = await NSApp.delegate as! AppDelegate
         let persistentContainer = appDelegate.persistentContainer
 
         persistentContainer.performBackgroundTask { (workerContext) in
@@ -82,16 +82,6 @@ class ChatsDatabase {
             } catch let error as NSError {
                 NSLog("\(#function) : worker context save fail : \(error)")
             }
-
-            // run completion block on main queue
-            //
-            DispatchQueue.main.async(execute: { () -> Void in
-
-//                MOCController.sharedInstance.save()
-                completion()
-
-            })
-
         }
 
     }
