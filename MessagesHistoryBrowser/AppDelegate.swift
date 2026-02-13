@@ -178,7 +178,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     @IBAction func refreshChatHistory(_ sender: AnyObject) {
         isRefreshingHistory = true
-        chatTableViewController?.refreshChatHistory()
+        Task {
+            await chatTableViewController?.refreshChatHistory()
+        }
     }
 
     @IBAction func exportSelectedChatToJSON(_ sender: AnyObject) {

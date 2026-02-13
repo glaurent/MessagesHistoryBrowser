@@ -43,14 +43,14 @@ class ChatsDatabase {
 
     }
 
-    func populate(_ progress:Progress, completion:@escaping () -> Void)
+    func populate(_ progress:Progress) async
     {
         let defaultCountryPhonePrefix = UserDefaults.standard.string(forKey: CountryPhonePrefixUserDefaultsKey) ?? "+33"
-        contactsPhoneNumberMap.populate(withCountryPhonePrefix: defaultCountryPhonePrefix)
+        _ = contactsPhoneNumberMap.populate(withCountryPhonePrefix: defaultCountryPhonePrefix)
 
 //        let workerContext = MOCController.sharedInstance.workerContext()
 
-        let appDelegate = NSApp.delegate as! AppDelegate
+        let appDelegate = await NSApp.delegate as! AppDelegate
         let persistentContainer = appDelegate.persistentContainer
 
         persistentContainer.performBackgroundTask { (workerContext) in
@@ -63,6 +63,7 @@ class ChatsDatabase {
                 }
                 progress.becomeCurrent(withPendingUnitCount: 2)
 
+                ImportLogsContainer.log("Importing chats")
                 self.importAllChatsFromDB(workerContext)
 
                 progress.resignCurrent()
@@ -82,22 +83,14 @@ class ChatsDatabase {
             } catch let error as NSError {
                 NSLog("\(#function) : worker context save fail : \(error)")
             }
-
-            // run completion block on main queue
-            //
-            DispatchQueue.main.async(execute: { () -> Void in
-
-//                MOCController.sharedInstance.save()
-                completion()
-
-            })
-
         }
 
     }
 
     func importAllChatsFromDB(_ localContext:NSManagedObjectContext)
     {
+        ImportLogsContainer.clear()
+
         let chats = Table("chat")
         
         let chatRowIDColumn = Expression<Int>("ROWID")
@@ -118,6 +111,8 @@ class ChatsDatabase {
 
             let dbRows = try db.prepare(chats.select(chatRowIDColumn, chatGUIDColumn, serviceNameColumn, chatIdentifierColumn))
 
+            ImportLogsContainer.log("dbRows underestimated count: \(dbRows.underestimatedCount)")
+
             for chatData in dbRows {
 
                 let guid = chatData[chatGUIDColumn]
@@ -126,6 +121,7 @@ class ChatsDatabase {
                 let serviceName = chatData[serviceNameColumn]
 
                 NSLog("\(#function) contact chat identifier \(chatIdentifier)")
+                ImportLogsContainer.log("contact chat guid \(guid) - \(chatIdentifier)")
 
                 let chatContact = contactForChatIdentifier(chatIdentifier, service:serviceName, inContext: localContext)
 
@@ -257,9 +253,17 @@ class ChatsDatabase {
                 allHandleIDs.append(row[handleIdColumn])
             }
 
+            ImportLogsContainer.log("Fetching messages for chat \(chat.guid) - contact \(chat.contact.identifier)")
+
             let query = try db.prepare(messagesTable.select(isFromMeColumn, textColumn, dateColumn).filter(allHandleIDs.contains(handleIdColumn)))
 
+            var messageCounterSave = 0
+
+            // logging
             var messageCounter = 0
+            var firstDate: Date?
+            var lastDate = Date()
+            var messagesFromMeCounter = 0
 
             for messageData in query {
                 let messageContent = messageData[textColumn] ?? ""
@@ -269,22 +273,36 @@ class ChatsDatabase {
                 }
                 let dateTimeInterval = TimeInterval(dateInt)
                 let messageDate = Date(timeIntervalSinceReferenceDate: dateTimeInterval)
+
+                if firstDate == nil {
+                    firstDate = messageDate
+                }
+                lastDate = messageDate
+
 //              NSLog("message : \(messageContent)")
 
                 let chatMessage = ChatMessage(managedObjectContext: workerContext, withMessage: messageContent, withDate: messageDate, inChat: chat)
                 chatMessage.isFromMe = messageData[isFromMeColumn]
 
+                messageCounterSave += 1
                 messageCounter += 1
-                if messageCounter >= messageSaveThreshold {
-                    messageCounter = 0
+                if chatMessage.isFromMe {
+                    messagesFromMeCounter += 1
+                }
+
+                if messageCounterSave >= messageSaveThreshold {
+                    messageCounterSave = 0
                     do {
                         try workerContext.save()
 //                        MOCController.sharedInstance.save()
                     } catch let error as NSError {
                         print("ChatsDatabase.collectMessagesForChat : worker context save fail : \(error)")
+                        ImportLogsContainer.log("ChatsDatabase.collectMessagesForChat : worker context save fail : \(error)")
                     }
                 }
             }
+
+            ImportLogsContainer.log("Found \(messageCounter) messages - \(messagesFromMeCounter) outgoing messages spanning from \(firstDate ?? Date()) to \(lastDate) in chat")
 
 
             // attachments
@@ -311,7 +329,6 @@ class ChatsDatabase {
                 allAttachmentIDs.append(row[attachmentIdColumn])
             }
 
-
             let attachmentDateColumn = Expression<Int>("created_date")
 
             let attachmentDataQuery = try db.prepare(attachments.select(rowIDColumn, filenameColumn, attachmentDateColumn, isOutgoingColumn).filter(allAttachmentIDs.contains(rowIDColumn)))
@@ -322,6 +339,7 @@ class ChatsDatabase {
                 let attachmentTimeInterval = TimeInterval(attachmentDateInt)
                 let attachmentDate = Date(timeIntervalSinceReferenceDate: attachmentTimeInterval)
 
+//                ImportLogsContainer.log("attachmentFileName : \(attachmentFileName ?? "nil") - attachmentDate : \(attachmentDate) - isFromMe : \(attachmentData[isOutgoingColumn])")
                 if let attachmentFileName = attachmentFileName {
                     let chatAttachment = ChatAttachment(managedObjectContext: chat.managedObjectContext!, withFileName: attachmentFileName, withDate: attachmentDate as Date, inChat:chat)
                     chatAttachment.isFromMe = attachmentData[isOutgoingColumn]

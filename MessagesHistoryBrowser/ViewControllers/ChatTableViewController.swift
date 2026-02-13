@@ -99,11 +99,15 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
 
         if Chat.numberOfChatsInContext(moc) == 0 {
 
-            importMessagesFromOSXApp()
+            Task {
+                await importMessagesFromOSXApp()
+            }
 
         } else if appDelegate.needDBReload { // CoreData DB load failed, rebuild the whole thing
 
-            refreshChatHistory()
+            Task {
+                await refreshChatHistory()
+            }
 
         } else {
 
@@ -550,7 +554,7 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
 
     // recreate CoreData DB from original chats history DB
     //
-    func refreshChatHistory() {
+    @MainActor func refreshChatHistory() async {
 
         let appDelegate = NSApp.delegate as! AppDelegate
         appDelegate.isRefreshingHistory = true
@@ -564,12 +568,10 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
 
         MOCController.sharedInstance.clearAllCoreData()
 
-        chatsDatabase.populate(progress, completion:{ () -> Void in
+        await chatsDatabase.populate(progress)
 
-            self.completeImport()
-//            MOCController.sharedInstance.save()
-            appDelegate.isRefreshingHistory = false
-        })
+        self.completeImport()
+        appDelegate.isRefreshingHistory = false
     }
 
     // MARK: - progress view
@@ -604,7 +606,7 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
 
     }
 
-    func importMessagesFromOSXApp()
+    func importMessagesFromOSXApp() async
     {
         let appDelegate = NSApp.delegate as! AppDelegate
 
@@ -617,12 +619,11 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
 
         setupProgressBeforeImport()
         
-        chatsDatabase.populate(progress, completion:{ () -> Void in
+        await chatsDatabase.populate(progress)
             
-            self.completeImport()
-//            MOCController.sharedInstance.save()
-            appDelegate.isRefreshingHistory = false
-        })
+        self.completeImport()
+        appDelegate.isRefreshingHistory = false
+
 
     }
     
