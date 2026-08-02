@@ -62,23 +62,46 @@ class ChatItemsFetcher: NSObject {
     //
     func searchWithCompletionBlock()
     {
-        let localMOC = MOCController.sharedInstance.workerContext()
+        // The selected contact and the results consumed by the UI all belong to
+        // the main viewContext. NSManagedObjects must only be touched on their own
+        // context's queue, so all managed-object work here happens on the main
+        // context/queue — except the one genuinely expensive operation, the text
+        // search fetch over every message, which is offloaded to a background
+        // worker context and only ever hands NSManagedObjectIDs back to the main
+        // queue.
 
-        localMOC.perform { () -> Void in
-            // call search, collect NSManagedObjectIDs of messages, then use those to display result from main moc in main thread
+        let mainMOC = MOCController.sharedInstance.managedObjectContext
 
-            self.search(localMOC)
+        // Text search (no contact selected) requires a fetch across all messages.
+        if let searchTerm = searchTerm, contact == nil {
 
-            if let completion = self.completion {
-                // run completion block on main queue, passing it the search results
-                //
-                DispatchQueue.main.async(execute: { () -> Void in
-//                    print("searchWithCompletionBlock : calling completion block")
-                    completion(self.matchingItems, self.matchingAttachments, self.matchingContacts)
-                })
+            let localMOC = MOCController.sharedInstance.workerContext()
+
+            localMOC.perform {
+                // Runs on the worker queue, touching only the worker context's own objects.
+                let messageIDs = self.searchChatsForString(searchTerm, inManagedObjectContext: localMOC, afterDate: self.afterDate, beforeDate: self.beforeDate)
+
+                DispatchQueue.main.async {
+                    // Materialize the object IDs and post-process on the main queue / main context.
+                    let messages = messageIDs.map { mainMOC.object(with: $0) as! ChatMessage }
+
+                    self.currentSearchMatchingItems = messages
+                    self.matchingItems = messages
+                    self.matchingAttachments.removeAll()
+                    self.matchingContacts = self.contactsFromMessages(messages)
+
+                    self.completion?(self.matchingItems, self.matchingAttachments, self.matchingContacts)
+                }
             }
+
+            return
         }
 
+        // Browsing a contact, narrowing existing search results to a contact, or
+        // clearing — all pure in-memory work on main-context objects, so run them
+        // synchronously on the main context/queue (this method is called on main).
+        search(mainMOC)
+        completion?(matchingItems, matchingAttachments, matchingContacts)
     }
 
     func clearSearch()
@@ -113,8 +136,8 @@ class ChatItemsFetcher: NSObject {
 
 
             } else {
-                matchingContacts = nil                
-                collectChatItemsForContact(contact, afterDate: afterDate, beforeDate: beforeDate)
+                matchingContacts = nil
+                collectChatItemsForContact(contact, moc: moc, afterDate: afterDate, beforeDate: beforeDate)
             }
 
 
@@ -143,14 +166,18 @@ class ChatItemsFetcher: NSObject {
     // MARK: Array-based search
     // when no search term is specified
     //
-    func collectChatItemsForContact(_ contact: ChatContact, afterDate:Date? = nil, beforeDate:Date? = nil)
+    func collectChatItemsForContact(_ contact: ChatContact, moc:NSManagedObjectContext, afterDate:Date? = nil, beforeDate:Date? = nil)
     {
+        // Access the contact through the context we're executing on, so its
+        // relationship faults fire on that context's queue. (For the browse path
+        // this is the main context, which already owns `contact`.)
+        let localContact = moc.object(with: contact.objectID) as! ChatContact
 
-        let allContactItems = contact.messages.addingObjects(from: contact.attachments as Set<NSObject>)
+        let allContactItems = localContact.messages.addingObjects(from: localContact.attachments as Set<NSObject>)
 
         let allContactItemsSorted = allContactItems.sorted(by: messageHashableDateSort) as! [ChatItem]
 
-        let contactAttachments = contact.attachments.sorted(by: messageEnumIteratorDateSort) as! [ChatAttachment]
+        let contactAttachments = localContact.attachments.sorted(by: messageEnumIteratorDateSort) as! [ChatAttachment]
 
         if afterDate != nil || beforeDate != nil {
 
@@ -277,46 +304,34 @@ class ChatItemsFetcher: NSObject {
             let allContactMessagesSorted = contact.messages.sorted(by: messageIndexSort)
             let allContactMessages = allContactMessagesSorted as! [ChatMessage]
 
-            var initialMessagesPlusSurroundingMessages = [ChatMessage]()
+            guard !allContactMessages.isEmpty else { continue }
 
-            var lastSlice = (0..<0)
+            // For every matched message, include a window of `nbOfMessagesBeforeAfter`
+            // messages on either side. We collect the positions in a Set rather than
+            // merging index ranges: message dates are truncated to whole seconds on
+            // import, so `message.index` (assigned by one date sort) isn't guaranteed
+            // to be monotonic with the search result order (a different date sort).
+            // The set is order-independent, self-deduplicating, and can never form an
+            // invalid Range.
+            let lastPosition = allContactMessages.count - 1
+            var positionsToInclude = Set<Int>()
 
             for message in contactMessages {
-                let (messagesRangeAroundThisMessage, disjointSlice) = surroundingMessagesForMessage(message, inMessages: allContactMessages, numberBeforeAndAfter: nbOfMessagesBeforeAfter, previousSliceRange:lastSlice)
-
-                if disjointSlice {
-                    initialMessagesPlusSurroundingMessages.append(contentsOf: allContactMessages[messagesRangeAroundThisMessage])
+                let center = min(max(Int(message.index), 0), lastPosition)
+                let lower = max(center - nbOfMessagesBeforeAfter, 0)
+                let upper = min(center + nbOfMessagesBeforeAfter, lastPosition)
+                for position in lower ... upper {
+                    positionsToInclude.insert(position)
                 }
-
-                lastSlice = messagesRangeAroundThisMessage
-
             }
 
-            result.append(contentsOf: initialMessagesPlusSurroundingMessages) // TODO: remove duplicates
+            // Emit the included messages in their natural (index) order.
+            for position in positionsToInclude.sorted() {
+                result.append(allContactMessages[position])
+            }
         }
 
         return result
-    }
-
-    
-    func surroundingMessagesForMessage(_ message:ChatMessage, inMessages allMessages:[ChatMessage], numberBeforeAndAfter:Int, previousSliceRange:CountableRange<Int>) -> (CountableRange<Int>, Bool)
-    {
-//        let messageIndex = messageIndexInDateSortedMessages(message, inMessages: allMessages)
-        let messageIndex = Int(message.index)
-
-        let startIndex = max(messageIndex - numberBeforeAndAfter, 0)
-        let endIndex = min(messageIndex + numberBeforeAndAfter + 1, allMessages.count - 1) // +1 because range does not include endIndex item ( startIndex..<endIndex )
-
-        var slice = (startIndex ..< endIndex)
-        var disjointSlice = true
-
-        // check possible join with previous slice
-        if startIndex <= previousSliceRange.upperBound {
-            slice = (previousSliceRange.lowerBound ..< endIndex)
-            disjointSlice = false
-        }
-
-        return (slice, disjointSlice)
     }
 
     // Taken from http://rshankar.com/binary-search-in-swift/

@@ -8,7 +8,7 @@
 
 import Cocoa
 
-@NSApplicationMain
+// @NSApplicationMain - Removed for SwiftUI App lifecycle
 class AppDelegate: NSObject, NSApplicationDelegate {
 
     static let ShowChatsFromUnknownNotification = "ShowChatsFromUnknownNotification"

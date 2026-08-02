@@ -7,14 +7,29 @@
 //
 
 import Cocoa
+import CoreData
 
 class MOCController: NSObject {
 
     public static let sharedInstance = MOCController()
 
+    // MARK: - Core Data stack
+    //
+    // MOCController is the single owner of the Core Data stack. This avoids
+    // relying on NSApp.delegate, which under the SwiftUI App lifecycle is
+    // SwiftUI's own internal AppDelegate rather than our AppDelegate.
+    lazy var persistentContainer: NSPersistentContainer = {
+        let container = NSPersistentContainer(name: "MessagesHistoryBrowser")
+        container.loadPersistentStores { _, error in
+            if let error = error {
+                fatalError("Unresolved error \(error)")
+            }
+        }
+        return container
+    }()
+
     var managedObjectContext:NSManagedObjectContext {
-        let appDelegate = NSApp.delegate as! AppDelegate
-        return appDelegate.persistentContainer.viewContext
+        return persistentContainer.viewContext
     }
 
     override init() {
@@ -22,8 +37,15 @@ class MOCController: NSObject {
 
     func save()
     {
-        let appDelegate = NSApp.delegate as! AppDelegate
-        appDelegate.saveAction(self)
+        let context = persistentContainer.viewContext
+
+        if context.hasChanges {
+            do {
+                try context.save()
+            } catch {
+                NSLog("Error saving context: \(error)")
+            }
+        }
     }
 
     func clearAllCoreData()
@@ -50,11 +72,7 @@ class MOCController: NSObject {
 
     func workerContext() -> NSManagedObjectContext
     {
-        let appDelegate = NSApp.delegate as! AppDelegate
-
-        let worker = appDelegate.persistentContainer.newBackgroundContext()
-
-        return worker
+        return persistentContainer.newBackgroundContext()
     }
 
 }

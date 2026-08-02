@@ -50,10 +50,9 @@ class ChatsDatabase {
 
 //        let workerContext = MOCController.sharedInstance.workerContext()
 
-        let appDelegate = await NSApp.delegate as! AppDelegate
-        let persistentContainer = appDelegate.persistentContainer
+        let persistentContainer = MOCController.sharedInstance.persistentContainer
 
-        persistentContainer.performBackgroundTask { (workerContext) in
+        await persistentContainer.performBackgroundTask { (workerContext) in
 
             if Chat.numberOfChatsInContext(workerContext) == 0 {
 
@@ -228,34 +227,39 @@ class ChatsDatabase {
             let messagesTable  = Table("message")
             let isFromMeColumn = Expression<Bool>("is_from_me")
             let textColumn     = Expression<String?>("text")
+            let attributedBodyColumn = Expression<Blob?>("attributedBody") // modern Messages stores the body here when `text` is NULL
             let dateColumn     = Expression<Int>("date")
 
 //            let dateDeliveredColumn = Expression<Int>("date_delivered") // used only for sanity check on dateColumn value
-
-            let chatHandleJoinTable = Table("chat_handle_join")
-            let handleIdColumn      = Expression<Int>("handle_id")
-            let chatIdColumn        = Expression<Int>("chat_id")
 
             let chatTable   = Table("chat")
             let rowIDColumn = Expression<Int>("ROWID")
             let guidColumn  = Expression<String>("guid")
 
+            // Resolve the chat's ROWID(s) from its GUID.
             let chatIDQuery = try db.prepare(chatTable.select(rowIDColumn).filter(guidColumn == chat.guid))
             var allRowIDs = [Int]()
             for row in chatIDQuery {
                 allRowIDs.append(row[rowIDColumn])
             }
 
+            // Messages belong to a chat through chat_message_join (chat_id -> message_id).
+            // The previous approach matched messages by the chat participants' handle_id,
+            // which dropped every outgoing message (is_from_me = 1 rows have handle_id = 0,
+            // never present in the participant handle list) and left some chats empty.
+            let chatMessageJoinTable = Table("chat_message_join")
+            let cmjChatIDColumn      = Expression<Int>("chat_id")
+            let cmjMessageIDColumn   = Expression<Int>("message_id")
 
-            let handleIDQuery = try db.prepare(chatHandleJoinTable.select(handleIdColumn).filter(allRowIDs.contains(chatIdColumn)))
-            var allHandleIDs = [Int]()
-            for row in handleIDQuery {
-                allHandleIDs.append(row[handleIdColumn])
+            let messageIDsQuery = try db.prepare(chatMessageJoinTable.select(cmjMessageIDColumn).filter(allRowIDs.contains(cmjChatIDColumn)))
+            var allMessageIDs = [Int]()
+            for row in messageIDsQuery {
+                allMessageIDs.append(row[cmjMessageIDColumn])
             }
 
             ImportLogsContainer.log("Fetching messages for chat \(chat.guid) - contact \(chat.contact.identifier)")
 
-            let query = try db.prepare(messagesTable.select(isFromMeColumn, textColumn, dateColumn).filter(allHandleIDs.contains(handleIdColumn)))
+            let query = try db.prepare(messagesTable.select(rowIDColumn, isFromMeColumn, textColumn, attributedBodyColumn, dateColumn).filter(allMessageIDs.contains(rowIDColumn)))
 
             var messageCounterSave = 0
 
@@ -266,7 +270,16 @@ class ChatsDatabase {
             var messagesFromMeCounter = 0
 
             for messageData in query {
-                let messageContent = messageData[textColumn] ?? ""
+                var messageContent = messageData[textColumn] ?? ""
+
+                // On recent macOS the `text` column is NULL and the message body is
+                // archived in `attributedBody`. Fall back to decoding it.
+                if messageContent.isEmpty, let bodyBlob = messageData[attributedBodyColumn] {
+                    if let decoded = ChatsDatabase.messageText(fromAttributedBody: Data(bodyBlob.bytes)) {
+                        messageContent = decoded
+                    }
+                }
+
                 var dateInt = messageData[dateColumn]
                 if dateInt > Int(10e9) { // I have this case of timestamp values being multiplied by 10e8 on my iMac running High Sierra, with no apparent effect on the values displayed in the chats history
                     dateInt = dateInt / Int(10e8)
@@ -313,7 +326,7 @@ class ChatsDatabase {
             let isOutgoingColumn = Expression<Bool>("is_outgoing")
             let cacheHasAttachmentColumn = Expression<Bool>("cache_has_attachments")
 
-            let messagesWithAttachmentsROWIDsQuery = try db.prepare(messagesTable.select(rowIDColumn, cacheHasAttachmentColumn, handleIdColumn).filter(allHandleIDs.contains(handleIdColumn) && cacheHasAttachmentColumn == true))
+            let messagesWithAttachmentsROWIDsQuery = try db.prepare(messagesTable.select(rowIDColumn, cacheHasAttachmentColumn).filter(allMessageIDs.contains(rowIDColumn) && cacheHasAttachmentColumn == true))
 
             var messagesWithAttachmentsROWIDs = [Int]()
             for row in messagesWithAttachmentsROWIDsQuery {
@@ -391,6 +404,57 @@ class ChatsDatabase {
         }
 
 //        DispatchQueue.main.async { Progress.current()?.resignCurrent() }
+    }
+
+    // MARK: - attributedBody decoding
+
+    // Extracts the plain message text from an `attributedBody` blob. That column
+    // holds an NSAttributedString archived in the legacy `typedstream` format
+    // (NSArchiver, not NSKeyedArchiver), so it can't be un-archived with the
+    // modern Foundation APIs. We parse it directly: find the `NSString` class
+    // marker, skip its fixed version header (01 94 84 01 2B), then read the
+    // length-prefixed UTF-8 string that follows.
+    static func messageText(fromAttributedBody data: Data) -> String? {
+        let bytes = [UInt8](data)
+
+        guard let markerEnd = firstIndex(of: Array("NSString".utf8), in: bytes) else { return nil }
+
+        // Skip the 5 header bytes that follow the class name (01 94 84 01 2B).
+        var idx = markerEnd + 5
+        guard idx < bytes.count else { return nil }
+
+        // Length prefix: one byte, or an escape (0x81 / 0x82) introducing a
+        // 2- or 3-byte little-endian length for longer strings.
+        var length = Int(bytes[idx]); idx += 1
+        switch length {
+        case 0x81:
+            guard idx + 1 < bytes.count else { return nil }
+            length = Int(bytes[idx]) | (Int(bytes[idx + 1]) << 8)
+            idx += 2
+        case 0x82:
+            guard idx + 2 < bytes.count else { return nil }
+            length = Int(bytes[idx]) | (Int(bytes[idx + 1]) << 8) | (Int(bytes[idx + 2]) << 16)
+            idx += 3
+        default:
+            break
+        }
+
+        guard length > 0, idx + length <= bytes.count else { return nil }
+        return String(bytes: bytes[idx ..< idx + length], encoding: .utf8)
+    }
+
+    // Returns the index just past the first occurrence of `pattern` in `bytes`.
+    private static func firstIndex(of pattern: [UInt8], in bytes: [UInt8]) -> Int? {
+        guard !pattern.isEmpty, bytes.count >= pattern.count else { return nil }
+        for start in 0 ... (bytes.count - pattern.count) {
+            var matched = true
+            for offset in 0 ..< pattern.count where bytes[start + offset] != pattern[offset] {
+                matched = false
+                break
+            }
+            if matched { return start + pattern.count }
+        }
+        return nil
     }
 
     func indexMessagesForContact(_ contact:ChatContact)
