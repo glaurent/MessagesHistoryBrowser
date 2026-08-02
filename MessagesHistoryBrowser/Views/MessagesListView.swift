@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-@available(macOS 11.0, *)
 struct MessagesListView: View {
     let contact: ChatContact
     @ObservedObject var viewModel: ContentViewModel
@@ -54,7 +53,6 @@ struct MessagesListView: View {
 
 // Shows search matches, which span multiple contacts. Reads the same
 // @Published results the fetcher's completion (owned by ContentViewModel) fills.
-@available(macOS 11.0, *)
 struct SearchResultsView: View {
     @ObservedObject var viewModel: ContentViewModel
 
@@ -92,7 +90,6 @@ struct SearchResultsView: View {
     }
 }
 
-@available(macOS 11.0, *)
 struct MessageBubbleView: View {
     let message: ChatMessage
     let highlightTerm: String?
@@ -115,7 +112,7 @@ struct MessageBubbleView: View {
                     // Message text, with any search term matches highlighted.
                     highlightedText(for: message.content ?? "", term: highlightTerm)
 
-                    Text(message.date, style: .time)
+                    Text(message.date.formatted(date: .abbreviated, time: .shortened))
                         .font(.caption2)
                         .foregroundColor(.secondary)
                 }
@@ -133,7 +130,7 @@ struct MessageBubbleView: View {
     }
 
     // Builds a Text by concatenating segments, styling case-insensitive matches
-    // of `term`. Uses Text composition (bold + color) so it works on macOS 11.
+    // of `term` (bold + color).
     private func highlightedText(for content: String, term: String?) -> Text {
         guard let term = term, !term.isEmpty else { return Text(content) }
 
@@ -165,7 +162,6 @@ struct MessageBubbleView: View {
     }
 }
 
-@available(macOS 11.0, *)
 struct AttachmentInlineView: View {
     let attachment: ChatAttachment
     @State private var image: NSImage?
