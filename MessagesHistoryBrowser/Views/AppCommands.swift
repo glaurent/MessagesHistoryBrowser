@@ -61,13 +61,13 @@ struct AppCommands: Commands {
 
     private func orderedMessages(for contact: ChatContact) -> [ChatMessage] {
         let messages = (contact.messages.allObjects as? [ChatMessage]) ?? []
-        return messages.sorted { $0.date < $1.date }
+        return messages.sorted { $0.dateNanoseconds < $1.dateNanoseconds }
     }
 
     private func orderedChatItems(for contact: ChatContact) -> [ChatItem] {
         let messages = (contact.messages.allObjects as? [ChatItem]) ?? []
         let attachments = (contact.attachments.allObjects as? [ChatItem]) ?? []
-        return (messages + attachments).sorted { $0.date < $1.date }
+        return (messages + attachments).sorted { $0.dateNanoseconds < $1.dateNanoseconds }
     }
 
     // MARK: - Export actions

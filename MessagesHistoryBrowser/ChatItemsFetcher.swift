@@ -32,21 +32,21 @@ class ChatItemsFetcher: NSObject {
         let aItem = a as! ChatItem
         let bItem = b as! ChatItem
 
-        return aItem.date < bItem.date
+        return aItem.dateNanoseconds < bItem.dateNanoseconds
     }
 
     let messageEnumIteratorDateSort = { (a:NSFastEnumerationIterator.Element, b:NSFastEnumerationIterator.Element) -> Bool in
         let aItem = a as! ChatItem
         let bItem = b as! ChatItem
 
-        return aItem.date < bItem.date
+        return aItem.dateNanoseconds < bItem.dateNanoseconds
     }
 
     let messageHashableDateSort = { (a:AnyHashable, b:AnyHashable) -> Bool in
         let aItem = a as! ChatItem
         let bItem = b as! ChatItem
 
-        return aItem.date < bItem.date
+        return aItem.dateNanoseconds < bItem.dateNanoseconds
     }
 
 
@@ -348,8 +348,7 @@ class ChatItemsFetcher: NSObject {
             } else if (lowerIndex > upperIndex) {
                 return allMessages.count
             } else {
-                let messageDateCompare = allMessages[currentIndex].date.compare(message.date as Date)
-                if (messageDateCompare == .orderedDescending) {
+                if allMessages[currentIndex].dateNanoseconds > message.dateNanoseconds {
                     upperIndex = currentIndex - 1
                 } else {
                     lowerIndex = currentIndex + 1

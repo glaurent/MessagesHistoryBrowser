@@ -206,17 +206,30 @@ class ChatsDatabase {
         return contact
     }
 
+    // Converts a raw Messages timestamp (seconds or nanoseconds since the 2001
+    // reference date) into an exact nanosecond value plus a display Date.
+    static func normalizedTime(fromRawTimestamp raw: Int) -> (nanoseconds: Int64, date: Date) {
+        let nanoseconds: Int64
+        if raw > Int(10e9) {
+            nanoseconds = Int64(raw)                     // already nanoseconds
+        } else {
+            nanoseconds = Int64(raw) * 1_000_000_000     // seconds -> nanoseconds
+        }
+        let date = Date(timeIntervalSinceReferenceDate: Double(nanoseconds) / 1_000_000_000)
+        return (nanoseconds, date)
+    }
+
     func messagesForChat(_ chat:Chat) -> ([ChatMessage], [ChatAttachment])
     {
         let allMessages = chat.messages.allObjects as! [ChatMessage]
 
-        let allMessagesSorted = allMessages.sorted { $0.date.compare($1.date as Date) == .orderedAscending }
+        let allMessagesSorted = allMessages.sorted { $0.dateNanoseconds < $1.dateNanoseconds }
 
         let allAttachments = chat.attachments.allObjects as! [ChatAttachment]
-        let allAttachmentsSorted = allAttachments.sorted { $0.date.compare($1.date as Date) == .orderedAscending }
+        let allAttachmentsSorted = allAttachments.sorted { $0.dateNanoseconds < $1.dateNanoseconds }
 
         return (allMessagesSorted, allAttachmentsSorted)
-    
+
     }
 
     func collectMessagesForChat(_ chat:Chat, workerContext:NSManagedObjectContext)
@@ -280,12 +293,9 @@ class ChatsDatabase {
                     }
                 }
 
-                var dateInt = messageData[dateColumn]
-                if dateInt > Int(10e9) { // I have this case of timestamp values being multiplied by 10e8 on my iMac running High Sierra, with no apparent effect on the values displayed in the chats history
-                    dateInt = dateInt / Int(10e8)
-                }
-                let dateTimeInterval = TimeInterval(dateInt)
-                let messageDate = Date(timeIntervalSinceReferenceDate: dateTimeInterval)
+                // Keep the exact nanosecond timestamp as the source of truth; the
+                // Date is derived from it (with fractional seconds) for display.
+                let (messageNanoseconds, messageDate) = ChatsDatabase.normalizedTime(fromRawTimestamp: messageData[dateColumn])
 
                 if firstDate == nil {
                     firstDate = messageDate
@@ -295,6 +305,7 @@ class ChatsDatabase {
 //              NSLog("message : \(messageContent)")
 
                 let chatMessage = ChatMessage(managedObjectContext: workerContext, withMessage: messageContent, withDate: messageDate, inChat: chat)
+                chatMessage.dateNanoseconds = messageNanoseconds
                 chatMessage.isFromMe = messageData[isFromMeColumn]
 
                 messageCounterSave += 1
@@ -348,13 +359,12 @@ class ChatsDatabase {
 
             for attachmentData in attachmentDataQuery {
                 let attachmentFileName:String? = attachmentData[filenameColumn]
-                let attachmentDateInt = attachmentData[attachmentDateColumn]
-                let attachmentTimeInterval = TimeInterval(attachmentDateInt)
-                let attachmentDate = Date(timeIntervalSinceReferenceDate: attachmentTimeInterval)
+                let (attachmentNanoseconds, attachmentDate) = ChatsDatabase.normalizedTime(fromRawTimestamp: attachmentData[attachmentDateColumn])
 
 //                ImportLogsContainer.log("attachmentFileName : \(attachmentFileName ?? "nil") - attachmentDate : \(attachmentDate) - isFromMe : \(attachmentData[isOutgoingColumn])")
                 if let attachmentFileName = attachmentFileName {
                     let chatAttachment = ChatAttachment(managedObjectContext: chat.managedObjectContext!, withFileName: attachmentFileName, withDate: attachmentDate as Date, inChat:chat)
+                    chatAttachment.dateNanoseconds = attachmentNanoseconds
                     chatAttachment.isFromMe = attachmentData[isOutgoingColumn]
                 }
             }
@@ -461,7 +471,7 @@ class ChatsDatabase {
     {
         let allMessages = contact.messages.allObjects as! [ChatMessage]
 
-        let allMessagesDateSorted = allMessages.sorted { $0.date.compare($1.date as Date) == .orderedAscending }
+        let allMessagesDateSorted = allMessages.sorted { $0.dateNanoseconds < $1.dateNanoseconds }
 
         var index:Int64 = 0
 

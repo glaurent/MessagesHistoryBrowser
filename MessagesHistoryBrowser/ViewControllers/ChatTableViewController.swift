@@ -375,7 +375,7 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
         let allContactMessages = allContactMessageArrays.reduce([ChatMessage](), +)
 
         let allContactSortedMessages = allContactMessages.sorted { (messageA, messageB) -> Bool in
-            return messageA.date < messageB.date
+            return messageA.dateNanoseconds < messageB.dateNanoseconds
         }
 
         return (selectedContact, allContactSortedMessages)
@@ -401,7 +401,7 @@ class ChatTableViewController: NSViewController, NSTableViewDataSource, NSTableV
         let allContactChatItems = allContactChatItemArrays.reduce([ChatItem](), +)
 
         let allContactSortedChatItems = allContactChatItems.sorted { (itemA, itemB) -> Bool in
-            return itemA.date < itemB.date
+            return itemA.dateNanoseconds < itemB.dateNanoseconds
         }
 
         return (selectedContact, allContactSortedChatItems)
