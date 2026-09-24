@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import CoreData
 
 @available(macOS 11.0, *)
 struct ContentView: View {
@@ -110,14 +111,17 @@ struct SelectedContactFocusValue: ViewModifier {
 // View Model for Content View
 @available(macOS 11.0, *)
 @MainActor
-class ContentViewModel: ObservableObject {
+class ContentViewModel: NSObject, ObservableObject, NSFetchedResultsControllerDelegate {
     @Published var searchTerm: String = ""
     @Published var isImporting = false
     @Published var importProgress = Progress(totalUnitCount: 10)
-    
+
     @Published var allKnownContacts: [ChatContact] = []
     @Published var allUnknownContacts: [ChatContact] = []
     @Published var searchedContacts: [ChatContact]?
+
+    // Live contact list, kept up to date by an NSFetchedResultsController.
+    private var contactsController: NSFetchedResultsController<ChatContact>?
     
     @Published var currentMessages: [ChatItem] = []
     @Published var currentAttachments: [ChatAttachment] = []
@@ -128,9 +132,14 @@ class ContentViewModel: ObservableObject {
     @Published var afterDate = Date().addingTimeInterval(3600 * 24 * -30) // a month ago
     
     var setupDBSucceeded = false
-    
+
+    override init() {
+        super.init()
+    }
+
     func setupDatabase(appState: AppState) {
         setupFetcherCallback()
+        setupContactsController()
 
         let moc = MOCController.sharedInstance.managedObjectContext
 
@@ -146,11 +155,49 @@ class ContentViewModel: ObservableObject {
             loadContacts()
         }
     }
-    
+
+    // Sets up the NSFetchedResultsController that drives the contact list. It
+    // observes the main viewContext, which merges the background import's saves
+    // (see automaticallyMergesChangesFromParent), so the list updates live.
+    private func setupContactsController() {
+        guard contactsController == nil else { return }
+
+        let context = MOCController.sharedInstance.managedObjectContext
+        context.automaticallyMergesChangesFromParent = true
+        context.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
+
+        let request = NSFetchRequest<ChatContact>(entityName: "Contact")
+        request.predicate = NSPredicate(format: "messages.@count > 0")
+        request.sortDescriptors = [ChatContact.sortDescriptor]
+
+        let controller = NSFetchedResultsController(fetchRequest: request,
+                                                    managedObjectContext: context,
+                                                    sectionNameKeyPath: nil,
+                                                    cacheName: nil)
+        controller.delegate = self
+        contactsController = controller
+
+        loadContacts()
+    }
+
+    // Re-fetches and republishes the contact list. The FRC delegate keeps it
+    // current for incremental changes; this is also called after import/refresh
+    // to reconcile batch deletes (which don't emit change notifications).
     func loadContacts() {
-        let moc = MOCController.sharedInstance.managedObjectContext
-        allKnownContacts = ChatContact.allKnownContacts(moc)
-        allUnknownContacts = ChatContact.allUnknownContacts(moc)
+        try? contactsController?.performFetch()
+        updateContactArrays()
+    }
+
+    private func updateContactArrays() {
+        let all = contactsController?.fetchedObjects ?? []
+        allKnownContacts = all.filter { $0.known }
+        allUnknownContacts = all.filter { !$0.known }
+    }
+
+    nonisolated func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        Task { @MainActor in
+            self.updateContactArrays()
+        }
     }
     
     func importMessagesFromOSXApp(appState: AppState) async {
