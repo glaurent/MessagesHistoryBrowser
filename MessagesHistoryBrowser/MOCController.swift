@@ -60,12 +60,20 @@ class MOCController: NSObject {
 
         let deleteContactsRequest = NSBatchDeleteRequest(fetchRequest: contactsFetchRequest)
 
+        let deleteChatsRequest = NSBatchDeleteRequest(fetchRequest: Chat.fetchRequest())
+        let deleteMessagesRequest = NSBatchDeleteRequest(fetchRequest: ChatMessage.fetchRequest())
+        let deleteAttachmentsRequest = NSBatchDeleteRequest(fetchRequest: ChatAttachment.fetchRequest())
+
         do {
             let context = workerContext()
             try context.execute(deleteContactsRequest)
+            try context.execute(deleteAttachmentsRequest)
+            try context.execute(deleteMessagesRequest)
+            try context.execute(deleteChatsRequest)
+
             try context.save()
         } catch let error {
-            NSLog("ERROR when deleting contacts : \(error)")
+            NSLog("ERROR when deleting clearing store : \(error)")
         }
 
     }
