@@ -45,9 +45,9 @@ struct MessagesListView: View {
         }
     }
 
+    // Go through the view model so the current date bounds are applied.
     private func loadMessages(for contact: ChatContact) {
-        ChatItemsFetcher.sharedInstance.contact = contact
-        ChatItemsFetcher.sharedInstance.searchWithCompletionBlock()
+        viewModel.loadMessagesForContact(contact)
     }
 }
 

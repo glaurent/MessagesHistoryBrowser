@@ -15,6 +15,8 @@ struct ContactListView: View {
     @ObservedObject var viewModel: ContentViewModel
     @EnvironmentObject var appState: AppState
 
+    @State private var showFilters = false
+
     var filteredContacts: [ChatContact] {
         if let searchedContacts = viewModel.searchedContacts {
             return searchedContacts
@@ -64,27 +66,67 @@ struct ContactListView: View {
         .navigationTitle("Contacts")
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
-                Menu {
-                    Toggle("Show Unknown Contacts", isOn: $appState.showChatsFromUnknown)
-                    
-                    Divider()
-                    
-                    DatePicker(
-                        "After Date",
-                        selection: $viewModel.afterDate,
-                        displayedComponents: .date
-                    )
-                    
-                    DatePicker(
-                        "Before Date",
-                        selection: $viewModel.beforeDate,
-                        displayedComponents: .date
-                    )
+                // A popover rather than a Menu: on macOS a Menu is an NSMenu,
+                // which can't host a DatePicker (it renders as an inert,
+                // greyed-out item). The icon fills in while a date bound is active.
+                Button {
+                    showFilters.toggle()
                 } label: {
-                    Image(systemName: "line.3.horizontal.decrease.circle")
+                    Image(systemName: viewModel.isDateFilterActive
+                          ? "line.3.horizontal.decrease.circle.fill"
+                          : "line.3.horizontal.decrease.circle")
+                }
+                .help("Filter contacts and messages")
+                .popover(isPresented: $showFilters, arrowEdge: .bottom) {
+                    FilterPopoverView(viewModel: viewModel)
                 }
             }
         }
+        // Re-run the current query whenever a date bound or its toggle changes.
+        .onChange(of: viewModel.afterDateEnabled) { viewModel.applyDateFilter() }
+        .onChange(of: viewModel.beforeDateEnabled) { viewModel.applyDateFilter() }
+        .onChange(of: viewModel.afterDate) {
+            if viewModel.afterDateEnabled { viewModel.applyDateFilter() }
+        }
+        .onChange(of: viewModel.beforeDate) {
+            if viewModel.beforeDateEnabled { viewModel.applyDateFilter() }
+        }
+    }
+}
+
+// Contents of the filter popover: the unknown-contacts toggle plus the two
+// optional date bounds, each with its own enable switch.
+struct FilterPopoverView: View {
+    @ObservedObject var viewModel: ContentViewModel
+    @EnvironmentObject var appState: AppState
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Toggle("Show Unknown Contacts", isOn: $appState.showChatsFromUnknown)
+
+            Divider()
+
+            Text("Date Range")
+                .font(.headline)
+
+            HStack {
+                Toggle("After", isOn: $viewModel.afterDateEnabled)
+                Spacer()
+                DatePicker("After date", selection: $viewModel.afterDate, displayedComponents: .date)
+                    .labelsHidden()
+                    .disabled(!viewModel.afterDateEnabled)
+            }
+
+            HStack {
+                Toggle("Before", isOn: $viewModel.beforeDateEnabled)
+                Spacer()
+                DatePicker("Before date", selection: $viewModel.beforeDate, displayedComponents: .date)
+                    .labelsHidden()
+                    .disabled(!viewModel.beforeDateEnabled)
+            }
+        }
+        .padding()
+        .frame(width: 280)
     }
 }
 
