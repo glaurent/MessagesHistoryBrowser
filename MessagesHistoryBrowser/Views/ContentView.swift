@@ -41,8 +41,10 @@ struct ContentView: View {
                     .frame(minWidth: 300)
                 } else {
                     VStack {
-                        Text("Select a contact to view messages")
-                            .foregroundColor(.secondary)
+                        if !viewModel.isImporting {
+                            Text("Select a contact to view messages")
+                                .foregroundColor(.secondary)
+                        }
                     }
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
@@ -83,27 +85,28 @@ struct ContentView: View {
         }
         // Publish focused values so the menu bar commands can reach the app state
         // and trigger a refresh that actually reloads the visible contact list.
-        .focusedValue(\.appState, appState)
-        .focusedValue(\.refreshChatHistory) {
+        .focusedSceneValue(\.appState, appState)
+        .focusedSceneValue(\.refreshChatHistory) {
             Task { await viewModel.refreshChatHistory(appState: appState) }
         }
+        .focusedSceneValue(\.selectedContact, selectedContact)
         // Publish the selected contact (only when one is selected) so the
         // Export/Save menu commands can enable and act on it.
-        .modifier(SelectedContactFocusValue(contact: selectedContact))
+//        .modifier(SelectedContactFocusValue(contact: selectedContact))
     }
 }
 
 // Publishes the selected contact as a focused value only when non-nil, so the
 // menu commands' `.disabled(selectedContact == nil)` reflects the real selection.
 
-struct SelectedContactFocusValue: ViewModifier {
-    let contact: ChatContact?
-
-    func body(content: Content) -> some View {
-        if let contact = contact {
-            content.focusedValue(\.selectedContact, contact)
-        } else {
-            content
-        }
-    }
-}
+//struct SelectedContactFocusValue: ViewModifier {
+//    let contact: ChatContact?
+//
+//    func body(content: Content) -> some View {
+//        if let contact = contact {
+//            content.focusedSceneValue(\.selectedContact, contact)
+//        } else {
+//            content
+//        }
+//    }
+//}

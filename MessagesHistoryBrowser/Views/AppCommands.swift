@@ -124,7 +124,7 @@ struct AppCommands: Commands {
         var attachmentSourcePaths = [String]()
         var hasICloudStoredAttachments = false
         for attachment in chatItems.compactMap({ $0 as? ChatAttachment }) {
-            if attachment.fileName?.hasSuffix(AppDelegate.iCloudStoredAttachmentExtension) ?? false {
+            if attachment.fileName?.hasSuffix(AppState.iCloudStoredAttachmentExtension) ?? false {
                 hasICloudStoredAttachments = true
             }
             if let path = attachment.standardizedFileName {

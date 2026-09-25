@@ -30,7 +30,9 @@ class AppState: ObservableObject {
     @Published var showChatsFromUnknown = false
     @Published var isRefreshingHistory = false
     @Published var needDBReload = false
-    
+
+    static let iCloudStoredAttachmentExtension = "pluginPayloadAttachment"
+
     let chatsDBPath = "/Users/" + NSUserName() + "/Library/Messages/chat.db"
     var chatsDatabase: ChatsDatabase?
     
