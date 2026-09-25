@@ -9,7 +9,7 @@ import SwiftUI
 import Contacts
 import Combine
 
-@available(macOS 11.0, *)
+
 struct ContactListView: View {
     @Binding var selectedContact: ChatContact?
     @ObservedObject var viewModel: ContentViewModel
@@ -88,7 +88,7 @@ struct ContactListView: View {
     }
 }
 
-@available(macOS 11.0, *)
+
 struct ContactRow: View {
     let contact: ChatContact
     @State private var contactImage: NSImage?

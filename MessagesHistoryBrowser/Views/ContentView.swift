@@ -8,7 +8,7 @@
 import SwiftUI
 import CoreData
 
-@available(macOS 11.0, *)
+
 struct ContentView: View {
     @EnvironmentObject var appState: AppState
     @StateObject private var viewModel = ContentViewModel()
@@ -95,7 +95,7 @@ struct ContentView: View {
 
 // Publishes the selected contact as a focused value only when non-nil, so the
 // menu commands' `.disabled(selectedContact == nil)` reflects the real selection.
-@available(macOS 11.0, *)
+
 struct SelectedContactFocusValue: ViewModifier {
     let contact: ChatContact?
 

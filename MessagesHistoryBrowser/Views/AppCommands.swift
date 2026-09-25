@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-@available(macOS 11.0, *)
+
 struct AppCommands: Commands {
     // @Environment(\.openWindow) var openWindow  // Only available in macOS 13+
     @FocusedValue(\.selectedContact) var selectedContact
@@ -234,7 +234,7 @@ struct RefreshChatHistoryKey: FocusedValueKey {
     typealias Value = () -> Void
 }
 
-@available(macOS 11.0, *)
+
 extension FocusedValues {
     var selectedContact: ChatContact? {
         get { self[SelectedContactKey.self] }

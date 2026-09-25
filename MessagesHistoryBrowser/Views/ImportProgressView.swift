@@ -32,7 +32,7 @@ class ObservableProgress: ObservableObject {
     }
 }
 
-@available(macOS 11.0, *)
+
 struct ImportProgressView: View {
     @ObservedObject var progressWrapper: ObservableProgress
     

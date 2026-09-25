@@ -8,7 +8,7 @@
 import SwiftUI
 import CoreData
 
-@available(macOS 11.0, *)
+
 struct AttachmentsView: View {
     @ObservedObject var viewModel: ContentViewModel
     @State private var selectedAttachment: ChatAttachment?
@@ -61,7 +61,7 @@ struct AttachmentsView: View {
     }
 }
 
-@available(macOS 11.0, *)
+
 struct AttachmentThumbnailView: View {
     let attachment: ChatAttachment
     @State private var thumbnail: NSImage?
@@ -120,7 +120,7 @@ struct AttachmentThumbnailView: View {
     }
 }
 
-@available(macOS 11.0, *)
+
 struct ImageViewerSheet: View {
     let attachment: ChatAttachment
     @Environment(\.presentationMode) private var presentationMode

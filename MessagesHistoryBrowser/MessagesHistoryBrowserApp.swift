@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-@available(macOS 11.0, *)
+
 @main
 struct MessagesHistoryBrowserApp: App {
     @StateObject private var appState = AppState()
@@ -65,5 +65,5 @@ class AppState: ObservableObject {
                 NSLog("Error saving context: \(nserror)")
             }
         }
-    }    
+    }
 }

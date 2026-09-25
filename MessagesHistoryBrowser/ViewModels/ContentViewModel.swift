@@ -10,7 +10,7 @@ import Foundation
 import CoreData
 
     // View Model for Content View
-@available(macOS 11.0, *)
+
 @MainActor
 class ContentViewModel: NSObject, ObservableObject, NSFetchedResultsControllerDelegate {
     @Published var searchTerm: String = ""
