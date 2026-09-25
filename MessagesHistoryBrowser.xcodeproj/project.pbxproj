@@ -19,6 +19,7 @@
 		AF5D9A1C278762BE0026B850 /* ImportLogsContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF5D9A1B278762BE0026B850 /* ImportLogsContainer.swift */; };
 		AF67203D21B5313E00C41616 /* ContactsMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFD974C91BB81885004CF8D7 /* ContactsMap.swift */; };
 		AF67203F21B53C3300C41616 /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF67203E21B53C3300C41616 /* AboutViewController.swift */; };
+		AF7CF4803066728C00104468 /* ContentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF7CF47F3066728C00104468 /* ContentViewModel.swift */; };
 		AF8003B81C273838008A1D64 /* ImageAttachmentDisplayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF8003B71C273838008A1D64 /* ImageAttachmentDisplayViewController.swift */; };
 		AF8003BC1C2E9D04008A1D64 /* MOCController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF8003BB1C2E9D04008A1D64 /* MOCController.swift */; };
 		AF8003BF1C357A0E008A1D64 /* ChatItemsFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF8003BE1C357A0E008A1D64 /* ChatItemsFetcher.swift */; };
@@ -85,6 +86,7 @@
 		AF5D9A1B278762BE0026B850 /* ImportLogsContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportLogsContainer.swift; sourceTree = "<group>"; };
 		AF67203E21B53C3300C41616 /* AboutViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutViewController.swift; sourceTree = "<group>"; };
 		AF6F10E81BB81D5900A93152 /* SQLite.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SQLite.framework; path = Carthage/Build/Mac/SQLite.framework; sourceTree = "<group>"; };
+		AF7CF47F3066728C00104468 /* ContentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ContentViewModel.swift; path = MessagesHistoryBrowser/ViewModels/ContentViewModel.swift; sourceTree = SOURCE_ROOT; };
 		AF8003B71C273838008A1D64 /* ImageAttachmentDisplayViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageAttachmentDisplayViewController.swift; sourceTree = "<group>"; };
 		AF8003BB1C2E9D04008A1D64 /* MOCController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MOCController.swift; sourceTree = "<group>"; };
 		AF8003BE1C357A0E008A1D64 /* ChatItemsFetcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatItemsFetcher.swift; sourceTree = "<group>"; };
@@ -211,6 +213,7 @@
 			isa = PBXGroup;
 			children = (
 				AF97B9A92F3FC43400EC3745 /* ContentView.swift */,
+				AF7CF47F3066728C00104468 /* ContentViewModel.swift */,
 				AF97B9AB2F3FC43500EC3745 /* ContactListView.swift */,
 				AF97B9AD2F3FC43600EC3745 /* MessagesListView.swift */,
 				AF97B9AF2F3FC45F00EC3745 /* AttachmentsView.swift */,
@@ -530,6 +533,7 @@
 				AF5D9A1C278762BE0026B850 /* ImportLogsContainer.swift in Sources */,
 				AF8003C11C4A6545008A1D64 /* RoundImage.swift in Sources */,
 				AF97B9AA2F3FC43400EC3745 /* ContentView.swift in Sources */,
+				AF7CF4803066728C00104468 /* ContentViewModel.swift in Sources */,
 				AFAF103C213F3707009DDA82 /* ShowAppPrivilegesSetupViewController.swift in Sources */,
 				AF47D8771BDCDD20002CDF4B /* ChatTableViewController.swift in Sources */,
 				AFAF103F2140523F009DDA82 /* ShowImagesDownloadViewController.swift in Sources */,

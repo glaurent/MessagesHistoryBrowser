@@ -65,17 +65,5 @@ class AppState: ObservableObject {
                 NSLog("Error saving context: \(nserror)")
             }
         }
-    }
-    
-    func refreshChatHistory() async {
-        guard let chatsDatabase = chatsDatabase else { return }
-        
-        isRefreshingHistory = true
-        
-        MOCController.sharedInstance.clearAllCoreData()
-        let progress = Progress(totalUnitCount: 10)
-        await chatsDatabase.populate(progress)
-        
-        isRefreshingHistory = false
-    }
+    }    
 }
