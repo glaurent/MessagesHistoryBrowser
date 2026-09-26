@@ -79,10 +79,20 @@ class ChatContact: NSManagedObject {
         return allContactsWithPredicate(managedObjectContext)
     }
 
+    // Finds the existing ChatContact for a chat handle, or creates one.
+    //
+    // Known contacts (resolved through the Contacts framework) are matched on
+    // their CNContact identifier, so two distinct address book entries that
+    // happen to share a display name stay separate. Unknown contacts have an
+    // empty identifier and use the raw handle (phone number / email) as their
+    // name, so matching on the name is exact for them.
     class func contactIn(_ managedObjectContext:NSManagedObjectContext, named name:String, withIdentifier identifier:String) -> ChatContact {
         let contactNamedFetchRequest = ChatContact.fetchRequest() // NSFetchRequest<NSFetchRequestResult>(entityName: "Contact")
-        let namePredicate = NSPredicate(format: "name == %@", name)
-        contactNamedFetchRequest.predicate = namePredicate
+        if identifier.isEmpty {
+            contactNamedFetchRequest.predicate = NSPredicate(format: "identifier == '' AND name == %@", name)
+        } else {
+            contactNamedFetchRequest.predicate = NSPredicate(format: "identifier == %@", identifier)
+        }
 
         var res:ChatContact?
 

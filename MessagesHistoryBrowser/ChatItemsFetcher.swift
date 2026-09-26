@@ -372,23 +372,17 @@ class ChatItemsFetcher: NSObject {
     // Used when searching all messages for a string
     // Given the resulting messages, get all the contacts they come from, so these contacts only are shown in the contact list
     //
+    // Deduplicated by managed object identity, not by display name: two distinct
+    // contacts sharing a name must both appear in the list.
     func contactsFromMessages(_ messages: [ChatMessage]) -> [ChatContact]
     {
-        let allContacts = messages.map { (message) -> ChatContact in
-            return message.contact
+        var seen = Set<NSManagedObjectID>()
+
+        return messages.compactMap { message -> ChatContact? in
+            let contact = message.contact
+            guard seen.insert(contact.objectID).inserted else { return nil }
+            return contact
         }
-
-        var contactList = [String:ChatContact]()
-
-        let uniqueContacts = allContacts.filter { (contact) -> Bool in
-            if contactList[contact.name] != nil {
-                return false
-            }
-            contactList[contact.name] = contact
-            return true
-        }
-
-        return uniqueContacts
     }
 
 
