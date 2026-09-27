@@ -11,6 +11,8 @@ import CoreData
 
 class ChatContact: NSManagedObject {
 
+    static let EntityName = "Contact"
+
     @NSManaged var identifier:String
     @NSManaged var name:String
     @NSManaged var known:Bool
@@ -24,7 +26,7 @@ class ChatContact: NSManagedObject {
 
     convenience init(managedObjectContext:NSManagedObjectContext, withName aName:String, withIdentifier anIdentifier:String) {
 
-        let entityDescription = NSEntityDescription.entity(forEntityName: "Contact", in: managedObjectContext)
+        let entityDescription = NSEntityDescription.entity(forEntityName: ChatContact.EntityName, in: managedObjectContext)
         self.init(entity: entityDescription!, insertInto: managedObjectContext)
 
         name = aName

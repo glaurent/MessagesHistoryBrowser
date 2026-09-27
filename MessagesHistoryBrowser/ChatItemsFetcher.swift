@@ -24,6 +24,12 @@ class ChatItemsFetcher: NSObject {
 
     var currentSearchMatchingItems = [ChatItem]()
 
+    // Layout of `currentSearchMatchingItems`: results are grouped per matched
+    // contact, and this records each group's range. Narrowing the results to
+    // one contact is then a slice, instead of a scan that faults every result
+    // message just to read its contact.
+    private var currentSearchGroups = [SearchResult.Group]()
+
     typealias SearchCompletionBlock = (([ChatItem], [ChatAttachment], [ChatContact]?) -> (Void))
 
     var completion:SearchCompletionBlock?
@@ -93,20 +99,31 @@ class ChatItemsFetcher: NSObject {
         // Text search (no contact selected) requires a fetch across all messages.
         if let searchTerm = searchTerm, contact == nil {
 
+            let afterDate = self.afterDate
+            let beforeDate = self.beforeDate
             let localMOC = MOCController.sharedInstance.workerContext()
 
             localMOC.perform {
                 // Runs on the worker queue, touching only the worker context's own objects.
-                let messageIDs = self.searchChatsForString(searchTerm, inManagedObjectContext: localMOC, afterDate: self.afterDate, beforeDate: self.beforeDate)
+                let found = self.searchChatsForString(searchTerm, inManagedObjectContext: localMOC, afterDate: afterDate, beforeDate: beforeDate)
 
                 DispatchQueue.main.async {
-                    // Materialize the object IDs and post-process on the main queue / main context.
-                    let messages = messageIDs.map { mainMOC.object(with: $0) as! ChatMessage }
+                    // A newer request supersedes this one.
+                    guard generation == self.requestGeneration else { return }
+
+                    // The messages become faults, each read from the store only
+                    // when its row is displayed. The matched contacts, on the
+                    // other hand, are few and the sidebar shows them all at once,
+                    // so they are loaded with a single fetch. Nothing here fires
+                    // a fault per result.
+                    let messages = found.messageIDs.map { mainMOC.object(with: $0) as! ChatItem }
+                    let contacts = self.contacts(withIDs: found.contactIDs, in: mainMOC)
 
                     self.currentSearchMatchingItems = messages
+                    self.currentSearchGroups = found.groups
                     self.matchingItems = messages
                     self.matchingAttachments.removeAll()
-                    self.matchingContacts = self.contactsFromMessages(messages)
+                    self.matchingContacts = contacts
 
                     self.completion?(self.matchingItems, self.matchingAttachments, self.matchingContacts)
                 }
@@ -118,7 +135,7 @@ class ChatItemsFetcher: NSObject {
         // Narrowing existing search results to a contact, or clearing — pure
         // in-memory work on main-context objects, so run them synchronously on
         // the main context/queue (this method is called on main).
-        search(mainMOC)
+        search()
         completion?(matchingItems, matchingAttachments, matchingContacts)
     }
 
@@ -137,38 +154,45 @@ class ChatItemsFetcher: NSObject {
         matchingItems = currentSearchMatchingItems
     }
 
-    func search(_ moc:NSManagedObjectContext)
+    // Synchronous, main-queue part of a request: narrowing the current search
+    // results to the selected contact, or clearing everything. (Searching and
+    // browsing are asynchronous and handled in searchWithCompletionBlock.)
+    func search()
     {
         if let contact = contact, searchTerm != nil { // narrow the current search results to one contact
 
-            matchingItems = currentSearchMatchingItems.filter({ (item:ChatItem) -> Bool in
-                if let message = item as? ChatMessage {
-                    return message.contact == contact
-                } else if let attachment = item as? ChatAttachment {
-                    return attachment.contact == contact
-                }
-                return false
-            })
-
-        } else if let searchTerm = searchTerm { // no contact, only search term
-
-            matchingAttachments.removeAll()
-            let messagesObjectIDs = searchChatsForString(searchTerm, inManagedObjectContext: moc, afterDate: afterDate, beforeDate: beforeDate)
-
-            let mainMOC = MOCController.sharedInstance.managedObjectContext
-
-            // turn those objectIDs into managedObjects from the main MOC which we can then use on the main queue
-            //
-            let messages = messagesObjectIDs.map { mainMOC.object(with: $0) as! ChatMessage }
-
-            currentSearchMatchingItems = messages
-            matchingItems = currentSearchMatchingItems
-            matchingContacts = contactsFromMessages(messages)
+            // Results are grouped per contact, so this is a slice: no result
+            // object is touched, hence no fault is fired.
+            let contactID = contact.objectID
+            if let group = currentSearchGroups.first(where: { $0.contactID == contactID }) {
+                matchingItems = Array(currentSearchMatchingItems[group.range])
+            } else {
+                matchingItems = []
+            }
 
         } else { // nothing specified - no contact or search term, clear all, all chats will be listed
             matchingContacts = nil
             matchingAttachments.removeAll()
             matchingItems.removeAll()
+        }
+    }
+
+    // Materializes the given contacts with a single fetch, in the order of `ids`.
+    private func contacts(withIDs ids: [NSManagedObjectID], in moc: NSManagedObjectContext) -> [ChatContact]
+    {
+        guard !ids.isEmpty else { return [] }
+
+        let request = NSFetchRequest<ChatContact>(entityName: ChatContact.EntityName)
+        request.predicate = NSPredicate(format: "self IN %@", ids)
+        request.returnsObjectsAsFaults = false
+
+        do {
+            let fetched = try moc.fetch(request)
+            let contactsByID = Dictionary(uniqueKeysWithValues: fetched.map { ($0.objectID, $0) })
+            return ids.compactMap { contactsByID[$0] }
+        } catch let error as NSError {
+            NSLog("\(#function) Could not fetch contacts: \(error), \(error.userInfo)")
+            return ids.map { moc.object(with: $0) as! ChatContact }
         }
     }
 
@@ -266,18 +290,32 @@ class ChatItemsFetcher: NSObject {
     // keeps the SQL bounded for pathological searches.
     private let indexesPerFetch = 5000
 
-    // Returns the object IDs of the messages whose content contains `string`
-    // (within the optional date bounds), each accompanied by its
-    // `nbOfMessagesBeforeAfter` neighbours in the same conversation. Results
-    // are grouped per contact, contacts in order of their earliest match, and
-    // in conversation order (`index`) within a contact.
+    // Outcome of a text search, expressed in object IDs only so it can cross
+    // from the worker context to the main one.
+    struct SearchResult {
+        typealias Group = (contactID: NSManagedObjectID, range: Range<Int>)
+
+        // Messages to display: the matches plus their neighbours, grouped per
+        // contact and in conversation order within a contact.
+        var messageIDs = [NSManagedObjectID]()
+        // Matched contacts, in order of their earliest match (the group order).
+        var contactIDs = [NSManagedObjectID]()
+        // For each matched contact, the range of `messageIDs` holding its group.
+        var groups = [Group]()
+    }
+
+    // Finds the messages whose content contains `string` (within the optional
+    // date bounds), each accompanied by its `nbOfMessagesBeforeAfter`
+    // neighbours in the same conversation. Results are grouped per contact,
+    // contacts in order of their earliest match, and in conversation order
+    // (`index`) within a contact.
     //
     // Runs on `moc`'s queue. Only object IDs and integer attributes are read
     // from the store: no message body is loaded and no managed object is
     // materialized. In particular the matched contacts' conversations are
     // never loaded as a whole; the neighbours are fetched by `index`, which
     // is assigned contiguously in date order at import time and is indexed.
-    func searchChatsForString(_ string:String, inManagedObjectContext moc:NSManagedObjectContext, afterDate:Date? = nil, beforeDate:Date? = nil) -> [NSManagedObjectID]
+    func searchChatsForString(_ string:String, inManagedObjectContext moc:NSManagedObjectContext, afterDate:Date? = nil, beforeDate:Date? = nil) -> SearchResult
     {
         // 1. The matches themselves, as (contact, index) pairs, oldest first.
         //    A to-one relationship in a dictionary result comes back as the
@@ -317,15 +355,19 @@ class ChatItemsFetcher: NSObject {
             }
         } catch let error as NSError {
             NSLog("\(#function) Could not fetch matches for \"\(string)\": \(error), \(error.userInfo)")
-            return []
+            return SearchResult()
         }
 
-        // 2. Fetch exactly those messages, then lay them out per contact.
+        // 2. Fetch exactly those messages, then lay them out per contact,
+        //    recording where each contact's group starts and ends.
         let idsPerContact = surroundingMessageIDs(indexesPerContact: indexesPerContact, contactOrder: contactOrder, in: moc)
 
-        var result = [NSManagedObjectID]()
+        var result = SearchResult()
+        result.contactIDs = contactOrder
         for contactID in contactOrder {
-            result.append(contentsOf: idsPerContact[contactID] ?? [])
+            let groupStart = result.messageIDs.count
+            result.messageIDs.append(contentsOf: idsPerContact[contactID] ?? [])
+            result.groups.append((contactID: contactID, range: groupStart ..< result.messageIDs.count))
         }
 
         return result
@@ -441,22 +483,6 @@ class ChatItemsFetcher: NSObject {
 //            })
 //        }
 //    }
-
-    // Used when searching all messages for a string
-    // Given the resulting messages, get all the contacts they come from, so these contacts only are shown in the contact list
-    //
-    // Deduplicated by managed object identity, not by display name: two distinct
-    // contacts sharing a name must both appear in the list.
-    func contactsFromMessages(_ messages: [ChatMessage]) -> [ChatContact]
-    {
-        var seen = Set<NSManagedObjectID>()
-
-        return messages.compactMap { message -> ChatContact? in
-            let contact = message.contact
-            guard seen.insert(contact.objectID).inserted else { return nil }
-            return contact
-        }
-    }
 
 
 
