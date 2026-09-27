@@ -133,18 +133,18 @@ struct FilterPopoverView: View {
 
 struct ContactRow: View {
     let contact: ChatContact
-    @State private var contactImage: NSImage?
-    @State private var initials: String = ""
-    
+    @State private var avatar: ContactAvatar = .none
+
     var body: some View {
         HStack(spacing: 12) {
             // Contact avatar
             Group {
-                if let image = contactImage {
+                switch avatar {
+                case .image(let image):
                     Image(nsImage: image)
                         .resizable()
                         .scaledToFill()
-                } else if !initials.isEmpty {
+                case .initials(let initials):
                     ZStack {
                         Circle()
                             .fill(Color.accentColor.opacity(0.2))
@@ -152,29 +152,22 @@ struct ContactRow: View {
                             .font(.system(size: 14, weight: .medium))
                             .foregroundColor(.accentColor)
                     }
-                } else {
+                case .none:
                     Circle()
                         .fill(Color.gray.opacity(0.2))
                 }
             }
             .frame(width: 32, height: 32)
             .clipShape(Circle())
-            
+
             Text(contact.name)
                 .lineLimit(1)
         }
-        .onAppear {
-            loadContactImage()
-        }
-    }
-    
-    private func loadContactImage() {
-        let (image, initialsPair) = ContactsMap.sharedInstance.contactImage(contact.identifier)
-        
-        if let image = image {
-            contactImage = roundCorners(image)
-        } else if let initialsPair = initialsPair {
-            initials = "\(initialsPair.0)\(initialsPair.1)"
+        // The lookup runs off the main thread (see ContactAvatarCache) and is
+        // cancelled if the row scrolls away before it completes. Keyed on the
+        // identifier so a row that SwiftUI reuses for another contact reloads.
+        .task(id: contact.identifier) {
+            avatar = await ContactAvatarCache.shared.avatar(for: contact.identifier)
         }
     }
 }
