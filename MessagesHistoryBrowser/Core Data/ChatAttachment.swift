@@ -11,6 +11,8 @@ import CoreData
 
 class ChatAttachment: ChatItem {
 
+    static let EntityName = "Attachment"
+
     @NSManaged var fileName:String?
     @NSManaged var chat:Chat
     @NSManaged var contact:ChatContact
@@ -23,7 +25,7 @@ class ChatAttachment: ChatItem {
 
     convenience init(managedObjectContext:NSManagedObjectContext, withFileName aFileName:String, withDate aDate:Date, inChat aChat:Chat) {
 
-        let entityDescription = NSEntityDescription.entity(forEntityName: "Attachment", in: managedObjectContext)
+        let entityDescription = NSEntityDescription.entity(forEntityName: ChatAttachment.EntityName, in: managedObjectContext)
         self.init(entityDescription: entityDescription!, managedObjectContext: managedObjectContext, withDate: aDate)
 
         fileName = aFileName
