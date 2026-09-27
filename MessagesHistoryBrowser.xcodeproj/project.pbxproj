@@ -3,53 +3,14 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 54;
+	objectVersion = 110;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		AF029C441C4D746100B1A950 /* phone country codes.json in Resources */ = {isa = PBXBuildFile; fileRef = AF029C431C4D746100B1A950 /* phone country codes.json */; };
-		AF2832DE21C413A000F8DD58 /* ContactTableCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF2832DD21C413A000F8DD58 /* ContactTableCellView.swift */; };
-		AF2B2DEF1BC18BE1000B8293 /* ChatsDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF2B2DEE1BC18BE1000B8293 /* ChatsDatabase.swift */; };
-		AF2B2DF11BC19BAE000B8293 /* ChatMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF2B2DF01BC19BAE000B8293 /* ChatMessage.swift */; };
-		AF2B2DF31BC19E81000B8293 /* MessagesListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF2B2DF21BC19E81000B8293 /* MessagesListViewController.swift */; };
-		AF424CD61BC9609D006EE8D2 /* ChatAttachment.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF424CD51BC9609D006EE8D2 /* ChatAttachment.swift */; };
-		AF424CD81BC963E4006EE8D2 /* ChatContact.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF424CD71BC963E4006EE8D2 /* ChatContact.swift */; };
-		AF47D8771BDCDD20002CDF4B /* ChatTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF47D8761BDCDD20002CDF4B /* ChatTableViewController.swift */; };
-		AF5D9A1C278762BE0026B850 /* ImportLogsContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF5D9A1B278762BE0026B850 /* ImportLogsContainer.swift */; };
-		AF67203D21B5313E00C41616 /* ContactsMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFD974C91BB81885004CF8D7 /* ContactsMap.swift */; };
-		AF7CF4803066728C00104468 /* ContentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF7CF47F3066728C00104468 /* ContentViewModel.swift */; };
-		AF8003B81C273838008A1D64 /* ImageAttachmentDisplayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF8003B71C273838008A1D64 /* ImageAttachmentDisplayViewController.swift */; };
-		AF8003BC1C2E9D04008A1D64 /* MOCController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF8003BB1C2E9D04008A1D64 /* MOCController.swift */; };
-		AF8003BF1C357A0E008A1D64 /* ChatItemsFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF8003BE1C357A0E008A1D64 /* ChatItemsFetcher.swift */; };
-		AF8003C11C4A6545008A1D64 /* RoundImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF8003C01C4A6545008A1D64 /* RoundImage.swift */; };
-		AF82EDB51C23708B00F8132D /* AttachmentsCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF82EDB41C23708B00F8132D /* AttachmentsCollectionView.swift */; };
-		AF82EDB71C23723F00F8132D /* AttachmentsCollectionViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF82EDB61C23723F00F8132D /* AttachmentsCollectionViewDelegate.swift */; };
 		AF97B9A02F3FC03D00EC3745 /* SQLite in Frameworks */ = {isa = PBXBuildFile; productRef = AF97B99F2F3FC03D00EC3745 /* SQLite */; };
 		AF97B9A52F3FC0B300EC3745 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = AF97B9A42F3FC0B300EC3745 /* Sparkle */; };
-		AF97B9A72F3FC40000EC3745 /* MessagesHistoryBrowserApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF97B9A62F3FC40000EC3745 /* MessagesHistoryBrowserApp.swift */; };
-		AF97B9AA2F3FC43400EC3745 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF97B9A92F3FC43400EC3745 /* ContentView.swift */; };
-		AF97B9AC2F3FC43500EC3745 /* ContactListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF97B9AB2F3FC43500EC3745 /* ContactListView.swift */; };
-		AF97B9AE2F3FC43600EC3745 /* MessagesListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF97B9AD2F3FC43600EC3745 /* MessagesListView.swift */; };
-		AF97B9B02F3FC45F00EC3745 /* AttachmentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF97B9AF2F3FC45F00EC3745 /* AttachmentsView.swift */; };
-		AF97B9B22F3FC45F00EC3745 /* ImportProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF97B9B12F3FC45F00EC3745 /* ImportProgressView.swift */; };
-		AF97B9B42F3FC45F00EC3745 /* AppCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF97B9B32F3FC45F00EC3745 /* AppCommands.swift */; };
-		AF986F0621F7D1C100CA5EB1 /* HTMLExport.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF986F0521F7D1C100CA5EB1 /* HTMLExport.swift */; };
-		AF986F0821F8F4B600CA5EB1 /* messagesStyle.css in Resources */ = {isa = PBXBuildFile; fileRef = AF986F0721F8F4B600CA5EB1 /* messagesStyle.css */; };
-		AFAF103C213F3707009DDA82 /* ShowAppPrivilegesSetupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFAF103B213F3706009DDA82 /* ShowAppPrivilegesSetupViewController.swift */; };
-		AFAF103F2140523F009DDA82 /* ShowImagesDownloadViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFAF103E2140523F009DDA82 /* ShowImagesDownloadViewController.swift */; };
-		AFAF8B141BF3B91E009D92F6 /* ImageAttachmentCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFAF8B131BF3B91E009D92F6 /* ImageAttachmentCell.swift */; };
-		AFBF11451BE77E6E00D3D596 /* ChatItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFBF11441BE77E6E00D3D596 /* ChatItem.swift */; };
-		AFC38AB91C9A1913008910A1 /* dsa_pub.pem in Resources */ = {isa = PBXBuildFile; fileRef = AFC38AB81C9A1913008910A1 /* dsa_pub.pem */; };
-		AFD974971BB816B5004CF8D7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFD974961BB816B5004CF8D7 /* AppDelegate.swift */; };
-		AFD9749C1BB816B5004CF8D7 /* MessagesHistoryBrowser.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = AFD9749A1BB816B5004CF8D7 /* MessagesHistoryBrowser.xcdatamodeld */; };
-		AFD9749E1BB816B5004CF8D7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AFD9749D1BB816B5004CF8D7 /* Assets.xcassets */; };
-		AFD974A11BB816B6004CF8D7 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AFD9749F1BB816B6004CF8D7 /* Main.storyboard */; };
 		AFD974AC1BB816B6004CF8D7 /* MessagesHistoryBrowserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFD974AB1BB816B6004CF8D7 /* MessagesHistoryBrowserTests.swift */; };
 		AFD974B71BB816B6004CF8D7 /* MessagesHistoryBrowserUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFD974B61BB816B6004CF8D7 /* MessagesHistoryBrowserUITests.swift */; };
-		AFD974CA1BB81885004CF8D7 /* Chat.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFD974C81BB81885004CF8D7 /* Chat.swift */; };
-		AFE9B8031BCB088A007FC376 /* AttachmentsCollectionViewItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFE9B8011BCB088A007FC376 /* AttachmentsCollectionViewItem.swift */; };
-		AFE9B8041BCB088A007FC376 /* AttachmentsCollectionViewItem.xib in Resources */ = {isa = PBXBuildFile; fileRef = AFE9B8021BCB088A007FC376 /* AttachmentsCollectionViewItem.xib */; };
-		AFE9B8061BD3A2EE007FC376 /* MessageFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFE9B8051BD3A2EE007FC376 /* MessageFormatter.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -70,83 +31,55 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		AF01B05C1EA13C9A0039A46F /* MessagesHistoryBrowser.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MessagesHistoryBrowser.entitlements; sourceTree = "<group>"; };
-		AF029C431C4D746100B1A950 /* phone country codes.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "phone country codes.json"; sourceTree = "<group>"; };
-		AF2832DD21C413A000F8DD58 /* ContactTableCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactTableCellView.swift; sourceTree = "<group>"; };
-		AF2B2DEE1BC18BE1000B8293 /* ChatsDatabase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatsDatabase.swift; sourceTree = "<group>"; };
-		AF2B2DF01BC19BAE000B8293 /* ChatMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatMessage.swift; sourceTree = "<group>"; };
-		AF2B2DF21BC19E81000B8293 /* MessagesListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessagesListViewController.swift; sourceTree = "<group>"; };
-		AF424CD51BC9609D006EE8D2 /* ChatAttachment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatAttachment.swift; sourceTree = "<group>"; };
-		AF424CD71BC963E4006EE8D2 /* ChatContact.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatContact.swift; sourceTree = "<group>"; };
-		AF47D8761BDCDD20002CDF4B /* ChatTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatTableViewController.swift; sourceTree = "<group>"; };
-		AF5D9A1B278762BE0026B850 /* ImportLogsContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportLogsContainer.swift; sourceTree = "<group>"; };
-		AF6F10E81BB81D5900A93152 /* SQLite.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SQLite.framework; path = Carthage/Build/Mac/SQLite.framework; sourceTree = "<group>"; };
-		AF7CF47F3066728C00104468 /* ContentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ContentViewModel.swift; path = MessagesHistoryBrowser/ViewModels/ContentViewModel.swift; sourceTree = SOURCE_ROOT; };
-		AF8003B71C273838008A1D64 /* ImageAttachmentDisplayViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageAttachmentDisplayViewController.swift; sourceTree = "<group>"; };
-		AF8003BB1C2E9D04008A1D64 /* MOCController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MOCController.swift; sourceTree = "<group>"; };
-		AF8003BE1C357A0E008A1D64 /* ChatItemsFetcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatItemsFetcher.swift; sourceTree = "<group>"; };
-		AF8003C01C4A6545008A1D64 /* RoundImage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RoundImage.swift; sourceTree = "<group>"; };
-		AF82EDB41C23708B00F8132D /* AttachmentsCollectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttachmentsCollectionView.swift; sourceTree = "<group>"; };
-		AF82EDB61C23723F00F8132D /* AttachmentsCollectionViewDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttachmentsCollectionViewDelegate.swift; sourceTree = "<group>"; };
-		AF97B9A62F3FC40000EC3745 /* MessagesHistoryBrowserApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesHistoryBrowserApp.swift; sourceTree = "<group>"; };
-		AF97B9A92F3FC43400EC3745 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		AF97B9AB2F3FC43500EC3745 /* ContactListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactListView.swift; sourceTree = "<group>"; };
-		AF97B9AD2F3FC43600EC3745 /* MessagesListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesListView.swift; sourceTree = "<group>"; };
-		AF97B9AF2F3FC45F00EC3745 /* AttachmentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentsView.swift; sourceTree = "<group>"; };
-		AF97B9B12F3FC45F00EC3745 /* ImportProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportProgressView.swift; sourceTree = "<group>"; };
-		AF97B9B32F3FC45F00EC3745 /* AppCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCommands.swift; sourceTree = "<group>"; };
-		AF986F0521F7D1C100CA5EB1 /* HTMLExport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTMLExport.swift; sourceTree = "<group>"; };
-		AF986F0721F8F4B600CA5EB1 /* messagesStyle.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = messagesStyle.css; sourceTree = "<group>"; };
 		AFAB024721447BB1000D9864 /* Contacts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Contacts.framework; path = System/Library/Frameworks/Contacts.framework; sourceTree = SDKROOT; };
-		AFAF103B213F3706009DDA82 /* ShowAppPrivilegesSetupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowAppPrivilegesSetupViewController.swift; sourceTree = "<group>"; };
-		AFAF103E2140523F009DDA82 /* ShowImagesDownloadViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowImagesDownloadViewController.swift; sourceTree = "<group>"; };
-		AFAF8B131BF3B91E009D92F6 /* ImageAttachmentCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageAttachmentCell.swift; sourceTree = "<group>"; };
-		AFBF11441BE77E6E00D3D596 /* ChatItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatItem.swift; sourceTree = "<group>"; };
-		AFC38AB11C8120C7008910A1 /* Sparkle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Sparkle.framework; sourceTree = "<group>"; };
-		AFC38AB81C9A1913008910A1 /* dsa_pub.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = dsa_pub.pem; sourceTree = "<group>"; };
 		AFD974931BB816B5004CF8D7 /* MessagesHistoryBrowser.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MessagesHistoryBrowser.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		AFD974961BB816B5004CF8D7 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		AFD9749B1BB816B5004CF8D7 /* MessagesHistoryBrowser.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = MessagesHistoryBrowser.xcdatamodel; sourceTree = "<group>"; };
-		AFD9749D1BB816B5004CF8D7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		AFD974A01BB816B6004CF8D7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		AFD974A21BB816B6004CF8D7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AFD974A71BB816B6004CF8D7 /* MessagesHistoryBrowserTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MessagesHistoryBrowserTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		AFD974AB1BB816B6004CF8D7 /* MessagesHistoryBrowserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesHistoryBrowserTests.swift; sourceTree = "<group>"; };
 		AFD974AD1BB816B6004CF8D7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AFD974B21BB816B6004CF8D7 /* MessagesHistoryBrowserUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MessagesHistoryBrowserUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		AFD974B61BB816B6004CF8D7 /* MessagesHistoryBrowserUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesHistoryBrowserUITests.swift; sourceTree = "<group>"; };
 		AFD974B81BB816B6004CF8D7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		AFD974C81BB81885004CF8D7 /* Chat.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Chat.swift; sourceTree = "<group>"; };
-		AFD974C91BB81885004CF8D7 /* ContactsMap.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactsMap.swift; sourceTree = "<group>"; };
-		AFD974CC1BB81ACB004CF8D7 /* ChatListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatListViewController.swift; sourceTree = "<group>"; };
-		AFE9B8011BCB088A007FC376 /* AttachmentsCollectionViewItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttachmentsCollectionViewItem.swift; sourceTree = "<group>"; };
-		AFE9B8021BCB088A007FC376 /* AttachmentsCollectionViewItem.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AttachmentsCollectionViewItem.xib; sourceTree = "<group>"; };
-		AFE9B8051BD3A2EE007FC376 /* MessageFormatter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageFormatter.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		AF7CF4E73069258100104468 /* Exceptions for "MessagesHistoryBrowser" folder in "MessagesHistoryBrowser" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				ChatListViewController.swift,
+				Info.plist,
+			);
+			target = AFD974921BB816B5004CF8D7 /* MessagesHistoryBrowser */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		AF7CF4BC3069258000104468 /* MessagesHistoryBrowser */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				AF7CF4E73069258100104468 /* Exceptions for "MessagesHistoryBrowser" folder in "MessagesHistoryBrowser" target */,
+			);
+			path = MessagesHistoryBrowser;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		AFD974901BB816B5004CF8D7 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 				AF97B9A52F3FC0B300EC3745 /* Sparkle in Frameworks */,
 				AF97B9A02F3FC03D00EC3745 /* SQLite in Frameworks */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		AFD974A41BB816B6004CF8D7 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		AFD974AF1BB816B6004CF8D7 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
@@ -159,71 +92,6 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		AF424CD91BC965FF006EE8D2 /* CoreData */ = {
-			isa = PBXGroup;
-			children = (
-				AF8003BB1C2E9D04008A1D64 /* MOCController.swift */,
-				AFD974C81BB81885004CF8D7 /* Chat.swift */,
-				AF2B2DF01BC19BAE000B8293 /* ChatMessage.swift */,
-				AF424CD71BC963E4006EE8D2 /* ChatContact.swift */,
-				AF424CD51BC9609D006EE8D2 /* ChatAttachment.swift */,
-				AFBF11441BE77E6E00D3D596 /* ChatItem.swift */,
-				AFD9749A1BB816B5004CF8D7 /* MessagesHistoryBrowser.xcdatamodeld */,
-			);
-			name = CoreData;
-			sourceTree = "<group>";
-		};
-		AF6F10EC1BB8222500A93152 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				AFC38AB11C8120C7008910A1 /* Sparkle.framework */,
-				AF6F10E81BB81D5900A93152 /* SQLite.framework */,
-			);
-			name = Frameworks;
-			path = ..;
-			sourceTree = "<group>";
-		};
-		AF8003B91C2C8040008A1D64 /* Attachments Collection View */ = {
-			isa = PBXGroup;
-			children = (
-				AF82EDB61C23723F00F8132D /* AttachmentsCollectionViewDelegate.swift */,
-				AFAF8B131BF3B91E009D92F6 /* ImageAttachmentCell.swift */,
-				AFE9B8011BCB088A007FC376 /* AttachmentsCollectionViewItem.swift */,
-				AF82EDB41C23708B00F8132D /* AttachmentsCollectionView.swift */,
-				AFE9B8021BCB088A007FC376 /* AttachmentsCollectionViewItem.xib */,
-			);
-			name = "Attachments Collection View";
-			sourceTree = "<group>";
-		};
-		AF8003BA1C2C806A008A1D64 /* unused */ = {
-			isa = PBXGroup;
-			children = (
-				AFD974CC1BB81ACB004CF8D7 /* ChatListViewController.swift */,
-			);
-			name = unused;
-			sourceTree = "<group>";
-		};
-		AF97B9A82F3FC40300EC3745 /* Views */ = {
-			isa = PBXGroup;
-			children = (
-				AF97B9A92F3FC43400EC3745 /* ContentView.swift */,
-				AF7CF47F3066728C00104468 /* ContentViewModel.swift */,
-				AF97B9AB2F3FC43500EC3745 /* ContactListView.swift */,
-				AF97B9AD2F3FC43600EC3745 /* MessagesListView.swift */,
-				AF97B9AF2F3FC45F00EC3745 /* AttachmentsView.swift */,
-				AF97B9B12F3FC45F00EC3745 /* ImportProgressView.swift */,
-				AF97B9B32F3FC45F00EC3745 /* AppCommands.swift */,
-			);
-			path = Views;
-			sourceTree = "<group>";
-		};
-		AF97B9B52F3FC4D900EC3745 /* Extensions */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Extensions;
-			sourceTree = "<group>";
-		};
 		AFAB022C2141D65B000D9864 /* ContactsFetcher */ = {
 			isa = PBXGroup;
 			children = (
@@ -231,31 +99,10 @@
 			path = ContactsFetcher;
 			sourceTree = "<group>";
 		};
-		AFAF103D214051F9009DDA82 /* ViewControllers */ = {
-			isa = PBXGroup;
-			children = (
-				AF47D8761BDCDD20002CDF4B /* ChatTableViewController.swift */,
-				AF8003B71C273838008A1D64 /* ImageAttachmentDisplayViewController.swift */,
-				AF2B2DF21BC19E81000B8293 /* MessagesListViewController.swift */,
-				AFAF103B213F3706009DDA82 /* ShowAppPrivilegesSetupViewController.swift */,
-				AFAF103E2140523F009DDA82 /* ShowImagesDownloadViewController.swift */,
-			);
-			path = ViewControllers;
-			sourceTree = "<group>";
-		};
-		AFC38ABA1C9A191D008910A1 /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-				AF029C431C4D746100B1A950 /* phone country codes.json */,
-				AFC38AB81C9A1913008910A1 /* dsa_pub.pem */,
-			);
-			name = Resources;
-			sourceTree = "<group>";
-		};
 		AFD9748A1BB816B5004CF8D7 = {
 			isa = PBXGroup;
 			children = (
-				AFD974951BB816B5004CF8D7 /* MessagesHistoryBrowser */,
+				AF7CF4BC3069258000104468 /* MessagesHistoryBrowser */,
 				AFD974AA1BB816B6004CF8D7 /* MessagesHistoryBrowserTests */,
 				AFD974B51BB816B6004CF8D7 /* MessagesHistoryBrowserUITests */,
 				AFAB022C2141D65B000D9864 /* ContactsFetcher */,
@@ -272,36 +119,6 @@
 				AFD974B21BB816B6004CF8D7 /* MessagesHistoryBrowserUITests.xctest */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		AFD974951BB816B5004CF8D7 /* MessagesHistoryBrowser */ = {
-			isa = PBXGroup;
-			children = (
-				AF986F0721F8F4B600CA5EB1 /* messagesStyle.css */,
-				AF986F0521F7D1C100CA5EB1 /* HTMLExport.swift */,
-				AF2832DD21C413A000F8DD58 /* ContactTableCellView.swift */,
-				AF01B05C1EA13C9A0039A46F /* MessagesHistoryBrowser.entitlements */,
-				AF8003BE1C357A0E008A1D64 /* ChatItemsFetcher.swift */,
-				AF8003C01C4A6545008A1D64 /* RoundImage.swift */,
-				AFE9B8051BD3A2EE007FC376 /* MessageFormatter.swift */,
-				AFAF103D214051F9009DDA82 /* ViewControllers */,
-				AF424CD91BC965FF006EE8D2 /* CoreData */,
-				AF2B2DEE1BC18BE1000B8293 /* ChatsDatabase.swift */,
-				AFD974C91BB81885004CF8D7 /* ContactsMap.swift */,
-				AF8003B91C2C8040008A1D64 /* Attachments Collection View */,
-				AFD974961BB816B5004CF8D7 /* AppDelegate.swift */,
-				AF5D9A1B278762BE0026B850 /* ImportLogsContainer.swift */,
-				AFD9749D1BB816B5004CF8D7 /* Assets.xcassets */,
-				AFD9749F1BB816B6004CF8D7 /* Main.storyboard */,
-				AFD974A21BB816B6004CF8D7 /* Info.plist */,
-				AFC38ABA1C9A191D008910A1 /* Resources */,
-				AF8003BA1C2C806A008A1D64 /* unused */,
-				AF6F10EC1BB8222500A93152 /* Frameworks */,
-				AF97B9A62F3FC40000EC3745 /* MessagesHistoryBrowserApp.swift */,
-				AF97B9A82F3FC40300EC3745 /* Views */,
-				AF97B9B52F3FC4D900EC3745 /* Extensions */,
-			);
-			path = MessagesHistoryBrowser;
 			sourceTree = "<group>";
 		};
 		AFD974AA1BB816B6004CF8D7 /* MessagesHistoryBrowserTests */ = {
@@ -336,7 +153,8 @@
 			);
 			buildRules = (
 			);
-			dependencies = (
+			fileSystemSynchronizedGroups = (
+				AF7CF4BC3069258000104468 /* MessagesHistoryBrowser */,
 			);
 			name = MessagesHistoryBrowser;
 			productName = MessagesHistoryBrowser;
@@ -418,7 +236,6 @@
 				};
 			};
 			buildConfigurationList = AFD9748E1BB816B5004CF8D7 /* Build configuration list for PBXProject "MessagesHistoryBrowser" */;
-			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -430,6 +247,7 @@
 				AF97B99E2F3FC03D00EC3745 /* XCRemoteSwiftPackageReference "SQLite" */,
 				AF97B9A32F3FC0B300EC3745 /* XCRemoteSwiftPackageReference "Sparkle" */,
 			);
+			preferredProjectObjectVersion = 110;
 			productRefGroup = AFD974941BB816B5004CF8D7 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -444,105 +262,62 @@
 /* Begin PBXResourcesBuildPhase section */
 		AFD974911BB816B5004CF8D7 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
-				AFC38AB91C9A1913008910A1 /* dsa_pub.pem in Resources */,
-				AF029C441C4D746100B1A950 /* phone country codes.json in Resources */,
-				AFD9749E1BB816B5004CF8D7 /* Assets.xcassets in Resources */,
-				AF986F0821F8F4B600CA5EB1 /* messagesStyle.css in Resources */,
-				AFE9B8041BCB088A007FC376 /* AttachmentsCollectionViewItem.xib in Resources */,
-				AFD974A11BB816B6004CF8D7 /* Main.storyboard in Resources */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		AFD974A51BB816B6004CF8D7 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		AFD974B01BB816B6004CF8D7 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
 		AF2832FD21C6561600F8DD58 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Taken from https://github.com/sparkle-project/Sparkle/issues/1266\n#\nLOCATION=\"${BUILT_PRODUCTS_DIR}\"/\"${FRAMEWORKS_FOLDER_PATH}\"\n\n# By default, use the configured code signing identity for the project/target\nIDENTITY=\"${CODE_SIGN_IDENTITY}\"\nif [ \"$IDENTITY\" == \"\" ]\nthen\n# If a code signing identity is not specified, use ad hoc signing\nIDENTITY=\"-\"\nfi\n# codesign --verbose --force --deep -o runtime --sign \"$IDENTITY\" \"$LOCATION/Sparkle.framework/Versions/A/Resources/AutoUpdate.app\"\n# codesign --verbose --force -o runtime --sign \"$IDENTITY\" \"$LOCATION/Sparkle.framework/Versions/A\"\n\n";
+			shellScript = (
+				"# Taken from https://github.com/sparkle-project/Sparkle/issues/1266",
+				"#",
+				"LOCATION=\"${BUILT_PRODUCTS_DIR}\"/\"${FRAMEWORKS_FOLDER_PATH}\"",
+				"",
+				"# By default, use the configured code signing identity for the project/target",
+				"IDENTITY=\"${CODE_SIGN_IDENTITY}\"",
+				"if [ \"$IDENTITY\" == \"\" ]",
+				"then",
+				"# If a code signing identity is not specified, use ad hoc signing",
+				"IDENTITY=\"-\"",
+				"fi",
+				"# codesign --verbose --force --deep -o runtime --sign \"$IDENTITY\" \"$LOCATION/Sparkle.framework/Versions/A/Resources/AutoUpdate.app\"",
+				"# codesign --verbose --force -o runtime --sign \"$IDENTITY\" \"$LOCATION/Sparkle.framework/Versions/A\"",
+				"",
+				"",
+			);
 		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		AFD9748F1BB816B5004CF8D7 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
-				AF97B9AE2F3FC43600EC3745 /* MessagesListView.swift in Sources */,
-				AF97B9B42F3FC45F00EC3745 /* AppCommands.swift in Sources */,
-				AFAF8B141BF3B91E009D92F6 /* ImageAttachmentCell.swift in Sources */,
-				AF97B9AC2F3FC43500EC3745 /* ContactListView.swift in Sources */,
-				AF8003BF1C357A0E008A1D64 /* ChatItemsFetcher.swift in Sources */,
-				AF986F0621F7D1C100CA5EB1 /* HTMLExport.swift in Sources */,
-				AF2B2DF11BC19BAE000B8293 /* ChatMessage.swift in Sources */,
-				AFD9749C1BB816B5004CF8D7 /* MessagesHistoryBrowser.xcdatamodeld in Sources */,
-				AF82EDB51C23708B00F8132D /* AttachmentsCollectionView.swift in Sources */,
-				AF2B2DEF1BC18BE1000B8293 /* ChatsDatabase.swift in Sources */,
-				AFBF11451BE77E6E00D3D596 /* ChatItem.swift in Sources */,
-				AF2B2DF31BC19E81000B8293 /* MessagesListViewController.swift in Sources */,
-				AF424CD61BC9609D006EE8D2 /* ChatAttachment.swift in Sources */,
-				AF2832DE21C413A000F8DD58 /* ContactTableCellView.swift in Sources */,
-				AF97B9B02F3FC45F00EC3745 /* AttachmentsView.swift in Sources */,
-				AF82EDB71C23723F00F8132D /* AttachmentsCollectionViewDelegate.swift in Sources */,
-				AF97B9A72F3FC40000EC3745 /* MessagesHistoryBrowserApp.swift in Sources */,
-				AFD974CA1BB81885004CF8D7 /* Chat.swift in Sources */,
-				AF97B9B22F3FC45F00EC3745 /* ImportProgressView.swift in Sources */,
-				AF8003B81C273838008A1D64 /* ImageAttachmentDisplayViewController.swift in Sources */,
-				AF8003BC1C2E9D04008A1D64 /* MOCController.swift in Sources */,
-				AFE9B8031BCB088A007FC376 /* AttachmentsCollectionViewItem.swift in Sources */,
-				AF424CD81BC963E4006EE8D2 /* ChatContact.swift in Sources */,
-				AF67203D21B5313E00C41616 /* ContactsMap.swift in Sources */,
-				AFD974971BB816B5004CF8D7 /* AppDelegate.swift in Sources */,
-				AFE9B8061BD3A2EE007FC376 /* MessageFormatter.swift in Sources */,
-				AF5D9A1C278762BE0026B850 /* ImportLogsContainer.swift in Sources */,
-				AF8003C11C4A6545008A1D64 /* RoundImage.swift in Sources */,
-				AF97B9AA2F3FC43400EC3745 /* ContentView.swift in Sources */,
-				AF7CF4803066728C00104468 /* ContentViewModel.swift in Sources */,
-				AFAF103C213F3707009DDA82 /* ShowAppPrivilegesSetupViewController.swift in Sources */,
-				AF47D8771BDCDD20002CDF4B /* ChatTableViewController.swift in Sources */,
-				AFAF103F2140523F009DDA82 /* ShowImagesDownloadViewController.swift in Sources */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		AFD974A31BB816B6004CF8D7 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 				AFD974AC1BB816B6004CF8D7 /* MessagesHistoryBrowserTests.swift in Sources */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		AFD974AE1BB816B6004CF8D7 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 				AFD974B71BB816B6004CF8D7 /* MessagesHistoryBrowserUITests.swift in Sources */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
@@ -559,19 +334,8 @@
 		};
 /* End PBXTargetDependency section */
 
-/* Begin PBXVariantGroup section */
-		AFD9749F1BB816B6004CF8D7 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				AFD974A01BB816B6004CF8D7 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
-
 /* Begin XCBuildConfiguration section */
-		AFD974B91BB816B6004CF8D7 /* Debug */ = {
+		AFD974B91BB816B6004CF8D7 /* Debug configuration for PBXProject "MessagesHistoryBrowser" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -631,7 +395,7 @@
 			};
 			name = Debug;
 		};
-		AFD974BA1BB816B6004CF8D7 /* Release */ = {
+		AFD974BA1BB816B6004CF8D7 /* Release configuration for PBXProject "MessagesHistoryBrowser" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -685,7 +449,7 @@
 			};
 			name = Release;
 		};
-		AFD974BC1BB816B6004CF8D7 /* Debug */ = {
+		AFD974BC1BB816B6004CF8D7 /* Debug configuration for PBXNativeTarget "MessagesHistoryBrowser" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -719,7 +483,7 @@
 			};
 			name = Debug;
 		};
-		AFD974BD1BB816B6004CF8D7 /* Release */ = {
+		AFD974BD1BB816B6004CF8D7 /* Release configuration for PBXNativeTarget "MessagesHistoryBrowser" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -753,7 +517,7 @@
 			};
 			name = Release;
 		};
-		AFD974BF1BB816B6004CF8D7 /* Debug */ = {
+		AFD974BF1BB816B6004CF8D7 /* Debug configuration for PBXNativeTarget "MessagesHistoryBrowserTests" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -773,7 +537,7 @@
 			};
 			name = Debug;
 		};
-		AFD974C01BB816B6004CF8D7 /* Release */ = {
+		AFD974C01BB816B6004CF8D7 /* Release configuration for PBXNativeTarget "MessagesHistoryBrowserTests" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -793,7 +557,7 @@
 			};
 			name = Release;
 		};
-		AFD974C21BB816B6004CF8D7 /* Debug */ = {
+		AFD974C21BB816B6004CF8D7 /* Debug configuration for PBXNativeTarget "MessagesHistoryBrowserUITests" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
@@ -813,7 +577,7 @@
 			};
 			name = Debug;
 		};
-		AFD974C31BB816B6004CF8D7 /* Release */ = {
+		AFD974C31BB816B6004CF8D7 /* Release configuration for PBXNativeTarget "MessagesHistoryBrowserUITests" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
@@ -839,37 +603,33 @@
 		AFD9748E1BB816B5004CF8D7 /* Build configuration list for PBXProject "MessagesHistoryBrowser" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				AFD974B91BB816B6004CF8D7 /* Debug */,
-				AFD974BA1BB816B6004CF8D7 /* Release */,
+				AFD974B91BB816B6004CF8D7 /* Debug configuration for PBXProject "MessagesHistoryBrowser" */,
+				AFD974BA1BB816B6004CF8D7 /* Release configuration for PBXProject "MessagesHistoryBrowser" */,
 			);
-			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 		AFD974BB1BB816B6004CF8D7 /* Build configuration list for PBXNativeTarget "MessagesHistoryBrowser" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				AFD974BC1BB816B6004CF8D7 /* Debug */,
-				AFD974BD1BB816B6004CF8D7 /* Release */,
+				AFD974BC1BB816B6004CF8D7 /* Debug configuration for PBXNativeTarget "MessagesHistoryBrowser" */,
+				AFD974BD1BB816B6004CF8D7 /* Release configuration for PBXNativeTarget "MessagesHistoryBrowser" */,
 			);
-			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 		AFD974BE1BB816B6004CF8D7 /* Build configuration list for PBXNativeTarget "MessagesHistoryBrowserTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				AFD974BF1BB816B6004CF8D7 /* Debug */,
-				AFD974C01BB816B6004CF8D7 /* Release */,
+				AFD974BF1BB816B6004CF8D7 /* Debug configuration for PBXNativeTarget "MessagesHistoryBrowserTests" */,
+				AFD974C01BB816B6004CF8D7 /* Release configuration for PBXNativeTarget "MessagesHistoryBrowserTests" */,
 			);
-			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 		AFD974C11BB816B6004CF8D7 /* Build configuration list for PBXNativeTarget "MessagesHistoryBrowserUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				AFD974C21BB816B6004CF8D7 /* Debug */,
-				AFD974C31BB816B6004CF8D7 /* Release */,
+				AFD974C21BB816B6004CF8D7 /* Debug configuration for PBXNativeTarget "MessagesHistoryBrowserUITests" */,
+				AFD974C31BB816B6004CF8D7 /* Release configuration for PBXNativeTarget "MessagesHistoryBrowserUITests" */,
 			);
-			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
@@ -905,19 +665,6 @@
 			productName = Sparkle;
 		};
 /* End XCSwiftPackageProductDependency section */
-
-/* Begin XCVersionGroup section */
-		AFD9749A1BB816B5004CF8D7 /* MessagesHistoryBrowser.xcdatamodeld */ = {
-			isa = XCVersionGroup;
-			children = (
-				AFD9749B1BB816B5004CF8D7 /* MessagesHistoryBrowser.xcdatamodel */,
-			);
-			currentVersion = AFD9749B1BB816B5004CF8D7 /* MessagesHistoryBrowser.xcdatamodel */;
-			path = MessagesHistoryBrowser.xcdatamodeld;
-			sourceTree = "<group>";
-			versionGroupType = wrapper.xcdatamodel;
-		};
-/* End XCVersionGroup section */
 	};
 	rootObject = AFD9748B1BB816B5004CF8D7 /* Project object */;
 }
