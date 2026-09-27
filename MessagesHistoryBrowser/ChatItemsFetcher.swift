@@ -33,26 +33,11 @@ class ChatItemsFetcher: NSObject {
     // been made since (e.g. the user clicked through several contacts quickly).
     private var requestGeneration = 0
 
-    let messageDateSort = { (a:AnyObject, b:AnyObject) -> Bool in
-        let aItem = a as! ChatItem
-        let bItem = b as! ChatItem
-
-        return aItem.dateNanoseconds < bItem.dateNanoseconds
-    }
-
     let messageEnumIteratorDateSort = { (a:NSFastEnumerationIterator.Element, b:NSFastEnumerationIterator.Element) -> Bool in
         let aItem = a as! ChatItem
         let bItem = b as! ChatItem
 
         return aItem.dateNanoseconds < bItem.dateNanoseconds
-    }
-
-    let messageIndexSort = { (a:Any, b:Any) -> Bool in
-        let aItem = a as! ChatItem
-        let bItem = b as! ChatItem
-//        print("a.index : \(aItem.index) - b.index : \(bItem.index)")
-
-        return aItem.index < bItem.index
     }
 
     // MARK: Entry point - search
@@ -236,12 +221,7 @@ class ChatItemsFetcher: NSObject {
         let request = NSFetchRequest<NSDictionary>(entityName: entityName)
         request.resultType = .dictionaryResultType
 
-        let objectIDProperty = NSExpressionDescription()
-        objectIDProperty.name = "objectID"
-        objectIDProperty.expression = NSExpression.expressionForEvaluatedObject()
-        objectIDProperty.expressionResultType = .objectIDAttributeType
-
-        request.propertiesToFetch = [objectIDProperty, "dateNanoseconds"]
+        request.propertiesToFetch = [ChatItemsFetcher.objectIDFetchProperty(), "dateNanoseconds"]
         request.sortDescriptors = [NSSortDescriptor(key: "dateNanoseconds", ascending: true)]
 
         var predicates = [NSPredicate(format: "contact == %@", contactID)]
@@ -275,113 +255,156 @@ class ChatItemsFetcher: NSObject {
     // MARK: FetchRequest-based search
     //
 
-    // return an array of NSManagedObjectIDs of ChatItems sorted by index
-    //
-    func searchChatsForString(_ string:String, inManagedObjectContext moc:NSManagedObjectContext, afterDate:Date? = nil, beforeDate:Date? = nil) -> [NSManagedObjectID]
-    {
-        var result = [NSManagedObjectID]()
-
-        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: ChatMessage.EntityName)
-        let argArray:[AnyObject] = [ChatMessage.Attributes.content.rawValue as AnyObject, string as AnyObject]
-
-
-        let stringSearchPredicate = NSPredicate(format: "%K CONTAINS %@", argumentArray:argArray)
-
-        var subPredicates = [NSPredicate]()
-
-        if let afterDate = afterDate {
-            let datePredicate = NSPredicate(format: "%K >= %@", argumentArray: [ChatMessage.Attributes.date.rawValue, afterDate])
-            subPredicates.append(datePredicate)
-        }
-
-        if let beforeDate = beforeDate {
-            let datePredicate = NSPredicate(format: "%K <= %@", argumentArray: [ChatMessage.Attributes.date.rawValue, beforeDate])
-            subPredicates.append(datePredicate)
-        }
-
-        if subPredicates.count > 0 {
-            subPredicates.append(stringSearchPredicate)
-            fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: subPredicates)
-        } else {
-            fetchRequest.predicate = stringSearchPredicate
-        }
-
-        do {
-            let matchingMessages = try moc.fetch(fetchRequest)
-            let matchingMessagesSorted = (matchingMessages as! [ChatMessage]).sorted(by: messageDateSort) // messages here are from multiple contacts, so use date for global sort
-
-            let matchingMessagesWithSurroundingMessages = addSurroundingMessages(matchingMessagesSorted)
-
-            result = matchingMessagesWithSurroundingMessages.map {$0.objectID}
-
-        } catch let error as NSError {
-            print("\(#function) Could not fetch \(error), \(error.userInfo)")
-        } catch {
-            print("weird fetch error")
-        }
-
-        return result
-    }
-
-    func splitMessagesPerContact(_ messages:[ChatMessage]) -> [ChatContact:[ChatMessage]]
-    {
-        var result = [ChatContact:[ChatMessage]]()
-
-        for message in messages {
-            if result[message.contact] == nil {
-                result[message.contact] = [ChatMessage]()
-            }
-
-            result[message.contact]?.append(message)
-        }
-
-        return result
-    }
-
     // nb of messages added before and after a message matching a search term in search results
     //
     let nbOfMessagesBeforeAfter = 2 // TODO: make this user configurable
 
-    func addSurroundingMessages(_ messages:[ChatMessage]) -> [ChatMessage]
+    // Upper bound on the number of `index` values packed into one statement
+    // when fetching the neighbours of search matches. Each statement costs a
+    // near-constant ~15 ms whatever its size (measured on a 200k-message
+    // store), so the goal is as few statements as possible; the cap only
+    // keeps the SQL bounded for pathological searches.
+    private let indexesPerFetch = 5000
+
+    // Returns the object IDs of the messages whose content contains `string`
+    // (within the optional date bounds), each accompanied by its
+    // `nbOfMessagesBeforeAfter` neighbours in the same conversation. Results
+    // are grouped per contact, contacts in order of their earliest match, and
+    // in conversation order (`index`) within a contact.
+    //
+    // Runs on `moc`'s queue. Only object IDs and integer attributes are read
+    // from the store: no message body is loaded and no managed object is
+    // materialized. In particular the matched contacts' conversations are
+    // never loaded as a whole; the neighbours are fetched by `index`, which
+    // is assigned contiguously in date order at import time and is indexed.
+    func searchChatsForString(_ string:String, inManagedObjectContext moc:NSManagedObjectContext, afterDate:Date? = nil, beforeDate:Date? = nil) -> [NSManagedObjectID]
     {
-        // messages are time-sorted
+        // 1. The matches themselves, as (contact, index) pairs, oldest first.
+        //    A to-one relationship in a dictionary result comes back as the
+        //    related object's ID, which is all the grouping needs.
+        let matchRequest = NSFetchRequest<NSDictionary>(entityName: ChatMessage.EntityName)
+        matchRequest.resultType = .dictionaryResultType
+        matchRequest.propertiesToFetch = [ChatMessage.Attributes.contact.rawValue, ChatMessage.Attributes.index.rawValue]
+        matchRequest.sortDescriptors = [NSSortDescriptor(key: ChatMessage.Attributes.dateNanoseconds.rawValue, ascending: true)]
 
-        var result = [ChatMessage]()
+        var predicates = [NSPredicate(format: "%K CONTAINS %@", ChatMessage.Attributes.content.rawValue, string)]
+        if let afterDate = afterDate {
+            predicates.append(NSPredicate(format: "%K >= %lld", ChatMessage.Attributes.dateNanoseconds.rawValue, ChatItemsFetcher.nanoseconds(from: afterDate)))
+        }
+        if let beforeDate = beforeDate {
+            predicates.append(NSPredicate(format: "%K <= %lld", ChatMessage.Attributes.dateNanoseconds.rawValue, ChatItemsFetcher.nanoseconds(from: beforeDate)))
+        }
+        matchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
 
-        let messagesSortedPerContact = splitMessagesPerContact(messages)
+        // For every match, the window of indexes to show. Kept as a Set per
+        // contact: windows overlap and dedupe naturally, and an index past the
+        // end of the conversation simply matches nothing, so no clamping to the
+        // conversation length (and no count query) is needed.
+        var contactOrder = [NSManagedObjectID]()
+        var indexesPerContact = [NSManagedObjectID: Set<Int64>]()
+        let window = Int64(nbOfMessagesBeforeAfter)
 
-        for (contact, contactMessages) in messagesSortedPerContact {
-            let allContactMessagesSorted = contact.messages.sorted(by: messageIndexSort)
-            let allContactMessages = allContactMessagesSorted as! [ChatMessage]
+        do {
+            for row in try moc.fetch(matchRequest) {
+                guard let contactID = row[ChatMessage.Attributes.contact.rawValue] as? NSManagedObjectID,
+                      let index = row[ChatMessage.Attributes.index.rawValue] as? Int64 else { continue }
 
-            guard !allContactMessages.isEmpty else { continue }
-
-            // For every matched message, include a window of `nbOfMessagesBeforeAfter`
-            // messages on either side. We collect the positions in a Set rather than
-            // merging index ranges: message dates are truncated to whole seconds on
-            // import, so `message.index` (assigned by one date sort) isn't guaranteed
-            // to be monotonic with the search result order (a different date sort).
-            // The set is order-independent, self-deduplicating, and can never form an
-            // invalid Range.
-            let lastPosition = allContactMessages.count - 1
-            var positionsToInclude = Set<Int>()
-
-            for message in contactMessages {
-                let center = min(max(Int(message.index), 0), lastPosition)
-                let lower = max(center - nbOfMessagesBeforeAfter, 0)
-                let upper = min(center + nbOfMessagesBeforeAfter, lastPosition)
-                for position in lower ... upper {
-                    positionsToInclude.insert(position)
+                if indexesPerContact[contactID] == nil {
+                    contactOrder.append(contactID)
+                    indexesPerContact[contactID] = []
                 }
+                indexesPerContact[contactID]!.formUnion(max(index - window, 0) ... index + window)
             }
+        } catch let error as NSError {
+            NSLog("\(#function) Could not fetch matches for \"\(string)\": \(error), \(error.userInfo)")
+            return []
+        }
 
-            // Emit the included messages in their natural (index) order.
-            for position in positionsToInclude.sorted() {
-                result.append(allContactMessages[position])
-            }
+        // 2. Fetch exactly those messages, then lay them out per contact.
+        let idsPerContact = surroundingMessageIDs(indexesPerContact: indexesPerContact, contactOrder: contactOrder, in: moc)
+
+        var result = [NSManagedObjectID]()
+        for contactID in contactOrder {
+            result.append(contentsOf: idsPerContact[contactID] ?? [])
         }
 
         return result
+    }
+
+    // Object IDs of the messages at the given indexes, keyed by contact, each
+    // list in index order.
+    //
+    // One statement per contact costs about the same ~15 ms whether it uses
+    // IN, BETWEEN ranges or a min...max span, so a search hitting 200
+    // contacts spent seconds in round trips. Instead the (contact, indexes)
+    // pairs are packed into as few statements as possible, as an OR of
+    // `contact == X AND index IN {...}` terms, fetched as
+    // (objectID, contact, index) dictionaries and regrouped in memory. A
+    // contact's indexes may be split across statements; the final per-contact
+    // sort by index makes that irrelevant.
+    private func surroundingMessageIDs(indexesPerContact: [NSManagedObjectID: Set<Int64>], contactOrder: [NSManagedObjectID], in moc: NSManagedObjectContext) -> [NSManagedObjectID: [NSManagedObjectID]]
+    {
+        let contactKey = ChatMessage.Attributes.contact.rawValue
+        let indexKey = ChatMessage.Attributes.index.rawValue
+
+        var rowsPerContact = [NSManagedObjectID: [(index: Int64, objectID: NSManagedObjectID)]]()
+
+        var terms = [NSPredicate]()
+        var termsIndexCount = 0
+
+        func flush() {
+            guard !terms.isEmpty else { return }
+
+            let request = NSFetchRequest<NSDictionary>(entityName: ChatMessage.EntityName)
+            request.resultType = .dictionaryResultType
+            request.propertiesToFetch = [ChatItemsFetcher.objectIDFetchProperty(), contactKey, indexKey]
+            request.predicate = NSCompoundPredicate(orPredicateWithSubpredicates: terms)
+
+            do {
+                for row in try moc.fetch(request) {
+                    guard let contactID = row[contactKey] as? NSManagedObjectID,
+                          let index = row[indexKey] as? Int64,
+                          let objectID = row["objectID"] as? NSManagedObjectID else { continue }
+                    rowsPerContact[contactID, default: []].append((index, objectID))
+                }
+            } catch let error as NSError {
+                NSLog("\(#function) Could not fetch surrounding messages: \(error), \(error.userInfo)")
+            }
+
+            terms.removeAll()
+            termsIndexCount = 0
+        }
+
+        for contactID in contactOrder {
+            let indexes = indexesPerContact[contactID]!.sorted()
+
+            var chunkStart = 0
+            while chunkStart < indexes.count {
+                let chunkEnd = min(chunkStart + indexesPerFetch, indexes.count)
+                if termsIndexCount + (chunkEnd - chunkStart) > indexesPerFetch {
+                    flush()
+                }
+                let chunk = indexes[chunkStart ..< chunkEnd].map { NSNumber(value: $0) }
+                terms.append(NSPredicate(format: "%K == %@ AND %K IN %@", contactKey, contactID, indexKey, chunk))
+                termsIndexCount += chunkEnd - chunkStart
+                chunkStart = chunkEnd
+            }
+        }
+        flush()
+
+        return rowsPerContact.mapValues { rows in
+            rows.sorted { $0.index < $1.index }.map { $0.objectID }
+        }
+    }
+
+    // A fetch property that yields the row's NSManagedObjectID under the key
+    // "objectID" in dictionary results.
+    private static func objectIDFetchProperty() -> NSExpressionDescription {
+        let property = NSExpressionDescription()
+        property.name = "objectID"
+        property.expression = NSExpression.expressionForEvaluatedObject()
+        property.expressionResultType = .objectIDAttributeType
+        return property
     }
 
     // Taken from http://rshankar.com/binary-search-in-swift/

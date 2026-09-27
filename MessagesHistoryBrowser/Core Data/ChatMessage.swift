@@ -25,7 +25,10 @@ class ChatMessage : ChatItem {
     enum Attributes:String {
         case content = "content"
         case date = "date"
+        case dateNanoseconds = "dateNanoseconds"
+        case index = "index"
         case chat = "chat"
+        case contact = "contact"
         case isFromMe = "isFromMe"
     }
 
