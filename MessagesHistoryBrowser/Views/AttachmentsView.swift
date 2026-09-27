@@ -65,14 +65,21 @@ struct AttachmentsView: View {
 struct AttachmentThumbnailView: View {
     let attachment: ChatAttachment
     @State private var thumbnail: NSImage?
-    
-    private let dateFormatter: DateFormatter = {
+    @Environment(\.displayScale) private var displayScale
+
+    // Cell size in points; the thumbnail is requested at this size times the
+    // display scale, so it is sharp on Retina without decoding more than needed.
+    private static let cellSide: CGFloat = 120
+
+    // Shared: DateFormatter creation is expensive and this view is created
+    // once per visible cell, every time it scrolls into view.
+    private static let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.timeStyle = .short
         formatter.dateStyle = .short
         return formatter
     }()
-    
+
     var body: some View {
         VStack(spacing: 4) {
             Group {
@@ -86,37 +93,34 @@ struct AttachmentThumbnailView: View {
                         .foregroundColor(.secondary)
                 }
             }
-            .frame(width: 120, height: 120)
+            .frame(width: AttachmentThumbnailView.cellSide, height: AttachmentThumbnailView.cellSide)
             .background(Color.gray.opacity(0.1))
             .cornerRadius(8)
             .clipped()
-            
-            Text(dateFormatter.string(from: attachment.date as Date))
+
+            Text(AttachmentThumbnailView.dateFormatter.string(from: attachment.date as Date))
                 .font(.caption2)
                 .foregroundColor(.secondary)
                 .lineLimit(1)
         }
-        .onAppear {
-            loadThumbnail()
+        // Decoded off the main thread at cell size and cached; cancelled if the
+        // cell scrolls away before its decode has started.
+        .task(id: attachment.objectID) {
+            await loadThumbnail()
         }
     }
-    
-    private func loadThumbnail() {
+
+    private func loadThumbnail() async {
         guard let fileName = attachment.fileName else { return }
         let path = fileName.standardizingPath()
-        
-        // Check if file is in iCloud
+
+        // Attachment still in iCloud, nothing to decode locally.
         if path.hasSuffix(".pluginPayloadAttachment") {
             return
         }
-        
-        DispatchQueue.global(qos: .userInitiated).async {
-            if let image = NSImage(contentsOfFile: path) {
-                DispatchQueue.main.async {
-                    self.thumbnail = image
-                }
-            }
-        }
+
+        let maxPixelSize = Int((AttachmentThumbnailView.cellSide * displayScale).rounded(.up))
+        thumbnail = await AttachmentThumbnailCache.shared.thumbnail(forFileAt: path, maxPixelSize: maxPixelSize)
     }
 }
 

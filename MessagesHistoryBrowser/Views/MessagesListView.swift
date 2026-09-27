@@ -165,14 +165,18 @@ struct MessageBubbleView: View {
 struct AttachmentInlineView: View {
     let attachment: ChatAttachment
     @State private var image: NSImage?
-    
+    @Environment(\.displayScale) private var displayScale
+
+    // Largest size the inline image is shown at, in points.
+    private static let maxSide: CGFloat = 300
+
     var body: some View {
         HStack {
             if let image = image {
                 Image(nsImage: image)
                     .resizable()
                     .scaledToFit()
-                    .frame(maxWidth: 300, maxHeight: 300)
+                    .frame(maxWidth: AttachmentInlineView.maxSide, maxHeight: AttachmentInlineView.maxSide)
                     .cornerRadius(8)
             } else {
                 Image(systemName: "photo")
@@ -182,22 +186,19 @@ struct AttachmentInlineView: View {
                     .foregroundColor(.secondary)
             }
         }
-        .onAppear {
-            loadImage()
+        // Decoded off the main thread at display size and cached; cancelled if
+        // the row scrolls away before its decode has started.
+        .task(id: attachment.objectID) {
+            await loadImage()
         }
     }
-    
-    private func loadImage() {
+
+    private func loadImage() async {
         guard let fileName = attachment.fileName else { return }
         let path = fileName.standardizingPath()
-        
-        DispatchQueue.global(qos: .userInitiated).async {
-            if let loadedImage = NSImage(contentsOfFile: path) {
-                DispatchQueue.main.async {
-                    self.image = loadedImage
-                }
-            }
-        }
+
+        let maxPixelSize = Int((AttachmentInlineView.maxSide * displayScale).rounded(.up))
+        image = await AttachmentThumbnailCache.shared.thumbnail(forFileAt: path, maxPixelSize: maxPixelSize)
     }
 }
 
