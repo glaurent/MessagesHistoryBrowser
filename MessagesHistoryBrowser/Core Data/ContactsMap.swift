@@ -20,9 +20,41 @@ class ContactsMap {
 
     let contactStore = CNContactStore()
 
-    let contactIMFetchRequest = CNContactFetchRequest(keysToFetch: [CNContactFamilyNameKey, CNContactGivenNameKey, CNContactNicknameKey, CNContactInstantMessageAddressesKey] as [CNKeyDescriptor])
+    // Keys needed to display a contact's name (nickname first, else the
+    // formatter's full name). Requested with every lookup, so the name comes
+    // out of the same fetch as the match instead of a second round trip to
+    // the contacts daemon.
+    private let nameKeys: [CNKeyDescriptor] = [CNContactFormatter.descriptorForRequiredKeys(for: .fullName), CNContactNicknameKey as CNKeyDescriptor]
 
-    let contactEmailFetchRequest = CNContactFetchRequest(keysToFetch: [CNContactFamilyNameKey, CNContactGivenNameKey, CNContactNicknameKey, CNContactEmailAddressesKey] as [CNKeyDescriptor])
+    // The phone number and email predicates do their matching on the fetched
+    // contacts, so the matched property itself must be among the keys, or the
+    // framework logs "A property was not requested when contact was fetched"
+    // and returns nothing.
+    private lazy var phoneLookupKeys: [CNKeyDescriptor] = nameKeys + [CNContactPhoneNumbersKey as CNKeyDescriptor]
+    private lazy var emailLookupKeys: [CNKeyDescriptor] = nameKeys + [CNContactEmailAddressesKey as CNKeyDescriptor]
+
+    // Instant-message handles have no predicate in the Contacts framework, so
+    // they are read once, on first use, into this map (handle -> name and
+    // contact identifier). Previously every AIM/Jabber chat enumerated the
+    // whole address book.
+    private lazy var instantMessageAddressMap: [String: (name: String, identifier: String)] = {
+        var map = [String: (name: String, identifier: String)]()
+        let request = CNContactFetchRequest(keysToFetch: nameKeys + [CNContactInstantMessageAddressesKey as CNKeyDescriptor])
+        do {
+            try contactStore.enumerateContacts(with: request) { contact, _ in
+                for labeledValue in contact.instantMessageAddresses {
+                    let handle = labeledValue.value.username
+                    // Keep the first contact found, as the former enumerate-and-stop did.
+                    if map[handle] == nil {
+                        map[handle] = (self.displayName(for: contact) ?? handle, contact.identifier)
+                    }
+                }
+            }
+        } catch let error {
+            NSLog("\(#function) : error while enumerating contacts : \(error.localizedDescription)")
+        }
+        return map
+    }()
 
     var progress:Progress?
 
@@ -127,16 +159,14 @@ class ContactsMap {
 
             let cnPhoneNumber = CNPhoneNumber(stringValue: phoneNumber)
             let predicateForPhoneNumber = CNContact.predicateForContacts(matching: cnPhoneNumber)
-            let keyDescriptors = [CNContactPhoneNumbersKey, CNContactFamilyNameKey, CNContactGivenNameKey, CNContactNicknameKey] as [CNKeyDescriptor]
 
             do {
 
-                let contacts = try contactStore.unifiedContacts(matching: predicateForPhoneNumber, keysToFetch: keyDescriptors)
+                let contacts = try contactStore.unifiedContacts(matching: predicateForPhoneNumber, keysToFetch: phoneLookupKeys)
 
                 if let contact = contacts.first {
-                    let contactIdentifier = contact.identifier
-                    let contactName = formattedContactName(contactIdentifier) ?? "<unknown> \(phoneNumber)"
-                    return (contactName, contactIdentifier)
+                    let contactName = displayName(for: contact) ?? "<unknown> \(phoneNumber)"
+                    return (contactName, contact.identifier)
                 } else {
                     NSLog("\(#function) : couldn't find contact for this phone number \(phoneNumber))")
                     return nil
@@ -191,55 +221,35 @@ class ContactsMap {
 
     func nameForInstantMessageAddress(_ imAddressToSearch:String) -> (String, String)?
     {
-        
-        var res:(String, String)?
-        
-        do {
-            
-            try contactStore.enumerateContacts(with: contactIMFetchRequest) { (contact, stop) -> Void in
-                
-                let imAddresses = contact.instantMessageAddresses
-                
-                for labeledValue in imAddresses {
-                    let imAddress = labeledValue.value 
-                    if imAddress.username == imAddressToSearch {
-                        res = (self.formattedContactName(contact.identifier) ?? imAddressToSearch, contact.identifier)
-                        stop.pointee = true
-                    }
-                }
-            }
-        } catch {
-            
-        }
-
-        return res
-        
+        guard let match = instantMessageAddressMap[imAddressToSearch] else { return nil }
+        return (match.name, match.identifier)
     }
 
     func nameForEmailAddress(_ emailAddressToSearch:String) -> (String, String)? {
 
-        var res:(String, String)?
-        
+        // A predicate lookup, like the phone number one, instead of a scan of
+        // the whole address book for every chat.
+        let predicateForEmail = CNContact.predicateForContacts(matchingEmailAddress: emailAddressToSearch)
+
         do {
-            
-            try contactStore.enumerateContacts(with: contactEmailFetchRequest) { (contact, stop) -> Void in
-                
-                let emailAddresses = contact.emailAddresses
-                
-                for labeledValue in emailAddresses {
-                    let emailAddress = labeledValue.value as String
-                    if emailAddress == emailAddressToSearch {
-                        res = (self.formattedContactName(contact.identifier) ?? emailAddressToSearch, contact.identifier)
-                        stop.pointee = true
-                    }
-                }
-            }
-        } catch {
+            let contacts = try contactStore.unifiedContacts(matching: predicateForEmail, keysToFetch: emailLookupKeys)
 
+            guard let contact = contacts.first else { return nil }
+            return (displayName(for: contact) ?? emailAddressToSearch, contact.identifier)
+
+        } catch let error {
+            NSLog("\(#function) : error while searching for \(emailAddressToSearch) - error \(error.localizedDescription)")
+            return nil
         }
-        
-        return res
+    }
 
+    // Nickname if set, otherwise the formatter's full name. `contact` must
+    // have been fetched with `nameKeys`.
+    private func displayName(for contact: CNContact) -> String? {
+        if contact.nickname != "" {
+            return contact.nickname
+        }
+        return contactFormatter.string(from: contact)
     }
 
     private func formattedContactName(_ contactIdentifier:String) -> String? {

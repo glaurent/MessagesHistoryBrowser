@@ -97,7 +97,10 @@ final class AttachmentThumbnailCache {
     static func decodeThumbnail(at path: String, maxPixelSize: Int) -> NSImage? {
         let url = URL(fileURLWithPath: path) as CFURL
         let sourceOptions = [kCGImageSourceShouldCache: false] as CFDictionary
-        guard let source = CGImageSourceCreateWithURL(url, sourceOptions) else { return nil }
+        guard let source = CGImageSourceCreateWithURL(url, sourceOptions),
+              // Not an image (video, vCard, ...): bail out before ImageIO logs
+              // a "failed to create thumbnail" error for it.
+              CGImageSourceGetType(source) != nil else { return nil }
 
         let thumbnailOptions: [CFString: Any] = [
             kCGImageSourceCreateThumbnailFromImageAlways: true,   // don't settle for a tiny embedded EXIF thumbnail

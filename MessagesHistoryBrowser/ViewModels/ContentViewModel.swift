@@ -17,6 +17,11 @@ class ContentViewModel: NSObject, ObservableObject, NSFetchedResultsControllerDe
     @Published var isImporting = false
     @Published var importProgress = Progress(totalUnitCount: 10)
 
+    // Observable, rate-limited mirror of importProgress for the overlay.
+    // Created once per import so the view keeps a single KVO subscription
+    // instead of re-creating one on every re-render of ContentView.
+    @Published private(set) var importProgressObserver: ObservableProgress?
+
     @Published var allKnownContacts: [ChatContact] = []
     @Published var allUnknownContacts: [ChatContact] = []
     @Published var searchedContacts: [ChatContact]?
@@ -129,10 +134,12 @@ class ContentViewModel: NSObject, ObservableObject, NSFetchedResultsControllerDe
 
         isImporting = true
         importProgress = Progress(totalUnitCount: 10)
+        importProgressObserver = ObservableProgress(progress: importProgress)
 
         await chatsDatabase.populate(importProgress)
 
         isImporting = false
+        importProgressObserver = nil
         loadContacts()
     }
 
@@ -142,11 +149,13 @@ class ContentViewModel: NSObject, ObservableObject, NSFetchedResultsControllerDe
         appState.isRefreshingHistory = true
         isImporting = true
         importProgress = Progress(totalUnitCount: 10)
+        importProgressObserver = ObservableProgress(progress: importProgress)
 
         MOCController.sharedInstance.clearAllCoreData()
         await chatsDatabase.populate(importProgress)
 
         isImporting = false
+        importProgressObserver = nil
         loadContacts()
         appState.isRefreshingHistory = false
     }

@@ -68,8 +68,10 @@ struct ContentView: View {
         }
         .background(
             Group {
-                if viewModel.isImporting {
-                    ImportProgressView(progressWrapper: ObservableProgress(progress: viewModel.importProgress))
+                // The observer is owned by the view model for the whole import,
+                // so re-evaluating this body does not re-subscribe to the Progress.
+                if viewModel.isImporting, let progressObserver = viewModel.importProgressObserver {
+                    ImportProgressView(progressWrapper: progressObserver)
                 }
             }
         )

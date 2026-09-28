@@ -27,6 +27,10 @@ class ChatsDatabase {
 
     var db:Connection!
 
+    // Number of inserted messages between two save-and-reset cycles of the
+    // worker context during import (see collectMessages(forContactWithID:in:)).
+    let messagesPerSave = 1000
+
     init(chatsDBPath:String) throws {
 
         contactsPhoneNumberMap = ContactsMap.sharedInstance
@@ -52,23 +56,26 @@ class ChatsDatabase {
 
         let persistentContainer = MOCController.sharedInstance.persistentContainer
 
+        // Progress is thread-safe and its observers coalesce notifications (see
+        // ObservableProgress), so it is updated directly from this thread
+        // rather than through one main-queue block per update.
         await persistentContainer.performBackgroundTask { (workerContext) in
+
+            // Nothing is ever undone during an import; an undo manager would
+            // only retain every inserted object.
+            workerContext.undoManager = nil
 
             if Chat.numberOfChatsInContext(workerContext) == 0 {
 
-                DispatchQueue.main.async {
-                    progress.localizedDescription = NSLocalizedString("Importing chats...", comment: "")
-                    progress.localizedAdditionalDescription = ""
-                }
+                progress.localizedDescription = NSLocalizedString("Importing chats...", comment: "")
+                progress.localizedAdditionalDescription = ""
                 progress.becomeCurrent(withPendingUnitCount: 2)
 
                 ImportLogsContainer.log("Importing chats")
                 self.importAllChatsFromDB(workerContext)
 
                 progress.resignCurrent()
-                DispatchQueue.main.async {
-                    progress.localizedDescription = NSLocalizedString("Importing chat messages...", comment: "")
-                }
+                progress.localizedDescription = NSLocalizedString("Importing chat messages...", comment: "")
                 progress.becomeCurrent(withPendingUnitCount: 8) // must be a total 10 units - see init of Progress in ChatTableViewController.setupProgressBeforeImport()
 
                 self.collectAllMessagesFromAllChats(workerContext)
@@ -128,10 +135,8 @@ class ChatsDatabase {
 
 //            NSLog("chat : %@ \tcontact : %@\trowId: %d", guid, chatContact.name, rowID)
 
-                DispatchQueue.main.async {
-                    taskProgress.completedUnitCount = rowIndex
-                }
                 rowIndex += 1
+                taskProgress.completedUnitCount = rowIndex
 
             }
 
@@ -232,62 +237,105 @@ class ChatsDatabase {
 
     }
 
-    func collectMessagesForChat(_ chat:Chat, workerContext:NSManagedObjectContext)
+    // MARK: - Messages import
+
+    // Imports the messages and attachments of one contact, across all of that
+    // contact's chats (a contact often has both an SMS and an iMessage chat).
+    //
+    // Messages are read from chat.db already in date order, so each message's
+    // `index` (its position in the conversation, used to find a search match's
+    // neighbours) is assigned as it is created. The previous approach imported
+    // chat by chat, then re-loaded every message of the contact to sort and
+    // number it, which dirtied and re-wrote all of them on the next save.
+    //
+    // Memory: the worker context is saved and reset every `messagesPerSave`
+    // messages, so imported objects are released as the import proceeds
+    // instead of accumulating for the whole run. Only object IDs survive a
+    // reset; the contact and chats are re-resolved from their IDs afterwards.
+    func collectMessages(forContactWithID contactID: NSManagedObjectID, in workerContext: NSManagedObjectContext)
     {
-        let messageSaveThreshold = 300
+        var contact = workerContext.object(with: contactID) as! ChatContact
+
+        // The contact's chats, keyed by their ROWID in chat.db (recorded when
+        // the chats were imported).
+        var chatIDsByRowID = [Int: NSManagedObjectID]()
+        for case let chat as Chat in contact.chats {
+            chatIDsByRowID[chat.rowID.intValue] = chat.objectID
+        }
+        guard !chatIDsByRowID.isEmpty else { return }
+
+        var chatsByRowID = chatIDsByRowID.mapValues { workerContext.object(with: $0) as! Chat }
+        let chatRowIDs = Array(chatIDsByRowID.keys)
+
+        ImportLogsContainer.log("Fetching messages for contact \(contact.name) - \(chatRowIDs.count) chat(s)")
+
+        // Persists what has been inserted so far, drops it from memory, and
+        // re-resolves the objects the loops keep using.
+        func saveAndReset() {
+            do {
+                try workerContext.save()
+            } catch let error as NSError {
+                NSLog("\(#function) : worker context save fail : \(error)")
+                ImportLogsContainer.log("ChatsDatabase.collectMessages : worker context save fail : \(error)")
+            }
+            workerContext.reset()
+            contact = workerContext.object(with: contactID) as! ChatContact
+            chatsByRowID = chatIDsByRowID.mapValues { workerContext.object(with: $0) as! Chat }
+        }
+
+        // Tables and columns of chat.db.
+        let messagesTable        = Table("message")
+        let rowIDColumn          = Expression<Int>("ROWID")
+        let isFromMeColumn       = Expression<Bool>("is_from_me")
+        let textColumn           = Expression<String?>("text")
+        let attributedBodyColumn = Expression<Blob?>("attributedBody") // modern Messages stores the body here when `text` is NULL
+        let dateColumn           = Expression<Int>("date")
+
+        // Messages belong to a chat through chat_message_join (chat_id -> message_id).
+        // Matching by the participants' handle_id instead would drop every
+        // outgoing message (is_from_me = 1 rows have handle_id = 0).
+        let chatMessageJoinTable = Table("chat_message_join")
+        let cmjChatIDColumn      = Expression<Int>("chat_id")
+        let cmjMessageIDColumn   = Expression<Int>("message_id")
+
+        let attachmentsTable     = Table("attachment")
+        let filenameColumn       = Expression<String?>("filename")
+        let createdDateColumn    = Expression<Int>("created_date")
+        let isOutgoingColumn     = Expression<Bool>("is_outgoing")
+
+        let messageAttachmentJoinTable = Table("message_attachment_join")
+        let majMessageIDColumn         = Expression<Int>("message_id")
+        let majAttachmentIDColumn      = Expression<Int>("attachment_id")
+
+        // `date` holds seconds in old rows and nanoseconds in newer ones (see
+        // normalizedTime), so order on the normalized value, not the raw one,
+        // for the assigned indexes to follow true chronology.
+        let normalizedDate = Expression<Int>(literal: "CASE WHEN message.date > 10000000000 THEN message.date ELSE message.date * 1000000000 END")
 
         do {
-            let messagesTable  = Table("message")
-            let isFromMeColumn = Expression<Bool>("is_from_me")
-            let textColumn     = Expression<String?>("text")
-            let attributedBodyColumn = Expression<Blob?>("attributedBody") // modern Messages stores the body here when `text` is NULL
-            let dateColumn     = Expression<Int>("date")
+            // Messages, oldest first.
+            let messagesQuery = messagesTable
+                .select(messagesTable[rowIDColumn], messagesTable[isFromMeColumn], messagesTable[textColumn], messagesTable[attributedBodyColumn], messagesTable[dateColumn], chatMessageJoinTable[cmjChatIDColumn])
+                .join(chatMessageJoinTable, on: chatMessageJoinTable[cmjMessageIDColumn] == messagesTable[rowIDColumn])
+                .filter(chatRowIDs.contains(chatMessageJoinTable[cmjChatIDColumn]))
+                .order(normalizedDate, messagesTable[rowIDColumn])
 
-//            let dateDeliveredColumn = Expression<Int>("date_delivered") // used only for sanity check on dateColumn value
-
-            let chatTable   = Table("chat")
-            let rowIDColumn = Expression<Int>("ROWID")
-            let guidColumn  = Expression<String>("guid")
-
-            // Resolve the chat's ROWID(s) from its GUID.
-            let chatIDQuery = try db.prepare(chatTable.select(rowIDColumn).filter(guidColumn == chat.guid))
-            var allRowIDs = [Int]()
-            for row in chatIDQuery {
-                allRowIDs.append(row[rowIDColumn])
-            }
-
-            // Messages belong to a chat through chat_message_join (chat_id -> message_id).
-            // The previous approach matched messages by the chat participants' handle_id,
-            // which dropped every outgoing message (is_from_me = 1 rows have handle_id = 0,
-            // never present in the participant handle list) and left some chats empty.
-            let chatMessageJoinTable = Table("chat_message_join")
-            let cmjChatIDColumn      = Expression<Int>("chat_id")
-            let cmjMessageIDColumn   = Expression<Int>("message_id")
-
-            let messageIDsQuery = try db.prepare(chatMessageJoinTable.select(cmjMessageIDColumn).filter(allRowIDs.contains(cmjChatIDColumn)))
-            var allMessageIDs = [Int]()
-            for row in messageIDsQuery {
-                allMessageIDs.append(row[cmjMessageIDColumn])
-            }
-
-            ImportLogsContainer.log("Fetching messages for chat \(chat.guid) - contact \(chat.contact.identifier)")
-
-            let query = try db.prepare(messagesTable.select(rowIDColumn, isFromMeColumn, textColumn, attributedBodyColumn, dateColumn).filter(allMessageIDs.contains(rowIDColumn)))
-
-            var messageCounterSave = 0
+            var index: Int64 = 0
+            var insertedSinceSave = 0
 
             // logging
-            var messageCounter = 0
             var firstDate: Date?
             var lastDate = Date()
             var messagesFromMeCounter = 0
 
-            for messageData in query {
-                var messageContent = messageData[textColumn] ?? ""
+            for messageData in try db.prepare(messagesQuery) {
+                guard let chat = chatsByRowID[messageData[chatMessageJoinTable[cmjChatIDColumn]]] else { continue }
+
+                var messageContent = messageData[messagesTable[textColumn]] ?? ""
 
                 // On recent macOS the `text` column is NULL and the message body is
                 // archived in `attributedBody`. Fall back to decoding it.
-                if messageContent.isEmpty, let bodyBlob = messageData[attributedBodyColumn] {
+                if messageContent.isEmpty, let bodyBlob = messageData[messagesTable[attributedBodyColumn]] {
                     if let decoded = ChatsDatabase.messageText(fromAttributedBody: Data(bodyBlob.bytes)) {
                         messageContent = decoded
                     }
@@ -295,125 +343,78 @@ class ChatsDatabase {
 
                 // Keep the exact nanosecond timestamp as the source of truth; the
                 // Date is derived from it (with fractional seconds) for display.
-                let (messageNanoseconds, messageDate) = ChatsDatabase.normalizedTime(fromRawTimestamp: messageData[dateColumn])
+                let (messageNanoseconds, messageDate) = ChatsDatabase.normalizedTime(fromRawTimestamp: messageData[messagesTable[dateColumn]])
 
                 if firstDate == nil {
                     firstDate = messageDate
                 }
                 lastDate = messageDate
 
-//              NSLog("message : \(messageContent)")
-
                 let chatMessage = ChatMessage(managedObjectContext: workerContext, withMessage: messageContent, withDate: messageDate, inChat: chat)
                 chatMessage.dateNanoseconds = messageNanoseconds
-                chatMessage.isFromMe = messageData[isFromMeColumn]
+                chatMessage.isFromMe = messageData[messagesTable[isFromMeColumn]]
+                chatMessage.index = index
+                index += 1
 
-                messageCounterSave += 1
-                messageCounter += 1
                 if chatMessage.isFromMe {
                     messagesFromMeCounter += 1
                 }
 
-                if messageCounterSave >= messageSaveThreshold {
-                    messageCounterSave = 0
-                    do {
-                        try workerContext.save()
-//                        MOCController.sharedInstance.save()
-                    } catch let error as NSError {
-                        print("ChatsDatabase.collectMessagesForChat : worker context save fail : \(error)")
-                        ImportLogsContainer.log("ChatsDatabase.collectMessagesForChat : worker context save fail : \(error)")
-                    }
+                insertedSinceSave += 1
+                if insertedSinceSave >= messagesPerSave {
+                    saveAndReset()
+                    insertedSinceSave = 0
                 }
             }
 
-            ImportLogsContainer.log("Found \(messageCounter) messages - \(messagesFromMeCounter) outgoing messages spanning from \(firstDate ?? Date()) to \(lastDate) in chat")
+            ImportLogsContainer.log("Found \(index) messages - \(messagesFromMeCounter) outgoing messages spanning from \(firstDate ?? Date()) to \(lastDate) for contact \(contact.name)")
 
+            // Attachments: attachment -> message_attachment_join -> chat_message_join.
+            // DISTINCT because the join tables may link one attachment to
+            // several messages of the same chat.
+            let attachmentsQuery = attachmentsTable
+                .select(distinct: attachmentsTable[rowIDColumn], attachmentsTable[filenameColumn], attachmentsTable[createdDateColumn], attachmentsTable[isOutgoingColumn], chatMessageJoinTable[cmjChatIDColumn])
+                .join(messageAttachmentJoinTable, on: messageAttachmentJoinTable[majAttachmentIDColumn] == attachmentsTable[rowIDColumn])
+                .join(chatMessageJoinTable, on: chatMessageJoinTable[cmjMessageIDColumn] == messageAttachmentJoinTable[majMessageIDColumn])
+                .filter(chatRowIDs.contains(chatMessageJoinTable[cmjChatIDColumn]))
 
-            // attachments
-            //
-            let attachments = Table("attachment")
-            let filenameColumn = Expression<String?>("filename")
-            let attachmentIdColumn = Expression<Int>("attachment_id")
-            let isOutgoingColumn = Expression<Bool>("is_outgoing")
-            let cacheHasAttachmentColumn = Expression<Bool>("cache_has_attachments")
+            for attachmentData in try db.prepare(attachmentsQuery) {
+                guard let chat = chatsByRowID[attachmentData[chatMessageJoinTable[cmjChatIDColumn]]],
+                      let attachmentFileName = attachmentData[attachmentsTable[filenameColumn]] else { continue }
 
-            let messagesWithAttachmentsROWIDsQuery = try db.prepare(messagesTable.select(rowIDColumn, cacheHasAttachmentColumn).filter(allMessageIDs.contains(rowIDColumn) && cacheHasAttachmentColumn == true))
+                let (attachmentNanoseconds, attachmentDate) = ChatsDatabase.normalizedTime(fromRawTimestamp: attachmentData[attachmentsTable[createdDateColumn]])
 
-            var messagesWithAttachmentsROWIDs = [Int]()
-            for row in messagesWithAttachmentsROWIDsQuery {
-                messagesWithAttachmentsROWIDs.append(row[rowIDColumn])
+                let chatAttachment = ChatAttachment(managedObjectContext: workerContext, withFileName: attachmentFileName, withDate: attachmentDate, inChat: chat)
+                chatAttachment.dateNanoseconds = attachmentNanoseconds
+                chatAttachment.isFromMe = attachmentData[attachmentsTable[isOutgoingColumn]]
             }
 
-            let messageAttachmentJoinTable = Table("message_attachment_join")
-            let messageIDColumn = Expression<Int>("message_id")
-            let attachmentIDsQuery = try db.prepare(messageAttachmentJoinTable.select(messageIDColumn, attachmentIdColumn).filter(messagesWithAttachmentsROWIDs.contains(messageIDColumn)))
-
-            var allAttachmentIDs = [Int]()
-            for row in attachmentIDsQuery {
-                allAttachmentIDs.append(row[attachmentIdColumn])
-            }
-
-            let attachmentDateColumn = Expression<Int>("created_date")
-
-            let attachmentDataQuery = try db.prepare(attachments.select(rowIDColumn, filenameColumn, attachmentDateColumn, isOutgoingColumn).filter(allAttachmentIDs.contains(rowIDColumn)))
-
-            for attachmentData in attachmentDataQuery {
-                let attachmentFileName:String? = attachmentData[filenameColumn]
-                let (attachmentNanoseconds, attachmentDate) = ChatsDatabase.normalizedTime(fromRawTimestamp: attachmentData[attachmentDateColumn])
-
-//                ImportLogsContainer.log("attachmentFileName : \(attachmentFileName ?? "nil") - attachmentDate : \(attachmentDate) - isFromMe : \(attachmentData[isOutgoingColumn])")
-                if let attachmentFileName = attachmentFileName {
-                    let chatAttachment = ChatAttachment(managedObjectContext: chat.managedObjectContext!, withFileName: attachmentFileName, withDate: attachmentDate as Date, inChat:chat)
-                    chatAttachment.dateNanoseconds = attachmentNanoseconds
-                    chatAttachment.isFromMe = attachmentData[isOutgoingColumn]
-                }
-            }
-            
         } catch {
-            NSLog("\(#function) : error when preparing DB select")
+            NSLog("\(#function) : error when querying chat.db : \(error)")
+            ImportLogsContainer.log("ChatsDatabase.collectMessages : error when querying chat.db : \(error)")
         }
 
+        saveAndReset()
     }
 
     func collectAllMessagesFromAllChats(_ workerContext:NSManagedObjectContext)
     {
-        let allContacts = ChatContact.allContacts(workerContext)
-        let allContactsCount = Int64(allContacts.count)
+        // Only object IDs are kept across iterations: the context is reset
+        // during each contact's import, which invalidates object references.
+        let contactIDs = ChatContact.allContacts(workerContext).map { $0.objectID }
 
-        let taskProgress = Progress(totalUnitCount: allContactsCount)
+        let taskProgress = Progress(totalUnitCount: Int64(contactIDs.count))
+        let currentProgress = Progress.current()
 
-        for contact in allContacts {
+        for contactID in contactIDs {
 
-            if let currentProgress = Progress.current() {
-                DispatchQueue.main.async {
-                    currentProgress.localizedAdditionalDescription = contact.name
-                }
-            }
+            let contact = workerContext.object(with: contactID) as! ChatContact
+            currentProgress?.localizedAdditionalDescription = contact.name
 
-            for obj in contact.chats {
-                let chat = obj as! Chat
-                if chat.messages.count == 0 {
-                    collectMessagesForChat(chat, workerContext: workerContext)
+            collectMessages(forContactWithID: contactID, in: workerContext)
 
-                    do {
-                        try workerContext.save()
-//                        MOCController.sharedInstance.save()
-                    } catch let error as NSError {
-                        print("ChatsDatabase.collectAllMessagesFromAllChats : worker context save fail : \(error)")
-                    }
-
-                }
-            }
-
-            indexMessagesForContact(contact)
-
-            DispatchQueue.main.async {
-                taskProgress.completedUnitCount += 1
-            }
-            
+            taskProgress.completedUnitCount += 1
         }
-
-//        DispatchQueue.main.async { Progress.current()?.resignCurrent() }
     }
 
     // MARK: - attributedBody decoding
@@ -466,18 +467,5 @@ class ChatsDatabase {
         }
         return nil
     }
-
-    func indexMessagesForContact(_ contact:ChatContact)
-    {
-        let allMessages = contact.messages.allObjects as! [ChatMessage]
-
-        let allMessagesDateSorted = allMessages.sorted { $0.dateNanoseconds < $1.dateNanoseconds }
-
-        var index:Int64 = 0
-
-        _ = allMessagesDateSorted.map { $0.index = index; index += 1 }
-
-    }
-
 
 }
