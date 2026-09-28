@@ -6,6 +6,7 @@
 //  Copyright © 2015 Guillaume Laurent. All rights reserved.
 //
 
+import Foundation
 import Cocoa
 import CoreData
 
