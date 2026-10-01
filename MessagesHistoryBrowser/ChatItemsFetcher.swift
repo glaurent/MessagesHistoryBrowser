@@ -334,7 +334,10 @@ class ChatItemsFetcher: NSObject {
         matchRequest.propertiesToFetch = [ChatMessage.Attributes.contact.rawValue, ChatMessage.Attributes.index.rawValue]
         matchRequest.sortDescriptors = [NSSortDescriptor(key: ChatMessage.Attributes.dateNanoseconds.rawValue, ascending: true)]
 
-        var predicates = [NSPredicate(format: "%K CONTAINS %@", ChatMessage.Attributes.content.rawValue, string)]
+        // [cd]: case- and diacritic-insensitive, so "deja" matches "déjà" and
+        // "Deja" alike — matching how the result highlighting in MessagesListView
+        // searches the matched text.
+        var predicates = [NSPredicate(format: "%K CONTAINS[cd] %@", ChatMessage.Attributes.content.rawValue, string)]
         if let afterDate = afterDate {
             predicates.append(NSPredicate(format: "%K >= %lld", ChatMessage.Attributes.dateNanoseconds.rawValue, ChatItemsFetcher.nanoseconds(from: afterDate)))
         }

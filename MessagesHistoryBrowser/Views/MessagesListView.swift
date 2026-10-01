@@ -129,8 +129,10 @@ struct MessageBubbleView: View {
         }
     }
 
-    // Builds a Text by concatenating segments, styling case-insensitive matches
-    // of `term` (bold + color).
+    // Builds a Text by concatenating segments, styling case- and diacritic-
+    // insensitive matches of `term` (bold + color) — the same comparison the
+    // ChatItemsFetcher search predicate (CONTAINS[cd]) uses to find these
+    // messages, so every reported match actually gets highlighted here.
     private func highlightedText(for content: String, term: String?) -> Text {
         guard let term = term, !term.isEmpty else { return Text(content) }
 
@@ -139,7 +141,7 @@ struct MessageBubbleView: View {
         var searchRange = NSRange(location: 0, length: ns.length)
 
         while searchRange.location < ns.length {
-            let match = ns.range(of: term, options: .caseInsensitive, range: searchRange)
+            let match = ns.range(of: term, options: [.caseInsensitive, .diacriticInsensitive], range: searchRange)
             if match.location == NSNotFound {
                 result = result + Text(ns.substring(with: searchRange))
                 break
