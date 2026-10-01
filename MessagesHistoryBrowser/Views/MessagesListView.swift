@@ -16,12 +16,12 @@ struct MessagesListView: View {
     var body: some View {
         ScrollView {
             LazyVStack(alignment: .leading, spacing: 8) {
-                ForEach(Array(viewModel.currentMessages.enumerated()), id: \.element.objectID) { index, item in
+                ForEach(viewModel.currentMessages, id: \.objectID) { item in
                     if let message = item as? ChatMessage {
                         MessageBubbleView(
                             message: message,
                             highlightTerm: highlightTerm,
-                            showDetailedSender: viewModel.searchTerm.isEmpty ? false : true
+                            showDetailedSender: viewModel.isSearchActive
                         )
                     } else if let attachment = item as? ChatAttachment {
                         AttachmentInlineView(attachment: attachment)
@@ -40,8 +40,13 @@ struct MessagesListView: View {
         .onChange(of: contact) { newContact in
             loadMessages(for: newContact)
         }
+        // Only highlight once a search is actually running (isSearchActive,
+        // 3+ characters) — this view keeps showing the full, unfiltered
+        // conversation below that threshold, so highlighting a 1- or
+        // 2-character term here would scan and re-render every visible bubble
+        // for a "search" that never happened.
         .onReceive(viewModel.$searchTerm) { newValue in
-            highlightTerm = newValue.isEmpty ? nil : newValue
+            highlightTerm = viewModel.isSearchActive ? newValue : nil
         }
     }
 
@@ -71,7 +76,7 @@ struct SearchResultsView: View {
                 .padding(.top, 100)
             } else {
                 LazyVStack(alignment: .leading, spacing: 8) {
-                    ForEach(Array(viewModel.currentMessages.enumerated()), id: \.element.objectID) { _, item in
+                    ForEach(viewModel.currentMessages, id: \.objectID) { item in
                         if let message = item as? ChatMessage {
                             MessageBubbleView(
                                 message: message,
