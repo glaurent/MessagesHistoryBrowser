@@ -124,8 +124,24 @@ class ContentViewModel: NSObject, ObservableObject, NSFetchedResultsControllerDe
 
     private func updateContactArrays() {
         let all = contactsController?.fetchedObjects ?? []
-        allKnownContacts = all.filter { $0.known }
-        allUnknownContacts = all.filter { !$0.known }
+
+        // Single pass instead of two separate filter() calls over `all`.
+        // Order matters (the fetch request sorts by name) and a plain loop
+        // preserves it, unlike Array.partition(by:), which doesn't guarantee
+        // stable ordering within each side.
+        var known = [ChatContact]()
+        var unknown = [ChatContact]()
+        known.reserveCapacity(all.count)
+        unknown.reserveCapacity(all.count)
+        for contact in all {
+            if contact.known {
+                known.append(contact)
+            } else {
+                unknown.append(contact)
+            }
+        }
+        allKnownContacts = known
+        allUnknownContacts = unknown
     }
 
     nonisolated func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
@@ -231,9 +247,17 @@ class ContentViewModel: NSObject, ObservableObject, NSFetchedResultsControllerDe
 
         // Single owner of the fetcher's completion, set once at launch so search
         // results reach the UI whether or not a contact is (or ever was) selected.
+        //
+        // ChatItemsFetcher always invokes this on the main queue already —
+        // directly, for its synchronous narrow/clear path, or via its own
+        // DispatchQueue.main.async for the two async (search/browse) paths —
+        // so hopping through another DispatchQueue.main.async here would only
+        // add a second, needless run-loop turn before every result reaches
+        // the UI. MainActor.assumeIsolated documents and asserts that
+        // guarantee instead of re-dispatching on top of it.
     private func setupFetcherCallback() {
         ChatItemsFetcher.sharedInstance.completion = { [weak self] items, attachments, matchedContacts in
-            DispatchQueue.main.async {
+            MainActor.assumeIsolated {
                 guard let self = self else { return }
                 self.currentMessages = items
                 self.currentAttachments = attachments

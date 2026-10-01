@@ -17,45 +17,43 @@ struct ContentView: View {
     // so a re-import can clear it before the store is emptied.
 
     var body: some View {
-        GeometryReader { geometry in
-            HStack(spacing: 0) {
-                // Sidebar: Contact list
-                ContactListView(
-                    selectedContact: $viewModel.selectedContact,
+        HStack(spacing: 0) {
+            // Sidebar: Contact list
+            ContactListView(
+                selectedContact: $viewModel.selectedContact,
+                viewModel: viewModel
+            )
+            .frame(width: 250)
+            .background(Color(NSColor.controlBackgroundColor))
+
+            Divider()
+
+            // Middle: Messages list — search results span all contacts,
+            // otherwise show the selected contact's conversation.
+            if viewModel.searchTerm.count >= 3 {
+                SearchResultsView(viewModel: viewModel)
+                    .frame(minWidth: 300)
+            } else if let contact = viewModel.selectedContact {
+                MessagesListView(
+                    contact: contact,
                     viewModel: viewModel
                 )
-                .frame(width: 250)
-                .background(Color(NSColor.controlBackgroundColor))
-                
-                Divider()
-                
-                // Middle: Messages list — search results span all contacts,
-                // otherwise show the selected contact's conversation.
-                if viewModel.searchTerm.count >= 3 {
-                    SearchResultsView(viewModel: viewModel)
-                        .frame(minWidth: 300)
-                } else if let contact = viewModel.selectedContact {
-                    MessagesListView(
-                        contact: contact,
-                        viewModel: viewModel
-                    )
-                    .frame(minWidth: 300)
-                } else {
-                    VStack {
-                        if !viewModel.isImporting {
-                            Text("Select a contact to view messages")
-                                .foregroundColor(.secondary)
-                        }
+                .frame(minWidth: 300)
+            } else {
+                VStack {
+                    if !viewModel.isImporting {
+                        Text("Select a contact to view messages")
+                            .foregroundColor(.secondary)
                     }
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
-                
-                Divider()
-                
-                // Right: Attachments
-                AttachmentsView(viewModel: viewModel)
-                    .frame(width: 300)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
+
+            Divider()
+
+            // Right: Attachments
+            AttachmentsView(viewModel: viewModel)
+                .frame(width: 300)
         }
         .navigationTitle("Messages History Browser")
         .toolbar {

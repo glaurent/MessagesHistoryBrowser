@@ -138,7 +138,10 @@ class ChatsDatabase {
                 let chatIdentifier = chatData[chatIdentifierColumn]
                 let serviceName = chatData[serviceNameColumn]
 
-                NSLog("\(#function) contact chat identifier \(chatIdentifier)")
+                // ImportLogsContainer.log is an in-memory array append; NSLog
+                // additionally formats, timestamps, and writes to the system
+                // log, which adds up over the thousands of chats a real
+                // Messages database can hold.
                 ImportLogsContainer.log("contact chat guid \(guid) - \(chatIdentifier)")
 
                 let chatContact = contactForChatIdentifier(chatIdentifier, service:serviceName, inContext: localContext)
