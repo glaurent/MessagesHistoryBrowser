@@ -139,11 +139,20 @@ class ChatItemsFetcher: NSObject {
         completion?(matchingItems, matchingAttachments, matchingContacts)
     }
 
-    func clearSearch()
+    // Drops the current request and every result. Used before the store is
+    // cleared for a re-import, so no soon-to-be-deleted object stays referenced
+    // here, and so a request still in flight is discarded when it completes
+    // rather than materializing IDs that no longer exist.
+    func reset()
     {
+        requestGeneration += 1
         contact = nil
         searchTerm = nil
+        matchingItems.removeAll()
+        matchingAttachments.removeAll()
         matchingContacts = nil
+        currentSearchMatchingItems.removeAll()
+        currentSearchGroups.removeAll()
     }
 
     // use after a search has been restricted to one contact

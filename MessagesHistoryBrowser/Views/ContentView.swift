@@ -12,15 +12,16 @@ import CoreData
 struct ContentView: View {
     @EnvironmentObject var appState: AppState
     @StateObject private var viewModel = ContentViewModel()
-    
-    @State private var selectedContact: ChatContact?
-    
+
+    // The selection lives in the view model (see ContentViewModel.selectedContact)
+    // so a re-import can clear it before the store is emptied.
+
     var body: some View {
         GeometryReader { geometry in
             HStack(spacing: 0) {
                 // Sidebar: Contact list
                 ContactListView(
-                    selectedContact: $selectedContact,
+                    selectedContact: $viewModel.selectedContact,
                     viewModel: viewModel
                 )
                 .frame(width: 250)
@@ -33,7 +34,7 @@ struct ContentView: View {
                 if viewModel.searchTerm.count >= 3 {
                     SearchResultsView(viewModel: viewModel)
                         .frame(minWidth: 300)
-                } else if let contact = selectedContact {
+                } else if let contact = viewModel.selectedContact {
                     MessagesListView(
                         contact: contact,
                         viewModel: viewModel
@@ -80,7 +81,7 @@ struct ContentView: View {
         }
         // While searching, selecting a contact narrows the results to it
         // (and deselecting returns to all matches).
-        .onChange(of: selectedContact) { newContact in
+        .onChange(of: viewModel.selectedContact) { newContact in
             if viewModel.searchTerm.count >= 3 {
                 viewModel.narrowSearch(to: newContact)
             }
@@ -91,7 +92,7 @@ struct ContentView: View {
         .focusedSceneValue(\.refreshChatHistory) {
             Task { await viewModel.refreshChatHistory(appState: appState) }
         }
-        .focusedSceneValue(\.selectedContact, selectedContact)
+        .focusedSceneValue(\.selectedContact, viewModel.selectedContact)
         // Publish the selected contact (only when one is selected) so the
         // Export/Save menu commands can enable and act on it.
 //        .modifier(SelectedContactFocusValue(contact: selectedContact))

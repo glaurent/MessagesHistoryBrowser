@@ -32,6 +32,11 @@ class ContentViewModel: NSObject, ObservableObject, NSFetchedResultsControllerDe
     @Published var currentMessages: [ChatItem] = []
     @Published var currentAttachments: [ChatAttachment] = []
 
+    // The contact selected in the sidebar. Owned here rather than as view
+    // state so a re-import can clear it synchronously, before the store is
+    // emptied and the selected object becomes a deleted one.
+    @Published var selectedContact: ChatContact?
+
     @Published var beforeDateEnabled = false
     @Published var afterDateEnabled = false
     @Published var beforeDate = Date().addingTimeInterval(3600 * 24 * -7) // a week ago
@@ -146,6 +151,11 @@ class ContentViewModel: NSObject, ObservableObject, NSFetchedResultsControllerDe
     func refreshChatHistory(appState: AppState) async {
         guard let chatsDatabase = appState.chatsDatabase else { return }
 
+        // Everything the UI shows is about to be deleted from the store. Drop
+        // every reference first, synchronously, so the next render has nothing
+        // left that could fault a deleted object.
+        discardDisplayedData()
+
         appState.isRefreshingHistory = true
         isImporting = true
         importProgress = Progress(totalUnitCount: 10)
@@ -158,6 +168,22 @@ class ContentViewModel: NSObject, ObservableObject, NSFetchedResultsControllerDe
         importProgressObserver = nil
         loadContacts()
         appState.isRefreshingHistory = false
+    }
+
+    // Forgets every store object held for display: selection, contact lists,
+    // messages, attachments, search state, and the fetcher's cached results.
+    // The contact lists come back as the import saves (via the fetched results
+    // controller) and are reconciled by loadContacts() when it finishes.
+    private func discardDisplayedData() {
+        selectedContact = nil
+        searchTerm = ""
+        contactToRenarrow = nil
+        searchedContacts = nil
+        allKnownContacts.removeAll()
+        allUnknownContacts.removeAll()
+        currentMessages.removeAll()
+        currentAttachments.removeAll()
+        ChatItemsFetcher.sharedInstance.reset()
     }
 
     func loadMessagesForContact(_ contact: ChatContact) {

@@ -50,32 +50,52 @@ class MOCController: NSObject {
 
     func clearAllCoreData()
     {
-//        let allContacts = ChatContact.allContacts()
-//
-//        for contact in allContacts {
-//            managedObjectContext.delete(contact)
-//        }
+        MOCController.clearAllData(in: persistentContainer)
+    }
 
-        let contactsFetchRequest = ChatContact.fetchRequest() // NSFetchRequest<NSFetchRequestResult>(entityName: "Contact")
+    // Deletes every object in `container`'s store and tells its view context.
+    //
+    // Batch deletes run directly against the store and bypass the contexts, so
+    // the view context would otherwise keep its registered objects as stale
+    // zombies: rows already displayed keep showing old data, and faulting one
+    // of them fails. The store is asked for the deleted object IDs, which are
+    // merged into the view context as deletions; the objects it holds are
+    // invalidated and its fetched results controllers see them go.
+    //
+    // Must be called on the main queue, the view context's queue.
+    static func clearAllData(in container: NSPersistentContainer)
+    {
+        let viewContext = container.viewContext
 
-        let deleteContactsRequest = NSBatchDeleteRequest(fetchRequest: contactsFetchRequest)
+        let fetchRequests: [NSFetchRequest<NSFetchRequestResult>] = [
+            ChatContact.fetchRequest(),
+            ChatAttachment.fetchRequest(),
+            ChatMessage.fetchRequest(),
+            Chat.fetchRequest(),
+        ]
 
-        let deleteChatsRequest = NSBatchDeleteRequest(fetchRequest: Chat.fetchRequest())
-        let deleteMessagesRequest = NSBatchDeleteRequest(fetchRequest: ChatMessage.fetchRequest())
-        let deleteAttachmentsRequest = NSBatchDeleteRequest(fetchRequest: ChatAttachment.fetchRequest())
-
-        do {
-            let context = workerContext()
-            try context.execute(deleteContactsRequest)
-            try context.execute(deleteAttachmentsRequest)
-            try context.execute(deleteMessagesRequest)
-            try context.execute(deleteChatsRequest)
-
-            try context.save()
-        } catch let error {
-            NSLog("ERROR when deleting clearing store : \(error)")
+        var deletedObjectIDs = [NSManagedObjectID]()
+        let context = container.newBackgroundContext()
+        context.performAndWait {
+            do {
+                for fetchRequest in fetchRequests {
+                    let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+                    deleteRequest.resultType = .resultTypeObjectIDs
+                    let result = try context.execute(deleteRequest) as? NSBatchDeleteResult
+                    deletedObjectIDs.append(contentsOf: result?.result as? [NSManagedObjectID] ?? [])
+                }
+            } catch let error {
+                NSLog("ERROR when clearing store : \(error)")
+            }
         }
 
+        // Only the objects the view context actually holds need merging; the
+        // store may hold hundreds of thousands of rows the UI never touched.
+        let registeredIDs = Set(viewContext.registeredObjects.map { $0.objectID })
+        let idsToMerge = deletedObjectIDs.filter { registeredIDs.contains($0) }
+        guard !idsToMerge.isEmpty else { return }
+
+        NSManagedObjectContext.mergeChanges(fromRemoteContextSave: [NSDeletedObjectsKey: idsToMerge], into: [viewContext])
     }
 
     func workerContext() -> NSManagedObjectContext
