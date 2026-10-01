@@ -266,8 +266,13 @@ class ContactsMap {
     func contactImage(_ contactIdentifier:String) -> (NSImage?, (String, String)?) {
         do {
             let contact = try contactStore.unifiedContact(withIdentifier: contactIdentifier, keysToFetch:[CNContactImageDataKey as CNKeyDescriptor, CNContactThumbnailImageDataKey as CNKeyDescriptor, CNContactGivenNameKey as CNKeyDescriptor, CNContactFamilyNameKey as CNKeyDescriptor])
-            if let imageData = contact.imageData {
-                return (NSImage(data: imageData), nil) // thumbnailImageData is nil, why ?
+            // The thumbnail is pre-sized by the Contacts daemon (roughly
+            // 100-160px) and is all this app ever displays (at 32pt), so
+            // prefer it: the full-size `imageData` can be several megabytes,
+            // and both keys are transferred over IPC from the daemon whether
+            // used or not, so there's no cost to trying the smaller one first.
+            if let imageData = contact.thumbnailImageData ?? contact.imageData {
+                return (NSImage(data: imageData), nil)
             } else {
 
                 let firstNameInitial = String(contact.givenName.first ?? Character(" "))

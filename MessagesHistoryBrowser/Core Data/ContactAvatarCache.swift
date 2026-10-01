@@ -24,6 +24,11 @@ actor ContactAvatarCache {
 
     static let shared = ContactAvatarCache()
 
+    // ContactRow shows the avatar at 32 points; 64 pixels covers that at 2x
+    // (Retina) and is still sharp downscaled on a 1x display. Fixed rather
+    // than scale-aware, since this one size is the only place avatars appear.
+    private static let avatarPixelSize = 64
+
     private var cache: [String: ContactAvatar] = [:]
 
     // Lookups already running, so concurrent requests for the same contact
@@ -59,8 +64,8 @@ actor ContactAvatarCache {
 
         let (image, initialsPair) = ContactsMap.sharedInstance.contactImage(contactIdentifier)
 
-        if let image = image {
-            return .image(roundCorners(image))
+        if let image = image, let rounded = roundCorners(image, maxPixelSize: avatarPixelSize) {
+            return .image(rounded)
         } else if let initialsPair = initialsPair {
             return .initials("\(initialsPair.0)\(initialsPair.1)")
         }

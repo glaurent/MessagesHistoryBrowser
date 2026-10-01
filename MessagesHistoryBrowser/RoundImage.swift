@@ -8,31 +8,56 @@
 
 import Cocoa
 
-
-// Copied from http://stackoverflow.com/a/27157566/1081361
-
-func roundCorners(_ image: NSImage) -> NSImage
+// Crops `image` to a centered square, downscales it to `maxPixelSize` pixels
+// per side, and clips it to a circle. Returns nil if `image` can't be read as
+// a bitmap.
+//
+// Contact photos can be full-resolution (several MB decoded); this app only
+// ever shows them at 32 points. Caching the original size, as the previous
+// lockFocus-based version did, meant each cached avatar cost as much memory
+// as the source photo. Rendering through a CGContext at the final pixel size
+// also replaces the deprecated NSView lockFocus()/unlockFocus() drawing.
+func roundCorners(_ image: NSImage, maxPixelSize: Int) -> NSImage?
 {
-    let existing = image
-    let esize = existing.size
+    guard let sourceImage = image.cgImage(forProposedRect: nil, context: nil, hints: nil) else { return nil }
 
-    let sideLength = min(esize.width, esize.height) // make sure the resulting image is an actual circle - doesn't always look good if original image isn't properly centered
+    // Crop to a centered square so the circle isn't stretched from a
+    // non-square source photo.
+    let sourceSide = min(sourceImage.width, sourceImage.height)
+    let cropRect = CGRect(
+        x: (sourceImage.width - sourceSide) / 2,
+        y: (sourceImage.height - sourceSide) / 2,
+        width: sourceSide,
+        height: sourceSide
+    )
+    guard let croppedImage = sourceImage.cropping(to: cropRect) else { return nil }
 
-    let newSize = NSSize(width:sideLength, height:sideLength)
-    let composedImage = NSImage(size: newSize)
+    let side = max(1, min(maxPixelSize, sourceSide))
+    guard let context = CGContext(
+        data: nil,
+        width: side,
+        height: side,
+        bitsPerComponent: 8,
+        bytesPerRow: 0,
+        space: CGColorSpaceCreateDeviceRGB(),
+        bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue
+    ) else { return nil }
 
-    composedImage.lockFocus()
-    let ctx = NSGraphicsContext.current
-    ctx?.imageInterpolation = NSImageInterpolation.high
+    context.interpolationQuality = .high
+    let rect = CGRect(x: 0, y: 0, width: side, height: side)
+    context.addEllipse(in: rect)
+    context.clip()
+    context.draw(croppedImage, in: rect)
 
-    let imageFrame = NSRect(x: 0, y: 0, width: sideLength, height: sideLength)
-    let clipPath = NSBezierPath(ovalIn: imageFrame)
-    clipPath.windingRule = NSBezierPath.WindingRule.evenOdd
-    clipPath.addClip()
+    guard let outputImage = context.makeImage() else { return nil }
 
-    let rect = NSRect(x: 0, y: 0, width: newSize.width, height: newSize.height)
-    image.draw(at: NSZeroPoint, from: rect, operation: NSCompositingOperation.sourceOver, fraction: 1)
-    composedImage.unlockFocus()
-
-    return composedImage
+    // Wrap the bitmap directly rather than through NSImage(cgImage:size:),
+    // whose snapshot representation re-renders at the screen's scale and so
+    // reports doubled pixel dimensions on Retina (see AttachmentThumbnailCache,
+    // which hit the same issue). Size in points equals pixels here; SwiftUI
+    // scales the image to fit its frame regardless.
+    let representation = NSBitmapImageRep(cgImage: outputImage)
+    let result = NSImage(size: NSSize(width: side, height: side))
+    result.addRepresentation(representation)
+    return result
 }
