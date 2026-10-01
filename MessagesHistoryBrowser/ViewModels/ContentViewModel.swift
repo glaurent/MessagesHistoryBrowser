@@ -141,7 +141,8 @@ class ContentViewModel: NSObject, ObservableObject, NSFetchedResultsControllerDe
         importProgress = Progress(totalUnitCount: 10)
         importProgressObserver = ObservableProgress(progress: importProgress)
 
-        await chatsDatabase.populate(importProgress)
+        let contactsAccessGranted = await chatsDatabase.populate(importProgress)
+        reportContactsAccessResult(contactsAccessGranted, appState: appState)
 
         isImporting = false
         importProgressObserver = nil
@@ -162,12 +163,26 @@ class ContentViewModel: NSObject, ObservableObject, NSFetchedResultsControllerDe
         importProgressObserver = ObservableProgress(progress: importProgress)
 
         MOCController.sharedInstance.clearAllCoreData()
-        await chatsDatabase.populate(importProgress)
+        let contactsAccessGranted = await chatsDatabase.populate(importProgress)
+        reportContactsAccessResult(contactsAccessGranted, appState: appState)
 
         isImporting = false
         importProgressObserver = nil
         loadContacts()
         appState.isRefreshingHistory = false
+    }
+
+    // Surfaces a failed Contacts lookup to the user and makes sure the import
+    // is actually visible. Without Contacts access every chat resolves to an
+    // "unknown" contact (no name, no identifier) — and the sidebar hides
+    // unknown contacts by default, so without this the whole app would appear
+    // empty after the user dismisses the alert, with no clue that the chats
+    // are there, just filtered out.
+    private func reportContactsAccessResult(_ granted: Bool, appState: AppState) {
+        appState.contactsAccessDenied = !granted
+        if !granted {
+            appState.showChatsFromUnknown = true
+        }
     }
 
     // Forgets every store object held for display: selection, contact lists,

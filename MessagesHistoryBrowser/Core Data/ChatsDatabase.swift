@@ -47,8 +47,19 @@ class ChatsDatabase {
 
     }
 
-    func populate(_ progress:Progress) async
+    // Imports chats and messages from chat.db, resolving each chat handle to
+    // a Contacts framework contact where possible. Returns whether Contacts
+    // access was available for that resolution, so the caller can tell the
+    // user when it wasn't (every chat then falls back to its raw phone
+    // number, email address, or handle as its display name).
+    @discardableResult
+    func populate(_ progress:Progress) async -> Bool
     {
+        let contactsAccessGranted = await contactsPhoneNumberMap.requestAccessIfNeeded()
+        if !contactsAccessGranted {
+            ImportLogsContainer.log("Contacts access was not granted: chats will show phone numbers, email addresses, or handles instead of contact names.")
+        }
+
         let defaultCountryPhonePrefix = UserDefaults.standard.string(forKey: CountryPhonePrefixUserDefaultsKey) ?? "+33"
         _ = contactsPhoneNumberMap.populate(withCountryPhonePrefix: defaultCountryPhonePrefix)
 
@@ -91,6 +102,7 @@ class ChatsDatabase {
             }
         }
 
+        return contactsAccessGranted
     }
 
     func importAllChatsFromDB(_ localContext:NSManagedObjectContext)

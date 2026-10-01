@@ -79,6 +79,19 @@ struct ContentView: View {
         .onAppear {
             viewModel.setupDatabase(appState: appState)
         }
+        // Shown after an import if Contacts access wasn't available, so chat
+        // participants showing as raw phone numbers/emails has an explanation
+        // and a way to fix it, instead of failing silently.
+        .alert("Contacts Access Needed", isPresented: $appState.contactsAccessDenied) {
+            Button("Open System Settings") {
+                if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Contacts") {
+                    NSWorkspace.shared.open(url)
+                }
+            }
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text("MessagesHistoryBrowser couldn't access your Contacts, so chat participants are shown by phone number or email address instead of name. Grant access in System Settings > Privacy & Security > Contacts, then choose Refresh Chat History.")
+        }
         // While searching, selecting a contact narrows the results to it
         // (and deselecting returns to all matches).
         .onChange(of: viewModel.selectedContact) { newContact in

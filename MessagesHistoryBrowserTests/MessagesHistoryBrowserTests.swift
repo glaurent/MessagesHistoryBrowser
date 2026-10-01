@@ -111,4 +111,19 @@ class MessagesHistoryBrowserTests: XCTestCase {
         XCTAssertNil(ContactsMap.sharedInstance.nameForEmailAddress("nobody-\(UUID().uuidString)@example.invalid"))
     }
 
+    // Without an explicit requestAccess call, `.notDetermined` never becomes
+    // `.authorized`: the fetch APIs just fail silently and every chat
+    // resolves to "unknown" with no prompt ever shown. This exercises the
+    // `.authorized` branch (the test host already has access, per the test
+    // above) and confirms the call returns promptly rather than blocking
+    // waiting on a prompt that will never come.
+    func testRequestAccessIfNeededReturnsGrantedWhenAlreadyAuthorized() async throws {
+        try XCTSkipUnless(CNContactStore.authorizationStatus(for: .contacts) == .authorized,
+                          "Contacts access not granted to the test host")
+
+        let granted = await ContactsMap.sharedInstance.requestAccessIfNeeded()
+
+        XCTAssertTrue(granted)
+    }
+
 }

@@ -65,6 +65,40 @@ class ContactsMap {
         contactFormatter.style = .fullName
     }
 
+    // Requests Contacts access if the user has never been asked, awaiting the
+    // system's one-time permission prompt. Must be called (and its result
+    // acted on) before the first lookup of an import: `authorizationStatus`
+    // starts at `.notDetermined` on a fresh install, and simply calling the
+    // fetch APIs without requesting access first fails silently — every chat
+    // resolves to "unknown" with no prompt ever shown and no explanation.
+    //
+    // Returns whether the app can use the Contacts framework: already
+    // authorized, newly granted, or not (denied, restricted, or the user
+    // dismissed the prompt) — in which case every lookup below fails, so the
+    // caller should tell the user why their contacts aren't being resolved.
+    func requestAccessIfNeeded() async -> Bool {
+        switch CNContactStore.authorizationStatus(for: .contacts) {
+        case .authorized:
+            return true
+
+        case .notDetermined:
+            return await withCheckedContinuation { continuation in
+                contactStore.requestAccess(for: .contacts) { granted, error in
+                    if let error = error {
+                        NSLog("\(#function) : error requesting Contacts access : \(error.localizedDescription)")
+                    }
+                    continuation.resume(returning: granted)
+                }
+            }
+
+        case .denied, .restricted:
+            return false
+
+        @unknown default:
+            return false
+        }
+    }
+
     func populate(withCountryPhonePrefix phonePrefix:String) -> Bool {
 
         guard CNContactStore.authorizationStatus(for: .contacts) == .authorized else {

@@ -31,6 +31,11 @@ class AppState: ObservableObject {
     @Published var isRefreshingHistory = false
     @Published var needDBReload = false
 
+    // Set after an import when Contacts access was not available, so
+    // ContentView can tell the user why chats show numbers and addresses
+    // instead of names, rather than failing silently.
+    @Published var contactsAccessDenied = false
+
     static let iCloudStoredAttachmentExtension = "pluginPayloadAttachment"
 
     let chatsDBPath = "/Users/" + NSUserName() + "/Library/Messages/chat.db"
