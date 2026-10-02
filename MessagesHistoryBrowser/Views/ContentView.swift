@@ -30,7 +30,7 @@ struct ContentView: View {
 
             // Middle: Messages list — search results span all contacts,
             // otherwise show the selected contact's conversation.
-            if viewModel.searchTerm.count >= 3 {
+            if viewModel.searchTerm.count >= ContentViewModel.searchCountLimit {
                 SearchResultsView(viewModel: viewModel)
                     .frame(minWidth: 300)
             } else if let contact = viewModel.selectedContact {
@@ -93,7 +93,7 @@ struct ContentView: View {
         // While searching, selecting a contact narrows the results to it
         // (and deselecting returns to all matches).
         .onChange(of: viewModel.selectedContact) { newContact in
-            if viewModel.searchTerm.count >= 3 {
+            if viewModel.searchTerm.count >= ContentViewModel.searchCountLimit {
                 viewModel.narrowSearch(to: newContact)
             }
         }

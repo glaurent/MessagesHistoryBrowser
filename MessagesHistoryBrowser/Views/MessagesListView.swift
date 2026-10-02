@@ -87,6 +87,22 @@ struct SearchResultsView: View {
                             AttachmentInlineView(attachment: attachment)
                         }
                     }
+
+                    // Only the first page of a large match set is published
+                    // for display (see ContentViewModel.searchResultPageSize);
+                    // this reveals more without re-running the search.
+                    if viewModel.displayedSearchMatchCount < viewModel.totalSearchMatchCount {
+                        VStack(spacing: 8) {
+                            Text("Showing \(viewModel.displayedSearchMatchCount) of \(viewModel.totalSearchMatchCount) matches")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                            Button("Show More") {
+                                viewModel.showMoreSearchResults()
+                            }
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 12)
+                    }
                 }
                 .padding()
             }

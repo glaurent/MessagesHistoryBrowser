@@ -13,6 +13,7 @@ import CoreData
 
 @MainActor
 class ContentViewModel: NSObject, ObservableObject, NSFetchedResultsControllerDelegate {
+
     @Published var searchTerm: String = ""
     @Published var isImporting = false
     @Published var importProgress = Progress(totalUnitCount: 10)
@@ -32,6 +33,20 @@ class ContentViewModel: NSObject, ObservableObject, NSFetchedResultsControllerDe
     @Published var currentMessages: [ChatItem] = []
     @Published var currentAttachments: [ChatAttachment] = []
 
+    // A common search term can match tens of thousands of messages (a bare
+    // " a " matched ~79,000 in one real store). SwiftUI's ForEach diffs the
+    // whole currentMessages array on every change, so handing it that many
+    // rows at once makes typing in the search field stutter. Only a bounded
+    // prefix is published for display; totalSearchMatchCount lets the view
+    // show "N of M" and offer "Show More", which just reveals more of
+    // allSearchMatchingItems — already fully computed by ChatItemsFetcher —
+    // rather than re-running the search.
+    static let searchCountLimit = 1
+    private static let searchResultPageSize = 500
+    private var allSearchMatchingItems: [ChatItem] = []
+    @Published private(set) var totalSearchMatchCount = 0
+    @Published private(set) var displayedSearchMatchCount = 0
+
     // The contact selected in the sidebar. Owned here rather than as view
     // state so a re-import can clear it synchronously, before the store is
     // emptied and the selected object becomes a deleted one.
@@ -43,7 +58,7 @@ class ContentViewModel: NSObject, ObservableObject, NSFetchedResultsControllerDe
     @Published var afterDate = Date().addingTimeInterval(3600 * 24 * -30) // a month ago
 
     // True when the search field holds enough characters to be in search mode.
-    var isSearchActive: Bool { searchTerm.count >= 3 }
+    var isSearchActive: Bool { searchTerm.count >= Self.searchCountLimit }
 
     var isDateFilterActive: Bool { afterDateEnabled || beforeDateEnabled }
 
@@ -214,7 +229,14 @@ class ContentViewModel: NSObject, ObservableObject, NSFetchedResultsControllerDe
         allUnknownContacts.removeAll()
         currentMessages.removeAll()
         currentAttachments.removeAll()
+        clearSearchResultPaging()
         ChatItemsFetcher.sharedInstance.reset()
+    }
+
+    fileprivate func clearSearchResultPaging() {
+        allSearchMatchingItems.removeAll()
+        totalSearchMatchCount = 0
+        displayedSearchMatchCount = 0
     }
 
     func loadMessagesForContact(_ contact: ChatContact) {
@@ -255,11 +277,25 @@ class ContentViewModel: NSObject, ObservableObject, NSFetchedResultsControllerDe
         // add a second, needless run-loop turn before every result reaches
         // the UI. MainActor.assumeIsolated documents and asserts that
         // guarantee instead of re-dispatching on top of it.
-    private func setupFetcherCallback() {
+    fileprivate func setupFetcherCallback() {
         ChatItemsFetcher.sharedInstance.completion = { [weak self] items, attachments, matchedContacts in
             MainActor.assumeIsolated {
                 guard let self = self else { return }
-                self.currentMessages = items
+
+                // Every completion call is a genuinely new result set (Show
+                // More never goes through the fetcher — see
+                // showMoreSearchResults()), so paging always resets here,
+                // whether this is a new search, a narrow-to-contact, or a
+                // date-filter re-run.
+                if self.isSearchActive {
+                    self.allSearchMatchingItems = items
+                    self.totalSearchMatchCount = items.count
+                    self.displayedSearchMatchCount = min(items.count, Self.searchResultPageSize)
+                    self.currentMessages = Array(items.prefix(self.displayedSearchMatchCount))
+                } else {
+                    self.clearSearchResultPaging()
+                    self.currentMessages = items
+                }
                 self.currentAttachments = attachments
                     // Only a search populates matchedContacts; use it to filter the sidebar.
                 if let matchedContacts = matchedContacts {
@@ -272,6 +308,14 @@ class ContentViewModel: NSObject, ObservableObject, NSFetchedResultsControllerDe
                 }
             }
         }
+    }
+
+        // Reveals more of the already-fetched search results. No new search
+        // runs: ChatItemsFetcher already computed the full ordered list, so
+        // this is just extending how much of it is published for display.
+    func showMoreSearchResults() {
+        displayedSearchMatchCount = min(displayedSearchMatchCount + Self.searchResultPageSize, allSearchMatchingItems.count)
+        currentMessages = Array(allSearchMatchingItems.prefix(displayedSearchMatchCount))
     }
 
         // While a search is active, restrict the results to a single contact (or
@@ -288,6 +332,7 @@ class ContentViewModel: NSObject, ObservableObject, NSFetchedResultsControllerDe
             searchedContacts = nil
             currentMessages = []
             currentAttachments = []
+            clearSearchResultPaging()
             ChatItemsFetcher.sharedInstance.searchTerm = nil
             return
         }
