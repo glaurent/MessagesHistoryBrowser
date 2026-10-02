@@ -16,8 +16,6 @@ class ContactsMap {
 
     static let sharedInstance = ContactsMap()
 
-    var phoneNumbersMap = [String : String]() // maps contact phone numbers (as found in Messages.app chats) to contact identifiers (as used by the Contacts framework)
-
     let contactStore = CNContactStore()
 
     // Keys needed to display a contact's name (nickname first, else the
@@ -97,94 +95,6 @@ class ContactsMap {
         @unknown default:
             return false
         }
-    }
-
-    func populate(withCountryPhonePrefix phonePrefix:String) -> Bool {
-
-        guard CNContactStore.authorizationStatus(for: .contacts) == .authorized else {
-            return false
-        }
-
-        if #available(OSX 10.13, *) {
-            NSLog("\(#function) macOS >10.13 detected - no need to populate the ContactsMap, using Contacts framework phone number search instead")
-            return true
-        }
-
-        // ensure countryPhonePrefix has a leading "+"
-        //
-        if phonePrefix.first != "+" {
-            countryPhonePrefix = "+" + phonePrefix
-        } else {
-            countryPhonePrefix = phonePrefix
-        }
-
-        // get number of contacts so we can set the totalUnitCount of this NSProgress
-        //
-        let predicate = CNContact.predicateForContactsInContainer(withIdentifier: contactStore.defaultContainerIdentifier())
-        if let allContactsForCount = try? contactStore.unifiedContacts(matching: predicate, keysToFetch: [CNContactGivenNameKey as CNKeyDescriptor]) {
-            progress = Progress(totalUnitCount: Int64(allContactsForCount.count))
-//            NSLog("\(#function) : nb of contacts : \(allContactsForCount.count)")
-        }
-
-        DispatchQueue.global(qos: .background).sync { () -> Void in
-
-            let keysToFetch = [CNContactPhoneNumbersKey, CNContactFamilyNameKey, CNContactGivenNameKey, CNContactNicknameKey] as [CNKeyDescriptor]
-            let contactFetchRequest = CNContactFetchRequest(keysToFetch: keysToFetch)
-
-            do {
-
-                try self.contactStore.enumerateContacts(with: contactFetchRequest) { (contact, stop) -> Void in
-                    NSLog("\(#function) contact : \(contact.givenName)")
-
-                    let phoneNumbers = contact.phoneNumbers
-                    if phoneNumbers.count > 0 {
-                        for index in 0..<phoneNumbers.count {
-                            let phoneNb = phoneNumbers[index].value 
-                            let canonPhoneNb = self.canonicalizePhoneNumber(phoneNb.stringValue)
-                            NSLog("\(#function) phoneNb : \(canonPhoneNb) for contact \(contact.givenName)")
-                            self.phoneNumbersMap[canonPhoneNb] = contact.identifier
-                            DispatchQueue.main.async {
-                                self.progress?.completedUnitCount = Int64(index)
-                            }
-                            
-                        }
-                        
-                    }
-                }
-            } catch let e {
-                NSLog("\(#function) error while enumerating contacts : \(e)")
-            }
-
-        }
-
-        self.progress = nil
-
-        return true
-    }
-
-    func canonicalizePhoneNumber(_ rawPhoneNumber:String) -> String {
-
-        var res = ""
-
-        for ch in rawPhoneNumber {
-            switch ch {
-            case "0"..."9", "+":
-                res.append(ch)
-
-            default:
-                break // skip character
-            }
-        }
-
-        // This really works for French numbers only
-        //
-        if res.hasPrefix("0") {
-            let skip0Index = res.index(res.startIndex, offsetBy: 1)
-//            res = countryPhonePrefix + res.substring(from: skip0Index)
-            res = countryPhonePrefix + res[skip0Index...]
-        }
-
-        return res
     }
 
     func nameForPhoneNumber(_ phoneNumber:String) -> (String, String)? {

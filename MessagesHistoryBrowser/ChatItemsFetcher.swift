@@ -39,13 +39,6 @@ class ChatItemsFetcher: NSObject {
     // been made since (e.g. the user clicked through several contacts quickly).
     private var requestGeneration = 0
 
-    let messageEnumIteratorDateSort = { (a:NSFastEnumerationIterator.Element, b:NSFastEnumerationIterator.Element) -> Bool in
-        let aItem = a as! ChatItem
-        let bItem = b as! ChatItem
-
-        return aItem.dateNanoseconds < bItem.dateNanoseconds
-    }
-
     // MARK: Entry point - search
     //
     func searchWithCompletionBlock()
@@ -153,14 +146,6 @@ class ChatItemsFetcher: NSObject {
         matchingContacts = nil
         currentSearchMatchingItems.removeAll()
         currentSearchGroups.removeAll()
-    }
-
-    // use after a search has been restricted to one contact
-    // re-instate the search results to all matching contacts
-    //
-    func restoreSearchToAllContacts()
-    {
-        matchingItems = currentSearchMatchingItems
     }
 
     // Synchronous, main-queue part of a request: narrowing the current search
@@ -460,42 +445,5 @@ class ChatItemsFetcher: NSObject {
         property.expressionResultType = .objectIDAttributeType
         return property
     }
-
-    // Taken from http://rshankar.com/binary-search-in-swift/
-    //
-    func messageIndexInDateSortedMessages(_ message:ChatMessage, inMessages allMessages:[ChatMessage]) -> Int
-    {
-        var lowerIndex = 0;
-        var upperIndex = allMessages.count - 1
-
-        while (true) {
-            let currentIndex = (lowerIndex + upperIndex)/2
-            if (allMessages[currentIndex] == message) {
-                return currentIndex
-            } else if (lowerIndex > upperIndex) {
-                return allMessages.count
-            } else {
-                if allMessages[currentIndex].dateNanoseconds > message.dateNanoseconds {
-                    upperIndex = currentIndex - 1
-                } else {
-                    lowerIndex = currentIndex + 1
-                }
-            }
-        }
-    }
-
-//    func searchChatsForString(string:String, afterDate:NSDate? = nil, beforeDate:NSDate? = nil, completion:([ChatMessage] -> (Void)))
-//    {
-//        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0)) { () -> Void in
-//            
-//            let result = self.searchChatsForString(string, afterDate: afterDate, beforeDate: beforeDate)
-//            
-//            dispatch_async(dispatch_get_main_queue(), { () -> Void in
-//                completion(result)
-//            })
-//        }
-//    }
-
-
 
 }

@@ -19,12 +19,6 @@ class ChatsDatabase {
 
     var contactsPhoneNumberMap:ContactsMap! // want delayed init
 
-    var allChats:[Chat] {
-        get {
-            return Chat.allChatsInContext(MOCController.sharedInstance.managedObjectContext)
-        }
-    }
-
     var db:Connection!
 
     // Number of inserted messages between two save-and-reset cycles of the
@@ -57,13 +51,8 @@ class ChatsDatabase {
     {
         let contactsAccessGranted = await contactsPhoneNumberMap.requestAccessIfNeeded()
         if !contactsAccessGranted {
-            ImportLogsContainer.log("Contacts access was not granted: chats will show phone numbers, email addresses, or handles instead of contact names.")
+            NSLog("Contacts access was not granted: chats will show phone numbers, email addresses, or handles instead of contact names.")
         }
-
-        let defaultCountryPhonePrefix = UserDefaults.standard.string(forKey: CountryPhonePrefixUserDefaultsKey) ?? "+33"
-        _ = contactsPhoneNumberMap.populate(withCountryPhonePrefix: defaultCountryPhonePrefix)
-
-//        let workerContext = MOCController.sharedInstance.workerContext()
 
         let persistentContainer = MOCController.sharedInstance.persistentContainer
 
@@ -82,7 +71,7 @@ class ChatsDatabase {
                 progress.localizedAdditionalDescription = ""
                 progress.becomeCurrent(withPendingUnitCount: 2)
 
-                ImportLogsContainer.log("Importing chats")
+                NSLog("Importing chats")
                 self.importAllChatsFromDB(workerContext)
 
                 progress.resignCurrent()
@@ -107,8 +96,6 @@ class ChatsDatabase {
 
     func importAllChatsFromDB(_ localContext:NSManagedObjectContext)
     {
-        ImportLogsContainer.clear()
-
         let chats = Table("chat")
         
         let chatRowIDColumn = Expression<Int>("ROWID")
@@ -129,7 +116,7 @@ class ChatsDatabase {
 
             let dbRows = try db.prepare(chats.select(chatRowIDColumn, chatGUIDColumn, serviceNameColumn, chatIdentifierColumn))
 
-            ImportLogsContainer.log("dbRows underestimated count: \(dbRows.underestimatedCount)")
+            NSLog("dbRows underestimated count: \(dbRows.underestimatedCount)")
 
             for chatData in dbRows {
 
@@ -138,11 +125,11 @@ class ChatsDatabase {
                 let chatIdentifier = chatData[chatIdentifierColumn]
                 let serviceName = chatData[serviceNameColumn]
 
-                // ImportLogsContainer.log is an in-memory array append; NSLog
+                // NSLog is an in-memory array append; NSLog
                 // additionally formats, timestamps, and writes to the system
                 // log, which adds up over the thousands of chats a real
                 // Messages database can hold.
-                ImportLogsContainer.log("contact chat guid \(guid) - \(chatIdentifier)")
+                NSLog("contact chat guid \(guid) - \(chatIdentifier)")
 
                 let chatContact = contactForChatIdentifier(chatIdentifier, service:serviceName, inContext: localContext)
 
@@ -282,7 +269,7 @@ class ChatsDatabase {
         var chatsByRowID = chatIDsByRowID.mapValues { workerContext.object(with: $0) as! Chat }
         let chatRowIDs = Array(chatIDsByRowID.keys)
 
-        ImportLogsContainer.log("Fetching messages for contact \(contact.name) - \(chatRowIDs.count) chat(s)")
+        NSLog("Fetching messages for contact \(contact.name) - \(chatRowIDs.count) chat(s)")
 
         // Persists what has been inserted so far, drops it from memory, and
         // re-resolves the objects the loops keep using.
@@ -291,7 +278,6 @@ class ChatsDatabase {
                 try workerContext.save()
             } catch let error as NSError {
                 NSLog("\(#function) : worker context save fail : \(error)")
-                ImportLogsContainer.log("ChatsDatabase.collectMessages : worker context save fail : \(error)")
             }
             workerContext.reset()
             contact = workerContext.object(with: contactID) as! ChatContact
@@ -382,7 +368,7 @@ class ChatsDatabase {
                 }
             }
 
-            ImportLogsContainer.log("Found \(index) messages - \(messagesFromMeCounter) outgoing messages spanning from \(firstDate ?? Date()) to \(lastDate) for contact \(contact.name)")
+            NSLog("Found \(index) messages - \(messagesFromMeCounter) outgoing messages spanning from \(firstDate ?? Date()) to \(lastDate) for contact \(contact.name)")
 
             // Attachments: attachment -> message_attachment_join -> chat_message_join.
             // DISTINCT because the join tables may link one attachment to
@@ -406,7 +392,6 @@ class ChatsDatabase {
 
         } catch {
             NSLog("\(#function) : error when querying chat.db : \(error)")
-            ImportLogsContainer.log("ChatsDatabase.collectMessages : error when querying chat.db : \(error)")
         }
 
         saveAndReset()

@@ -31,7 +31,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		AFAB024721447BB1000D9864 /* Contacts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Contacts.framework; path = System/Library/Frameworks/Contacts.framework; sourceTree = SDKROOT; };
 		AFD974931BB816B5004CF8D7 /* MessagesHistoryBrowser.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MessagesHistoryBrowser.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AFD974A71BB816B6004CF8D7 /* MessagesHistoryBrowserTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MessagesHistoryBrowserTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		AFD974AB1BB816B6004CF8D7 /* MessagesHistoryBrowserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesHistoryBrowserTests.swift; sourceTree = "<group>"; };
@@ -45,7 +44,6 @@
 		AF7CF4E73069258100104468 /* Exceptions for "MessagesHistoryBrowser" folder in "MessagesHistoryBrowser" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				ChatListViewController.swift,
 				Info.plist,
 			);
 			target = AFD974921BB816B5004CF8D7 /* MessagesHistoryBrowser */;
@@ -87,7 +85,6 @@
 		35B0AF69470812EC5E751CD1 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				AFAB024721447BB1000D9864 /* Contacts.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";

@@ -8,7 +8,6 @@
 
 import Foundation
 
-let CountryPhonePrefixUserDefaultsKey = "CountryPhonePrefix"
 let ShowDetailedSenderUserDefaultsKey = "ShowDetailedSender"
 let ShowTerseTimeUserDefaultsKey = "ShowTerseTime"
 
