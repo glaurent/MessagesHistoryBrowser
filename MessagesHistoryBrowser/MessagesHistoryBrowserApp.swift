@@ -6,12 +6,20 @@
 //
 
 import SwiftUI
+import Sparkle
 
 
 @main
 struct MessagesHistoryBrowserApp: App {
     @StateObject private var appState = AppState()
-    
+
+    // Owns Sparkle's updater for the app's lifetime. `startingUpdater: true`
+    // has it begin life immediately, scheduling automatic checks per the
+    // user's preference and the SUFeedURL/SUPublicDSAKeyFile already
+    // configured in Info.plist; AppCommands' menu item triggers a manual
+    // check against the same updater.
+    private let updaterController = SPUStandardUpdaterController(startingUpdater: true, updaterDelegate: nil, userDriverDelegate: nil)
+
     var body: some Scene {
         WindowGroup {
             ContentView()
@@ -19,7 +27,7 @@ struct MessagesHistoryBrowserApp: App {
                 .environmentObject(appState)
         }
         .commands {
-            AppCommands()
+            AppCommands(updater: updaterController.updater)
         }
     }
 }

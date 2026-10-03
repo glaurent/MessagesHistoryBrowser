@@ -34,7 +34,7 @@
 	<string>NSApplication</string>
 	<key>SUFeedURL</key>
 	<string>https://telegraph-road.org/MessagesHistoryBrowser/appcast.xml</string>
-	<key>SUPublicDSAKeyFile</key>
-	<string>dsa_pub.pem</string>
+	<key>SUPublicEDKey</key>
+	<string>nsEkqkav87s8WvjfwypGQOcJd9X5cYuJOW7HayyyD+E=</string>
 </dict>
 </plist>

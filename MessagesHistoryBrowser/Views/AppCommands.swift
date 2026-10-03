@@ -6,6 +6,8 @@
 //
 
 import SwiftUI
+import Combine
+import Sparkle
 
 
 struct AppCommands: Commands {
@@ -13,12 +15,12 @@ struct AppCommands: Commands {
     @FocusedValue(\.selectedContact) var selectedContact
     @FocusedValue(\.appState) var appState
     @FocusedValue(\.refreshChatHistory) var refreshChatHistory
-    
+
+    let updater: SPUUpdater
+
     var body: some Commands {
         CommandGroup(after: .appInfo) {
-            Button("Check for Updates...") {
-                // Sparkle integration would go here
-            }
+            CheckForUpdatesView(updater: updater)
         }
         
         // Inject into the existing File menu rather than creating a second one.
@@ -249,5 +251,36 @@ extension FocusedValues {
     var refreshChatHistory: (() -> Void)? {
         get { self[RefreshChatHistoryKey.self] }
         set { self[RefreshChatHistoryKey.self] = newValue }
+    }
+}
+
+// MARK: - Sparkle "Check for Updates…" menu item
+
+// Mirrors SPUUpdater.canCheckForUpdates, which is false while a check or
+// update is already in progress, so the menu item disables itself at the
+// right time instead of allowing a second concurrent check.
+private final class CheckForUpdatesViewModel: ObservableObject {
+    @Published var canCheckForUpdates = false
+
+    init(updater: SPUUpdater) {
+        updater.publisher(for: \.canCheckForUpdates)
+            .assign(to: &$canCheckForUpdates)
+    }
+}
+
+private struct CheckForUpdatesView: View {
+    @ObservedObject private var viewModel: CheckForUpdatesViewModel
+    private let updater: SPUUpdater
+
+    init(updater: SPUUpdater) {
+        self.updater = updater
+        self.viewModel = CheckForUpdatesViewModel(updater: updater)
+    }
+
+    var body: some View {
+        Button("Check for Updates...") {
+            updater.checkForUpdates()
+        }
+        .disabled(!viewModel.canCheckForUpdates)
     }
 }
