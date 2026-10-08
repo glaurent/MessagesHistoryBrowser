@@ -10,7 +10,14 @@ import Foundation
 import Cocoa
 import CoreData
 
-class ChatAttachment: ChatItem {
+protocol ViewableChatAttachment {
+
+    var attachmentID: AnyHashable { get }
+    var date: Date { get }
+    func fullImage() async -> NSImage?
+}
+
+class ChatAttachment: ChatItem, ViewableChatAttachment {
 
     static let EntityName = "Attachment"
 
@@ -24,6 +31,8 @@ class ChatAttachment: ChatItem {
 
     var associatedRange:NSRange?
 
+    var attachmentID: AnyHashable { objectID }
+
     convenience init(managedObjectContext:NSManagedObjectContext, withFileName aFileName:String, withDate aDate:Date, inChat aChat:Chat) {
 
         let entityDescription = NSEntityDescription.entity(forEntityName: ChatAttachment.EntityName, in: managedObjectContext)
@@ -32,6 +41,18 @@ class ChatAttachment: ChatItem {
         fileName = aFileName
         chat = aChat
         contact = aChat.contact
+    }
+
+    func fullImage() async -> NSImage? {
+        guard let fileName = standardizedFileName else {
+            return nil
+        }
+
+        let image = await Task.detached(priority: .userInitiated) {
+            NSImage(contentsOfFile: fileName)
+        }.value
+
+        return image
     }
 
 }

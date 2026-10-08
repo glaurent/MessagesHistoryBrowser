@@ -49,10 +49,10 @@ struct AttachmentsView: View {
         }
         .navigationTitle("Attachments")
         .sheet(item: $selectedAttachment) { attachment in
-            ImageViewerSheet(attachment: attachment)
+            ImageViewerSheet(attachments: viewModel.currentAttachments, initialAttachment: attachment)
         }
     }
-    
+
     private func showAttachmentInFinder(_ attachment: ChatAttachment) {
         guard let fileName = attachment.fileName else { return }
         let path = fileName.standardizingPath()
@@ -98,7 +98,7 @@ struct AttachmentThumbnailView: View {
             .cornerRadius(8)
             .clipped()
 
-            Text(AttachmentThumbnailView.dateFormatter.string(from: attachment.date as Date))
+            Text(AttachmentThumbnailView.dateFormatter.string(from: attachment.date))
                 .font(.caption2)
                 .foregroundColor(.secondary)
                 .lineLimit(1)
@@ -125,70 +125,7 @@ struct AttachmentThumbnailView: View {
 }
 
 
-struct ImageViewerSheet: View {
-    let attachment: ChatAttachment
-    @Environment(\.presentationMode) private var presentationMode
-    @State private var fullImage: NSImage?
-    @State private var isLoading = true
 
-    var body: some View {
-        VStack {
-            HStack {
-                Spacer()
-                Button("Close") {
-                    presentationMode.wrappedValue.dismiss()
-                }
-                .keyboardShortcut(.cancelAction)
-                .padding()
-            }
-
-            if let fullImage = fullImage {
-                Image(nsImage: fullImage)
-                    .resizable()
-                    .scaledToFit()
-                    .padding()
-            } else if isLoading {
-                ProgressView()
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-            } else {
-                VStack(spacing: 12) {
-                    Image(systemName: "eye.slash")
-                        .font(.system(size: 48))
-                        .foregroundColor(.secondary)
-                    Text("Preview unavailable")
-                        .font(.headline)
-                        .foregroundColor(.secondary)
-                    Text("This attachment can't be displayed. It may be stored in iCloud or be a non-image file.")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal)
-                }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-            }
-        }
-        .frame(minWidth: 400, minHeight: 400)
-        .onAppear {
-            loadFullImage()
-        }
-    }
-
-    private func loadFullImage() {
-        guard let fileName = attachment.fileName else {
-            isLoading = false
-            return
-        }
-        let path = fileName.standardizingPath()
-
-        DispatchQueue.global(qos: .userInitiated).async {
-            let image = NSImage(contentsOfFile: path)
-            DispatchQueue.main.async {
-                self.fullImage = image
-                self.isLoading = false
-            }
-        }
-    }
-}
 
 // Required for `.sheet(item:)`, which presents based on a non-nil Identifiable item.
 extension ChatAttachment: Identifiable {
