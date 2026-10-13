@@ -34,10 +34,14 @@ struct ContentView: View {
                 SearchResultsView(viewModel: viewModel)
                     .frame(minWidth: 300)
             } else if let contact = viewModel.selectedContact {
-                MessagesListView(
-                    contact: contact,
-                    viewModel: viewModel
-                )
+                // Conversation, with its collapsible activity calendar below.
+                VStack(spacing: 0) {
+                    MessagesListView(
+                        contact: contact,
+                        viewModel: viewModel
+                    )
+                    ConversationCalendarPane(viewModel: viewModel)
+                }
                 .frame(minWidth: 300)
             } else {
                 VStack {
