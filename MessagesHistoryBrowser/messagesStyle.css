@@ -1,5 +1,24 @@
+/* Follow the viewer's light/dark appearance: `color-scheme` makes the browser
+   switch its default page background, text and link colors, and the variables
+   below adjust the message colors to match. */
+:root {
+    color-scheme: light dark;
+
+    --text-color: #1d1d1f;
+    --text-from-me-color: #555555;
+    --date-color: #6e6e73;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --text-color: #f5f5f7;
+        --text-from-me-color: #b0b0b5;
+        --date-color: #98989d;
+    }
+}
+
 body {
-    font: "Arial", sans-serif;
+    font-family: Arial, sans-serif;
 }
 
 .message {
@@ -7,15 +26,15 @@ body {
 }
 
 .date, .dateFromMe {
-    color: grey;
+    color: var(--date-color);
 }
 
 .messageText {
-    color: black;
+    color: var(--text-color);
 }
 
 .messageTextFromMe {
-    color: darkgrey;
+    color: var(--text-from-me-color);
 }
 
 .image {
