@@ -47,7 +47,10 @@ final class AttachmentThumbnailCache {
     private let decodeQueue: OperationQueue = {
         let queue = OperationQueue()
         queue.name = "AttachmentThumbnailCache.decode"
-        queue.qualityOfService = .userInitiated
+        // Not .userInitiated: ImageIO hands some decodes (HEIC, notably) to an
+        // internal Default-QoS queue and blocks on it, which the runtime flags
+        // as a priority inversion when the waiting thread is higher QoS.
+        queue.qualityOfService = .default
         queue.maxConcurrentOperationCount = max(2, ProcessInfo.processInfo.activeProcessorCount / 2)
         return queue
     }()
