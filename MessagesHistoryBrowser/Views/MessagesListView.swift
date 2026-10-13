@@ -14,21 +14,24 @@ struct MessagesListView: View {
     @State private var highlightTerm: String?
 
     var body: some View {
-        ScrollView {
-            LazyVStack(alignment: .leading, spacing: 8) {
-                ForEach(viewModel.currentMessages, id: \.objectID) { item in
-                    if let message = item as? ChatMessage {
-                        MessageBubbleView(
-                            message: message,
-                            highlightTerm: highlightTerm,
-                            showDetailedSender: viewModel.isSearchActive
-                        )
-                    } else if let attachment = item as? ChatAttachment {
-                        AttachmentInlineView(attachment: attachment)
+        ScrollViewReader { proxy in
+            ScrollView {
+                LazyVStack(alignment: .leading, spacing: 8) {
+                    ForEach(viewModel.currentMessages, id: \.objectID) { item in
+                        if let message = item as? ChatMessage {
+                            MessageBubbleView(
+                                message: message,
+                                highlightTerm: highlightTerm,
+                                showDetailedSender: viewModel.isSearchActive
+                            )
+                        } else if let attachment = item as? ChatAttachment {
+                            AttachmentInlineView(attachment: attachment)
+                        }
                     }
                 }
+                .padding()
             }
-            .padding()
+            .modifier(ConversationScrollTargetModifier(viewModel: viewModel, proxy: proxy))
         }
         .navigationTitle(contact.name)
         .onAppear {
@@ -62,6 +65,14 @@ struct SearchResultsView: View {
     @ObservedObject var viewModel: ContentViewModel
 
     var body: some View {
+        ScrollViewReader { proxy in
+            searchResultsScrollView
+                .modifier(ConversationScrollTargetModifier(viewModel: viewModel, proxy: proxy))
+        }
+        .navigationTitle("Search Results")
+    }
+
+    private var searchResultsScrollView: some View {
         ScrollView {
             if viewModel.currentMessages.isEmpty {
                 VStack(spacing: 12) {
@@ -107,7 +118,42 @@ struct SearchResultsView: View {
                 .padding()
             }
         }
-        .navigationTitle("Search Results")
+    }
+}
+
+// Scrolls to viewModel.conversationScrollTarget ("Show in Conversation" in the
+// attachments grid). When the target's contact was just selected, its
+// conversation is still loading, so this also retries whenever
+// currentMessages changes, and clears the target once it has scrolled.
+struct ConversationScrollTargetModifier: ViewModifier {
+    @ObservedObject var viewModel: ContentViewModel
+    let proxy: ScrollViewProxy
+
+    func body(content: Content) -> some View {
+        content
+            .onAppear {
+                scrollToTargetIfLoaded()
+            }
+            .onChange(of: viewModel.conversationScrollTarget) { _ in
+                scrollToTargetIfLoaded()
+            }
+            .onChange(of: viewModel.currentMessages) { _ in
+                scrollToTargetIfLoaded()
+            }
+    }
+
+    private func scrollToTargetIfLoaded() {
+        guard let target = viewModel.conversationScrollTarget,
+              viewModel.currentMessages.contains(where: { $0.objectID == target }) else { return }
+
+        viewModel.conversationScrollTarget = nil
+        // Deferred one run-loop turn so a just-published currentMessages has
+        // been laid out before scrolling to one of its rows.
+        DispatchQueue.main.async {
+            withAnimation {
+                proxy.scrollTo(target, anchor: .center)
+            }
+        }
     }
 }
 

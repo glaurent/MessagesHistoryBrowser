@@ -38,6 +38,9 @@ struct AttachmentsView: View {
                                 selectedAttachment = attachment
                             }
                             .contextMenu {
+                                Button("Show in Conversation") {
+                                    viewModel.showInConversation(attachment)
+                                }
                                 Button("Show in Finder") {
                                     showAttachmentInFinder(attachment)
                                 }

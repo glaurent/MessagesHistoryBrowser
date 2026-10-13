@@ -52,6 +52,11 @@ class ContentViewModel: NSObject, ObservableObject, NSFetchedResultsControllerDe
     // emptied and the selected object becomes a deleted one.
     @Published var selectedContact: ChatContact?
 
+    // Item the messages list should scroll to, set by "Show in Conversation"
+    // in the attachments grid. The list scrolls once the item is among
+    // currentMessages (it may still be loading), then clears this.
+    @Published var conversationScrollTarget: NSManagedObjectID?
+
     @Published var beforeDateEnabled = false
     @Published var afterDateEnabled = false
     @Published var beforeDate = Date().addingTimeInterval(3600 * 24 * -7) // a week ago
@@ -324,6 +329,16 @@ class ContentViewModel: NSObject, ObservableObject, NSFetchedResultsControllerDe
     func narrowSearch(to contact: ChatContact?) {
         ChatItemsFetcher.sharedInstance.contact = contact
         ChatItemsFetcher.sharedInstance.searchWithCompletionBlock()
+    }
+
+        // Scrolls the conversation to where the attachment was sent. Outside
+        // of a search, the attachment's contact is selected first if needed,
+        // so its conversation gets loaded.
+    func showInConversation(_ attachment: ChatAttachment) {
+        if !isSearchActive && selectedContact != attachment.contact {
+            selectedContact = attachment.contact
+        }
+        conversationScrollTarget = attachment.objectID
     }
 
     func performSearch() {
