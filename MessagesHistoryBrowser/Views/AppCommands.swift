@@ -11,7 +11,7 @@ import Sparkle
 
 
 struct AppCommands: Commands {
-    // @Environment(\.openWindow) var openWindow  // Only available in macOS 13+
+    @Environment(\.openWindow) var openWindow
     @FocusedValue(\.selectedContact) var selectedContact
     @FocusedValue(\.appState) var appState
     @FocusedValue(\.refreshChatHistory) var refreshChatHistory
@@ -51,6 +51,14 @@ struct AppCommands: Commands {
                 saveChat()
             }
             .keyboardShortcut("s", modifiers: .command)
+            .disabled(selectedContact == nil)
+        }
+
+        CommandGroup(after: .toolbar) {
+            Button("Show Conversation Stats") {
+                guard let contact = selectedContact else { return }
+                openWindow(id: ConversationStatsView.windowID, value: contact.objectID.uriRepresentation())
+            }
             .disabled(selectedContact == nil)
         }
     }

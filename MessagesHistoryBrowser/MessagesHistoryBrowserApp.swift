@@ -29,6 +29,13 @@ struct MessagesHistoryBrowserApp: App {
         .commands {
             AppCommands(updater: updaterController.updater)
         }
+
+        // One stats window per contact, keyed by the URI of its object ID;
+        // opening it again for the same contact brings the existing window forward.
+        WindowGroup("Conversation Stats", id: ConversationStatsView.windowID, for: URL.self) { $contactURI in
+            ConversationStatsView(contactURI: contactURI)
+        }
+        .defaultSize(width: 760, height: 460)
     }
 }
 
