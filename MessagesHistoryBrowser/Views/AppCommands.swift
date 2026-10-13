@@ -269,12 +269,16 @@ private final class CheckForUpdatesViewModel: ObservableObject {
 }
 
 private struct CheckForUpdatesView: View {
-    @ObservedObject private var viewModel: CheckForUpdatesViewModel
+    // A StateObject, not an ObservedObject: the commands body is re-evaluated
+    // whenever a focused value changes (e.g. selecting a contact), and an
+    // ObservedObject would build a new view model each time, its KVO
+    // subscription publishing canCheckForUpdates from within that view update.
+    @StateObject private var viewModel: CheckForUpdatesViewModel
     private let updater: SPUUpdater
 
     init(updater: SPUUpdater) {
         self.updater = updater
-        self.viewModel = CheckForUpdatesViewModel(updater: updater)
+        _viewModel = StateObject(wrappedValue: CheckForUpdatesViewModel(updater: updater))
     }
 
     var body: some View {
