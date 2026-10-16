@@ -77,7 +77,7 @@ struct ConversationCalendarView: View {
 
     // Keyed by the start of each day (in the current calendar).
     @State private var activityByDay: [Date: DayActivity] = [:]
-    // First day of each month spanned by the conversation, oldest first.
+    // First day of each month with messages, oldest first.
     @State private var months: [Date] = []
     @State private var maxDailyCount = 1
 
@@ -93,7 +93,15 @@ struct ConversationCalendarView: View {
                 ScrollViewReader { proxy in
                     ScrollView(.horizontal) {
                         LazyHStack(alignment: .top, spacing: 20) {
-                            ForEach(months, id: \.self) { month in
+                            ForEach(Array(months.enumerated()), id: \.element) { index, month in
+                                // Months without messages aren't shown; mark
+                                // where they were skipped.
+                                if index > 0 {
+                                    let skipped = skippedMonthCount(from: months[index - 1], to: month)
+                                    if skipped > 0 {
+                                        gapMarker(skippedMonths: skipped)
+                                    }
+                                }
                                 monthView(for: month)
                                     .id(month)
                             }
@@ -139,6 +147,42 @@ struct ConversationCalendarView: View {
                 proxy.scrollTo(last, anchor: .trailing)
             }
         }
+    }
+
+    // MARK: - Gaps
+
+    private static let gapFormatter: DateComponentsFormatter = {
+        let formatter = DateComponentsFormatter()
+        formatter.allowedUnits = [.year, .month]
+        formatter.unitsStyle = .full
+        return formatter
+    }()
+
+    // Number of months strictly between two shown months (both month starts).
+    private func skippedMonthCount(from previous: Date, to month: Date) -> Int {
+        let difference = calendar.dateComponents([.month], from: previous, to: month).month ?? 1
+        return max(0, difference - 1)
+    }
+
+    // A label such as "5 months" between two thin dividers, standing in for
+    // the skipped months.
+    private func gapMarker(skippedMonths: Int) -> some View {
+        let label = Self.gapFormatter.string(from: DateComponents(month: skippedMonths)) ?? "\(skippedMonths)"
+
+        return HStack(spacing: 6) {
+            Rectangle()
+                .fill(Color.secondary.opacity(0.4))
+                .frame(width: 1)
+            Text(label)
+                .font(.caption2)
+                .foregroundColor(.secondary)
+                .fixedSize()
+            Rectangle()
+                .fill(Color.secondary.opacity(0.4))
+                .frame(width: 1)
+        }
+        .frame(maxHeight: .infinity)
+        .help("No messages for \(label)")
     }
 
     // MARK: - Month grid
@@ -270,20 +314,12 @@ struct ConversationCalendarView: View {
             }
         }
 
-        var monthStarts: [Date] = []
-        if let firstDay = activity.keys.min(), let lastDay = activity.keys.max(),
-           let firstMonth = calendar.dateInterval(of: .month, for: firstDay)?.start,
-           let lastMonth = calendar.dateInterval(of: .month, for: lastDay)?.start {
-            var month = firstMonth
-            while month <= lastMonth {
-                monthStarts.append(month)
-                guard let next = calendar.date(byAdding: .month, value: 1, to: month) else { break }
-                month = next
-            }
-        }
+        // Only months with at least one active day are shown, so long
+        // silences in a conversation don't fill the calendar with empty grids.
+        let monthStarts = Set(activity.keys.compactMap { calendar.dateInterval(of: .month, for: $0)?.start })
 
         activityByDay = activity
         maxDailyCount = maxCount
-        months = monthStarts
+        months = monthStarts.sorted()
     }
 }
