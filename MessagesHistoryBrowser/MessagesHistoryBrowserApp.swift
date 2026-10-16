@@ -34,9 +34,17 @@ struct MessagesHistoryBrowserApp: App {
         // opening it again for the same contact brings the existing window forward.
         WindowGroup("Conversation Stats", id: ConversationStatsView.windowID, for: URL.self) { $contactURI in
             ConversationStatsView(contactURI: contactURI)
+                .environmentObject(appState)
         }
         .defaultSize(width: 760, height: 460)
     }
+}
+
+// A request to show a contact's conversation from a given date onwards.
+struct ConversationDateRequest: Equatable {
+    // URI representation of the contact's NSManagedObjectID.
+    let contactURI: URL
+    let date: Date
 }
 
 // App-level state management
@@ -50,6 +58,11 @@ class AppState: ObservableObject {
     // ContentView can tell the user why chats show numbers and addresses
     // instead of names, rather than failing silently.
     @Published var contactsAccessDenied = false
+
+    // Set by a stats window when one of its bars is clicked, so the main
+    // window can show the conversation at that time. The main window clears
+    // it once handled.
+    @Published var conversationDateRequest: ConversationDateRequest?
 
     static let iCloudStoredAttachmentExtension = "pluginPayloadAttachment"
 

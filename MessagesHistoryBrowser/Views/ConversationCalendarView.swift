@@ -80,7 +80,6 @@ struct ConversationCalendarView: View {
     // First day of each month spanned by the conversation, oldest first.
     @State private var months: [Date] = []
     @State private var maxDailyCount = 1
-    @State private var selectedDay: Date?
 
     private let calendar = Calendar.current
 
@@ -102,12 +101,14 @@ struct ConversationCalendarView: View {
                         .padding(.horizontal, 12)
                         .padding(.vertical, 8)
                     }
-                    // Most recent activity is the most relevant: start at the end.
                     .onAppear {
-                        scrollToLatestMonth(proxy)
+                        scrollToFocusedMonth(proxy)
                     }
                     .onChange(of: months) {
-                        scrollToLatestMonth(proxy)
+                        scrollToFocusedMonth(proxy)
+                    }
+                    .onChange(of: viewModel.focusedDay) {
+                        scrollToFocusedMonth(proxy)
                     }
                 }
             }
@@ -121,10 +122,22 @@ struct ConversationCalendarView: View {
         }
     }
 
-    private func scrollToLatestMonth(_ proxy: ScrollViewProxy) {
-        guard let last = months.last else { return }
-        DispatchQueue.main.async {
-            proxy.scrollTo(last, anchor: .trailing)
+    // Brings the focused day's month into view (scrolling as little as
+    // needed, so clicking a day that's already visible doesn't jump), or
+    // with no focused day, the most recent month, the most relevant one.
+    private func scrollToFocusedMonth(_ proxy: ScrollViewProxy) {
+        if let focusedDay = viewModel.focusedDay,
+           let focusedMonth = calendar.dateInterval(of: .month, for: focusedDay)?.start,
+           months.contains(focusedMonth) {
+            DispatchQueue.main.async {
+                withAnimation {
+                    proxy.scrollTo(focusedMonth, anchor: nil)
+                }
+            }
+        } else if let last = months.last {
+            DispatchQueue.main.async {
+                proxy.scrollTo(last, anchor: .trailing)
+            }
         }
     }
 
@@ -167,7 +180,7 @@ struct ConversationCalendarView: View {
 
         if let activity = activityByDay[day] {
             Button {
-                selectedDay = day
+                viewModel.focusedDay = day
                 viewModel.conversationScrollTarget = activity.firstItemID
             } label: {
                 ZStack {
@@ -175,7 +188,7 @@ struct ConversationCalendarView: View {
                         .fill(Color.accentColor.opacity(spotOpacity(for: activity.messageCount)))
                         .frame(width: spotDiameter(for: activity.messageCount),
                                height: spotDiameter(for: activity.messageCount))
-                    if selectedDay == day {
+                    if viewModel.focusedDay == day {
                         Circle()
                             .strokeBorder(Color.accentColor, lineWidth: 1.5)
                     }
@@ -272,8 +285,5 @@ struct ConversationCalendarView: View {
         activityByDay = activity
         maxDailyCount = maxCount
         months = monthStarts
-        if let selectedDay = selectedDay, activity[selectedDay] == nil {
-            self.selectedDay = nil
-        }
     }
 }

@@ -65,8 +65,14 @@ struct ConversationStatsView: View {
     // URI representation of the contact's NSManagedObjectID, the window's value.
     let contactURI: URL?
 
+    @EnvironmentObject private var appState: AppState
+
     @State private var loadState = StatsLoadState.loading
     @AppStorage("conversationStatsGranularity") private var granularity = StatsGranularity.week
+    // Start of the period whose bar was last clicked, highlighted in the chart.
+    @State private var selectedPeriod: Date?
+    // Exact date under the last click, set by the chart's selection.
+    @State private var clickedDate: Date?
 
     private static let meLabel = "Me"
 
@@ -122,6 +128,9 @@ struct ConversationStatsView: View {
             }
         }
         .padding()
+        .onChange(of: granularity) {
+            selectedPeriod = nil
+        }
     }
 
     private func summary(days: [DailyCount]) -> some View {
@@ -162,6 +171,7 @@ struct ConversationStatsView: View {
                 y: .value("Messages", bar.count)
             )
             .foregroundStyle(by: .value("Sender", bar.sender))
+            .opacity(selectedPeriod == nil || selectedPeriod == bar.periodStart ? 1 : 0.45)
         }
         .chartForegroundStyleScale(domain: [Self.meLabel, contactName],
                                    range: [Color.accentColor, Color.gray])
@@ -169,6 +179,36 @@ struct ConversationStatsView: View {
         .chartScrollableAxes(.horizontal)
         .chartXVisibleDomain(length: visibleLength)
         .chartScrollPosition(initialX: initialX)
+        // Clicking a bar shows the conversation from the start of its period
+        // in the main window. The tap goes through chartGesture rather than
+        // a view overlaid on the chart, which would swallow the scroll
+        // events that scroll the chart horizontally. selectXValue(at:)
+        // converts the click to a date, scroll offset included, and
+        // publishes it through the chartXSelection binding.
+        .chartXSelection(value: $clickedDate)
+        .chartGesture { proxy in
+            SpatialTapGesture()
+                .onEnded { value in
+                    proxy.selectXValue(at: value.location.x)
+                }
+        }
+        .onChange(of: clickedDate) { _, date in
+            guard let date = date else { return }
+            handleClick(on: date, bars: bars)
+        }
+    }
+
+    private func handleClick(on date: Date, bars: [ChartBar]) {
+        guard let contactURI = contactURI else { return }
+
+        // A bar covers its whole period, so map the clicked date to the
+        // start of that period, and only act if it actually has messages.
+        let unit = granularity.calendarComponent
+        guard let periodStart = Calendar.current.dateInterval(of: unit, for: date)?.start,
+              bars.contains(where: { $0.periodStart == periodStart }) else { return }
+
+        selectedPeriod = periodStart
+        appState.conversationDateRequest = ConversationDateRequest(contactURI: contactURI, date: periodStart)
     }
 
     // MARK: - Data
