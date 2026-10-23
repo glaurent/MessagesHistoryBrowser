@@ -34,10 +34,14 @@ struct ContentView: View {
                 SearchResultsView(viewModel: viewModel)
                     .frame(minWidth: 300)
             } else if let contact = viewModel.selectedContact {
-                MessagesListView(
-                    contact: contact,
-                    viewModel: viewModel
-                )
+                // Conversation, with its collapsible activity calendar below.
+                VStack(spacing: 0) {
+                    MessagesListView(
+                        contact: contact,
+                        viewModel: viewModel
+                    )
+                    ConversationCalendarPane(viewModel: viewModel)
+                }
                 .frame(minWidth: 300)
             } else {
                 VStack {
@@ -97,6 +101,12 @@ struct ContentView: View {
                 viewModel.narrowSearch(to: newContact)
             }
         }
+        // A bar was clicked in a stats window: show that time in the conversation.
+        .onChange(of: appState.conversationDateRequest) { _, request in
+            guard let request = request else { return }
+            appState.conversationDateRequest = nil
+            showConversation(for: request)
+        }
         // Publish focused values so the menu bar commands can reach the app state
         // and trigger a refresh that actually reloads the visible contact list.
         .focusedSceneValue(\.appState, appState)
@@ -107,6 +117,16 @@ struct ContentView: View {
         // Publish the selected contact (only when one is selected) so the
         // Export/Save menu commands can enable and act on it.
 //        .modifier(SelectedContactFocusValue(contact: selectedContact))
+    }
+
+    // Resolves the request's contact in the main context (it may have been
+    // deleted by a re-import since the stats window was opened).
+    private func showConversation(for request: ConversationDateRequest) {
+        let context = MOCController.sharedInstance.managedObjectContext
+        guard let contactID = context.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: request.contactURI),
+              let contact = try? context.existingObject(with: contactID) as? ChatContact else { return }
+
+        viewModel.showInConversation(contact, at: request.date)
     }
 }
 

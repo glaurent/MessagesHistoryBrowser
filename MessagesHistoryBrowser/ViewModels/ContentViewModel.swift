@@ -50,12 +50,27 @@ class ContentViewModel: NSObject, ObservableObject, NSFetchedResultsControllerDe
     // The contact selected in the sidebar. Owned here rather than as view
     // state so a re-import can clear it synchronously, before the store is
     // emptied and the selected object becomes a deleted one.
-    @Published var selectedContact: ChatContact?
+    @Published var selectedContact: ChatContact? {
+        didSet {
+            guard oldValue != selectedContact else { return }
+            focusedDay = nil
+            pendingScrollDate = nil
+        }
+    }
 
     // Item the messages list should scroll to, set by "Show in Conversation"
     // in the attachments grid. The list scrolls once the item is among
     // currentMessages (it may still be loading), then clears this.
     @Published var conversationScrollTarget: NSManagedObjectID?
+
+    // Day highlighted in the conversation calendar (start of day), set by
+    // clicking a calendar day or a bar in the stats window. The calendar
+    // scrolls to its month when it changes.
+    @Published var focusedDay: Date?
+
+    // Date to scroll the conversation to once the selected contact's
+    // messages have loaded (see showInConversation(_:at:)).
+    private var pendingScrollDate: Date?
 
     @Published var beforeDateEnabled = false
     @Published var afterDateEnabled = false
@@ -300,6 +315,12 @@ class ContentViewModel: NSObject, ObservableObject, NSFetchedResultsControllerDe
                 } else {
                     self.clearSearchResultPaging()
                     self.currentMessages = items
+                    // A date was requested before this conversation loaded.
+                    if let date = self.pendingScrollDate,
+                       ChatItemsFetcher.sharedInstance.contact == self.selectedContact {
+                        self.pendingScrollDate = nil
+                        self.scrollToFirstItem(onOrAfter: date)
+                    }
                 }
                 self.currentAttachments = attachments
                     // Only a search populates matchedContacts; use it to filter the sidebar.
@@ -339,6 +360,38 @@ class ContentViewModel: NSObject, ObservableObject, NSFetchedResultsControllerDe
             selectedContact = attachment.contact
         }
         conversationScrollTarget = attachment.objectID
+    }
+
+        // Shows the contact's conversation from `date` onwards (a bar clicked
+        // in the stats window). Leaves search mode, since the conversation
+        // and its calendar aren't shown during a search. If the conversation
+        // isn't the one loaded yet, the scroll happens once it has loaded.
+    func showInConversation(_ contact: ChatContact, at date: Date) {
+        let wasSearching = isSearchActive
+        if wasSearching {
+            // Reset the fetcher's search term now, rather than waiting for the
+            // search field's onChange, so the conversation load below can't
+            // be served from the cached search results.
+            searchTerm = ""
+            performSearch()
+        }
+
+        if wasSearching || selectedContact != contact {
+            // Set after selectedContact, whose didSet clears it.
+            selectedContact = contact
+            pendingScrollDate = date
+        } else {
+            scrollToFirstItem(onOrAfter: date)
+        }
+    }
+
+        // Scrolls the conversation (and the calendar) to the first displayed
+        // item on or after `date` — or the last item, if every displayed item
+        // is older (e.g. a date filter excludes later messages).
+    private func scrollToFirstItem(onOrAfter date: Date) {
+        guard let item = currentMessages.first(where: { $0.date >= date }) ?? currentMessages.last else { return }
+        focusedDay = Calendar.current.startOfDay(for: item.date)
+        conversationScrollTarget = item.objectID
     }
 
     func performSearch() {

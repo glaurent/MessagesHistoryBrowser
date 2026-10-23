@@ -1,0 +1,325 @@
+//
+//  ConversationCalendarView.swift
+//  MessagesHistoryBrowser
+//
+//  Calendar of the displayed conversation's activity: one spot per day with
+//  messages, sized by how many were exchanged. Clicking a day scrolls the
+//  conversation to that day's first message.
+//
+
+import SwiftUI
+import CoreData
+
+// Collapsible pane hosting the calendar, with a clickable separator bar
+// that hides or shows it.
+struct ConversationCalendarPane: View {
+    @ObservedObject var viewModel: ContentViewModel
+
+    @AppStorage("showConversationCalendar") private var isCalendarShown = true
+
+    var body: some View {
+        VStack(spacing: 0) {
+            CalendarPaneSeparator(isExpanded: $isCalendarShown)
+
+            if isCalendarShown {
+                ConversationCalendarView(viewModel: viewModel)
+                    .frame(height: ConversationCalendarView.paneHeight)
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
+            }
+        }
+        .clipped()
+    }
+}
+
+// Thin separator bar between the conversation and the calendar; clicking it
+// toggles the calendar.
+private struct CalendarPaneSeparator: View {
+    @Binding var isExpanded: Bool
+
+    var body: some View {
+        Button {
+            withAnimation(.easeInOut(duration: 0.2)) {
+                isExpanded.toggle()
+            }
+        } label: {
+            HStack(spacing: 4) {
+                Image(systemName: isExpanded ? "chevron.down" : "chevron.up")
+                    .font(.system(size: 9, weight: .semibold))
+                Text("Calendar")
+                    .font(.caption)
+            }
+            .foregroundColor(.secondary)
+            .frame(maxWidth: .infinity)
+            .frame(height: 18)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .background(Color(NSColor.windowBackgroundColor))
+        .overlay(alignment: .top) { Divider() }
+        .overlay(alignment: .bottom) { if isExpanded { Divider() } }
+        .help(isExpanded ? "Hide Calendar" : "Show Calendar")
+    }
+}
+
+// Per-day summary of the displayed conversation.
+private struct DayActivity {
+    var messageCount: Int
+    // First item of the day, used as the conversation scroll target.
+    var firstItemID: NSManagedObjectID
+}
+
+struct ConversationCalendarView: View {
+    @ObservedObject var viewModel: ContentViewModel
+
+    static let paneHeight: CGFloat = 170
+
+    private static let cellSize: CGFloat = 22
+
+    // Keyed by the start of each day (in the current calendar).
+    @State private var activityByDay: [Date: DayActivity] = [:]
+    // First day of each month with messages, oldest first.
+    @State private var months: [Date] = []
+    @State private var maxDailyCount = 1
+
+    private let calendar = Calendar.current
+
+    var body: some View {
+        Group {
+            if months.isEmpty {
+                Text("No messages")
+                    .foregroundColor(.secondary)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+            } else {
+                ScrollViewReader { proxy in
+                    ScrollView(.horizontal) {
+                        LazyHStack(alignment: .top, spacing: 20) {
+                            ForEach(Array(months.enumerated()), id: \.element) { index, month in
+                                // Months without messages aren't shown; mark
+                                // where they were skipped.
+                                if index > 0 {
+                                    let skipped = skippedMonthCount(from: months[index - 1], to: month)
+                                    if skipped > 0 {
+                                        gapMarker(skippedMonths: skipped)
+                                    }
+                                }
+                                monthView(for: month)
+                                    .id(month)
+                            }
+                        }
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 8)
+                    }
+                    .onAppear {
+                        scrollToFocusedMonth(proxy)
+                    }
+                    .onChange(of: months) {
+                        scrollToFocusedMonth(proxy)
+                    }
+                    .onChange(of: viewModel.focusedDay) {
+                        scrollToFocusedMonth(proxy)
+                    }
+                }
+            }
+        }
+        .background(Color(NSColor.controlBackgroundColor))
+        .onAppear {
+            rebuildActivity(from: viewModel.currentMessages)
+        }
+        .onChange(of: viewModel.currentMessages) { _, newItems in
+            rebuildActivity(from: newItems)
+        }
+    }
+
+    // Brings the focused day's month into view (scrolling as little as
+    // needed, so clicking a day that's already visible doesn't jump), or
+    // with no focused day, the most recent month, the most relevant one.
+    private func scrollToFocusedMonth(_ proxy: ScrollViewProxy) {
+        if let focusedDay = viewModel.focusedDay,
+           let focusedMonth = calendar.dateInterval(of: .month, for: focusedDay)?.start,
+           months.contains(focusedMonth) {
+            DispatchQueue.main.async {
+                withAnimation {
+                    proxy.scrollTo(focusedMonth, anchor: nil)
+                }
+            }
+        } else if let last = months.last {
+            DispatchQueue.main.async {
+                proxy.scrollTo(last, anchor: .trailing)
+            }
+        }
+    }
+
+    // MARK: - Gaps
+
+    private static let gapFormatter: DateComponentsFormatter = {
+        let formatter = DateComponentsFormatter()
+        formatter.allowedUnits = [.year, .month]
+        formatter.unitsStyle = .full
+        return formatter
+    }()
+
+    // Number of months strictly between two shown months (both month starts).
+    private func skippedMonthCount(from previous: Date, to month: Date) -> Int {
+        let difference = calendar.dateComponents([.month], from: previous, to: month).month ?? 1
+        return max(0, difference - 1)
+    }
+
+    // A label such as "5 months" between two thin dividers, standing in for
+    // the skipped months.
+    private func gapMarker(skippedMonths: Int) -> some View {
+        let label = Self.gapFormatter.string(from: DateComponents(month: skippedMonths)) ?? "\(skippedMonths)"
+
+        return HStack(spacing: 6) {
+            Rectangle()
+                .fill(Color.secondary.opacity(0.4))
+                .frame(width: 1)
+            Text(label)
+                .font(.caption2)
+                .foregroundColor(.secondary)
+                .fixedSize()
+            Rectangle()
+                .fill(Color.secondary.opacity(0.4))
+                .frame(width: 1)
+        }
+        .frame(maxHeight: .infinity)
+        .help("No messages for \(label)")
+    }
+
+    // MARK: - Month grid
+
+    private func monthView(for month: Date) -> some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text(month.formatted(.dateTime.month(.wide).year()))
+                .font(.caption.bold())
+
+            Grid(horizontalSpacing: 0, verticalSpacing: 0) {
+                GridRow {
+                    ForEach(Array(weekdaySymbols.enumerated()), id: \.offset) { _, symbol in
+                        Text(symbol)
+                            .font(.system(size: 9))
+                            .foregroundColor(.secondary)
+                            .frame(width: Self.cellSize, height: 14)
+                    }
+                }
+
+                ForEach(Array(weeks(of: month).enumerated()), id: \.offset) { _, week in
+                    GridRow {
+                        ForEach(Array(week.enumerated()), id: \.offset) { _, day in
+                            if let day = day {
+                                dayCell(for: day)
+                            } else {
+                                Color.clear
+                                    .frame(width: Self.cellSize, height: Self.cellSize)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func dayCell(for day: Date) -> some View {
+        let dayNumber = calendar.component(.day, from: day)
+
+        if let activity = activityByDay[day] {
+            Button {
+                viewModel.focusedDay = day
+                viewModel.conversationScrollTarget = activity.firstItemID
+            } label: {
+                ZStack {
+                    Circle()
+                        .fill(Color.accentColor.opacity(spotOpacity(for: activity.messageCount)))
+                        .frame(width: spotDiameter(for: activity.messageCount),
+                               height: spotDiameter(for: activity.messageCount))
+                    if viewModel.focusedDay == day {
+                        Circle()
+                            .strokeBorder(Color.accentColor, lineWidth: 1.5)
+                    }
+                    Text("\(dayNumber)")
+                        .font(.system(size: 9))
+                        .foregroundColor(.primary)
+                }
+                .frame(width: Self.cellSize, height: Self.cellSize)
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .help("\(day.formatted(date: .abbreviated, time: .omitted)): \(activity.messageCount) item\(activity.messageCount == 1 ? "" : "s")")
+        } else {
+            Text("\(dayNumber)")
+                .font(.system(size: 9))
+                .foregroundColor(.secondary.opacity(0.6))
+                .frame(width: Self.cellSize, height: Self.cellSize)
+        }
+    }
+
+    // Spots grow with the day's message count, on a log scale so a handful
+    // of very busy days doesn't make every other day a pinprick.
+    private func spotDiameter(for count: Int) -> CGFloat {
+        let minDiameter: CGFloat = 8
+        let maxDiameter = Self.cellSize - 2
+        guard maxDailyCount > 1 else { return maxDiameter }
+        let ratio = log(Double(count)) / log(Double(maxDailyCount))
+        return minDiameter + (maxDiameter - minDiameter) * CGFloat(ratio)
+    }
+
+    private func spotOpacity(for count: Int) -> Double {
+        guard maxDailyCount > 1 else { return 0.6 }
+        let ratio = log(Double(count)) / log(Double(maxDailyCount))
+        return 0.3 + 0.5 * ratio
+    }
+
+    // Very short weekday symbols, ordered starting from the locale's first weekday.
+    private var weekdaySymbols: [String] {
+        let symbols = calendar.veryShortStandaloneWeekdaySymbols
+        let first = calendar.firstWeekday - 1
+        return Array(symbols[first...] + symbols[..<first])
+    }
+
+    // The month's days laid out in weeks of 7, padded with nil before the
+    // first day and after the last.
+    private func weeks(of month: Date) -> [[Date?]] {
+        guard let dayRange = calendar.range(of: .day, in: .month, for: month) else { return [] }
+
+        let weekday = calendar.component(.weekday, from: month)
+        let leadingBlanks = (weekday - calendar.firstWeekday + 7) % 7
+
+        var days: [Date?] = Array(repeating: nil, count: leadingBlanks)
+        for dayOffset in 0..<dayRange.count {
+            days.append(calendar.date(byAdding: .day, value: dayOffset, to: month))
+        }
+        while days.count % 7 != 0 {
+            days.append(nil)
+        }
+
+        return stride(from: 0, to: days.count, by: 7).map { Array(days[$0..<$0 + 7]) }
+    }
+
+    // MARK: - Activity
+
+    // Groups the displayed items by day. currentMessages is in chronological
+    // order, so the first item seen for a day is that day's first item.
+    private func rebuildActivity(from items: [ChatItem]) {
+        var activity: [Date: DayActivity] = [:]
+        var maxCount = 1
+
+        for item in items {
+            let day = calendar.startOfDay(for: item.date)
+            if var existing = activity[day] {
+                existing.messageCount += 1
+                maxCount = max(maxCount, existing.messageCount)
+                activity[day] = existing
+            } else {
+                activity[day] = DayActivity(messageCount: 1, firstItemID: item.objectID)
+            }
+        }
+
+        // Only months with at least one active day are shown, so long
+        // silences in a conversation don't fill the calendar with empty grids.
+        let monthStarts = Set(activity.keys.compactMap { calendar.dateInterval(of: .month, for: $0)?.start })
+
+        activityByDay = activity
+        maxDailyCount = maxCount
+        months = monthStarts.sorted()
+    }
+}
