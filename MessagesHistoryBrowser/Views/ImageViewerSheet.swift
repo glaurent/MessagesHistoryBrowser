@@ -51,7 +51,7 @@ struct ImageViewerSheet: View {
                 Image(nsImage: fullImage)
                     .resizable()
                     .scaledToFit()
-                    .padding(48)
+                    .padding(20)
                     .transition(.opacity)
                     .id(selectedAttachment?.attachmentID)
             } else if isLoading {
