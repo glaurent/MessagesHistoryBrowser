@@ -96,7 +96,7 @@ struct ContentView: View {
         }
         // While searching, selecting a contact narrows the results to it
         // (and deselecting returns to all matches).
-        .onChange(of: viewModel.selectedContact) { newContact in
+        .onChange(of: viewModel.selectedContact) { _, newContact in
             if viewModel.searchTerm.count >= ContentViewModel.searchCountLimit {
                 viewModel.narrowSearch(to: newContact)
             }
