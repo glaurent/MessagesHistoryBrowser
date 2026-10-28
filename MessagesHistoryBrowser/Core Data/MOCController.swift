@@ -18,7 +18,11 @@ class MOCController: NSObject {
     // MOCController is the single owner of the Core Data stack. This avoids
     // relying on NSApp.delegate, which under the SwiftUI App lifecycle is
     // SwiftUI's own internal AppDelegate rather than our AppDelegate.
-    lazy var persistentContainer: NSPersistentContainer = {
+    //
+    // The default stack is loaded lazily from the app's on-disk store; an
+    // injected container (e.g. an isolated in-memory one for tests) is used
+    // as is.
+    lazy var persistentContainer: NSPersistentContainer = injectedContainer ?? {
         let container = NSPersistentContainer(name: "MessagesHistoryBrowser")
         container.loadPersistentStores { _, error in
             if let error = error {
@@ -28,11 +32,15 @@ class MOCController: NSObject {
         return container
     }()
 
+    private let injectedContainer: NSPersistentContainer?
+
     var managedObjectContext:NSManagedObjectContext {
         return persistentContainer.viewContext
     }
 
-    override init() {
+    // `container` must already have its persistent stores loaded.
+    init(persistentContainer container: NSPersistentContainer? = nil) {
+        injectedContainer = container
     }
 
     func save()
@@ -48,11 +56,6 @@ class MOCController: NSObject {
         }
     }
 
-    func clearAllCoreData()
-    {
-        MOCController.clearAllData(in: persistentContainer)
-    }
-
     // Deletes every object in `container`'s store and tells its view context.
     //
     // Batch deletes run directly against the store and bypass the contexts, so
@@ -63,9 +66,9 @@ class MOCController: NSObject {
     // invalidated and its fetched results controllers see them go.
     //
     // Must be called on the main queue, the view context's queue.
-    static func clearAllData(in container: NSPersistentContainer)
+    func clearAllCoreData()
     {
-        let viewContext = container.viewContext
+        let viewContext = persistentContainer.viewContext
 
         let fetchRequests: [NSFetchRequest<NSFetchRequestResult>] = [
             ChatContact.fetchRequest(),
@@ -75,7 +78,7 @@ class MOCController: NSObject {
         ]
 
         var deletedObjectIDs = [NSManagedObjectID]()
-        let context = container.newBackgroundContext()
+        let context = persistentContainer.newBackgroundContext()
         context.performAndWait {
             do {
                 for fetchRequest in fetchRequests {

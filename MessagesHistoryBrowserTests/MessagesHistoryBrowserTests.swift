@@ -37,7 +37,8 @@ class MessagesHistoryBrowserTests: XCTestCase {
         try viewContext.save()
         XCTAssertEqual(try viewContext.count(for: ChatMessage.fetchRequest()), 1)
 
-        MOCController.clearAllData(in: container)
+        // Never the shared instance: that one would wipe the real store.
+        MOCController(persistentContainer: container).clearAllCoreData()
 
         // The store is empty...
         XCTAssertEqual(try viewContext.count(for: ChatContact.fetchRequest()), 0)
