@@ -89,20 +89,12 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		AFAB022C2141D65B000D9864 /* ContactsFetcher */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = ContactsFetcher;
-			sourceTree = "<group>";
-		};
 		AFD9748A1BB816B5004CF8D7 = {
 			isa = PBXGroup;
 			children = (
 				AF7CF4BC3069258000104468 /* MessagesHistoryBrowser */,
 				AFD974AA1BB816B6004CF8D7 /* MessagesHistoryBrowserTests */,
 				AFD974B51BB816B6004CF8D7 /* MessagesHistoryBrowserUITests */,
-				AFAB022C2141D65B000D9864 /* ContactsFetcher */,
 				AFD974941BB816B5004CF8D7 /* Products */,
 				35B0AF69470812EC5E751CD1 /* Frameworks */,
 			);
@@ -201,7 +193,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
-				LastUpgradeCheck = 2630;
+				LastUpgradeCheck = 2720;
 				ORGANIZATIONNAME = "Guillaume Laurent";
 				TargetAttributes = {
 					AFD974921BB816B5004CF8D7 = {
@@ -336,6 +328,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -396,6 +389,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
