@@ -8,6 +8,9 @@
 import SwiftUI
 import Sparkle
 
+enum AppError: Error {
+    case NoPermission
+}
 
 @main
 struct MessagesHistoryBrowserApp: App {
@@ -59,6 +62,8 @@ class AppState: ObservableObject {
     // instead of names, rather than failing silently.
     @Published var contactsAccessDenied = false
 
+    @Published var chatsDatabaseAccessDenied = false
+
     // Set by a stats window when one of its bars is clicked, so the main
     // window can show the conversation at that time. The main window clears
     // it once handled.
@@ -66,9 +71,21 @@ class AppState: ObservableObject {
 
     static let iCloudStoredAttachmentExtension = "pluginPayloadAttachment"
 
-    let chatsDBPath = "/Users/" + NSUserName() + "/Library/Messages/chat.db"
-    var chatsDatabase: ChatsDatabase?
-    
+    private var _chatsDatabase: ChatsDatabase?
+
+    var chatsDatabase: ChatsDatabase? {
+        if _chatsDatabase == nil {
+            do {
+                try _chatsDatabase = ChatsDatabase(chatsDBPath: ChatsDatabasePermissionAccessManager.sharedInstance.chatsDBPath)
+            } catch {
+                NSLog("DB init error: \(error)")
+                needDBReload = true
+            }
+        }
+
+        return _chatsDatabase
+    }
+
     // Core Data stack — shared single source of truth owned by MOCController,
     // so the SwiftUI environment context matches the one used elsewhere.
     var persistentContainer: NSPersistentContainer {
@@ -80,14 +97,6 @@ class AppState: ObservableObject {
             ShowDetailedSenderUserDefaultsKey: false,
             ShowTerseTimeUserDefaultsKey: true
         ])
-        
-        // Initialize chat database
-        do {
-            try chatsDatabase = ChatsDatabase(chatsDBPath: chatsDBPath)
-        } catch {
-            NSLog("DB init error: \(error)")
-            needDBReload = true
-        }
     }
     
     func saveContext() {
@@ -101,4 +110,25 @@ class AppState: ObservableObject {
             }
         }
     }
+
+//    func requestMessagesFolderAccess() -> URL? {
+//        let panel = NSOpenPanel()
+//        panel.message = "Select your Messages folder so MessagesHistoryBrowser can read your chat history."
+//        panel.prompt = "Grant Access"
+//        panel.canChooseDirectories = true
+//        panel.canChooseFiles = false
+//        panel.allowsMultipleSelection = false
+//        panel.showsHiddenFiles = true   // ~/Library is hidden in Finder
+//        panel.directoryURL = URL(filePath: chatsFolderPath)
+//
+//        guard panel.runModal() == .OK, let url = panel.url else { return nil }
+//
+//        // Save a bookmark so you don't have to ask again on every launch.
+//        if let bookmark = try? url.bookmarkData(options: .withSecurityScope,
+//                                                includingResourceValuesForKeys: nil,
+//                                                relativeTo: nil) {
+//            UserDefaults.standard.set(bookmark, forKey: "messagesFolderBookmark")
+//        }
+//        return url
+//    }
 }

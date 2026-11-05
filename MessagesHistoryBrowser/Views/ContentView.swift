@@ -12,6 +12,7 @@ import CoreData
 struct ContentView: View {
     @EnvironmentObject var appState: AppState
     @StateObject private var viewModel = ContentViewModel()
+    @State private var haveMessageDatabaseAccess = false
 
     // The selection lives in the view model (see ContentViewModel.selectedContact)
     // so a re-import can clear it before the store is emptied.
@@ -79,8 +80,22 @@ struct ContentView: View {
             }
         )
         .onAppear {
-            viewModel.setupDatabase(appState: appState)
+            if haveMessageDatabaseAccess {
+                viewModel.setupDatabase(appState: appState)
+            }
         }
+        .task {
+            if await ChatsDatabasePermissionAccessManager.sharedInstance.checkDatabaseFolderAccess() {
+                haveMessageDatabaseAccess = true
+                appState.chatsDatabaseAccessDenied = false
+                viewModel.setupDatabase(appState: appState)
+            } else {
+                NSLog("Chats DB access denied")
+            }
+        }
+        .alert("Messages Database Access Needed", isPresented: $appState.chatsDatabaseAccessDenied, actions: {
+            Button("OK", role: .cancel) {}
+        })
         // Shown after an import if Contacts access wasn't available, so chat
         // participants showing as raw phone numbers/emails has an explanation
         // and a way to fix it, instead of failing silently.
@@ -128,6 +143,7 @@ struct ContentView: View {
 
         viewModel.showInConversation(contact, at: request.date)
     }
+
 }
 
 // Publishes the selected contact as a focused value only when non-nil, so the
